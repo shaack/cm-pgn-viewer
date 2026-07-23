@@ -10,8 +10,20 @@ import {Chess} from "cm-chess/src/Chess.js"
 import {TextUtils} from "cm-web-modules/src/utils/TextUtils.js"
 import {NotationRenderer} from "./NotationRenderer.js"
 
+// Font Awesome Free (solid) icon classes for the control buttons. Override via
+// the `icons` prop; the embedding page must load Font Awesome Free.
+const CONTROL_ICONS = {
+    flip: "fa-solid fa-arrows-rotate",
+    first: "fa-solid fa-backward-step",
+    previous: "fa-solid fa-chevron-left",
+    next: "fa-solid fa-chevron-right",
+    last: "fa-solid fa-forward-step"
+}
+
+// Accessible labels (title / aria-label) for the control buttons.
 const CONTROL_LABELS = {
-    flip: "⇅", first: "⏮", previous: "◀", next: "▶", last: "⏭"
+    flip: "Flip board", first: "First move", previous: "Previous move",
+    next: "Next move", last: "Last move"
 }
 
 export class PgnViewer {
@@ -29,11 +41,13 @@ export class PgnViewer {
             showNotation: true,
             markLastMove: true,
             initialPly: undefined,         // jump to a ply on load, default: start position
-            i18n: {},                      // override CONTROL_LABELS
+            icons: {},                     // override CONTROL_ICONS (Font Awesome classes)
+            i18n: {},                      // override CONTROL_LABELS (button titles)
             onMoveSelect: undefined,       // callback(move)
             ...props
         }
         this.context = context
+        this.icons = {...CONTROL_ICONS, ...this.props.icons}
         this.labels = {...CONTROL_LABELS, ...this.props.i18n}
 
         this.chess = new Chess()
@@ -134,12 +148,12 @@ export class PgnViewer {
         }
         parts.push(`</div>`)
         if (this.props.showControls) {
+            const button = (action) =>
+                `<button type="button" class="pgn-viewer-button" data-action="${action}"` +
+                ` title="${this.labels[action]}" aria-label="${this.labels[action]}">` +
+                `<i class="${this.icons[action]}" aria-hidden="true"></i></button>`
             parts.push(`<div class="pgn-viewer-controls">
-                <button type="button" class="pgn-viewer-button" data-action="flip" title="flip">${this.labels.flip}</button>
-                <button type="button" class="pgn-viewer-button" data-action="first" title="first">${this.labels.first}</button>
-                <button type="button" class="pgn-viewer-button" data-action="previous" title="previous">${this.labels.previous}</button>
-                <button type="button" class="pgn-viewer-button" data-action="next" title="next">${this.labels.next}</button>
-                <button type="button" class="pgn-viewer-button" data-action="last" title="last">${this.labels.last}</button>
+                ${button("flip")}${button("first")}${button("previous")}${button("next")}${button("last")}
             </div>`)
         }
         this.context.innerHTML = parts.join("")

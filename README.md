@@ -13,7 +13,9 @@ comments** and renders a clickable game notation next to an SVG chessboard.
 - [cm-chessboard](https://github.com/shaack/cm-chessboard) The board, rendered in SVG, ES6 module
 - [cm-web-modules](https://github.com/shaack/cm-web-modules) ES6 toolbox for building web applications
 
-No jQuery, no framework, no build step, no icon-font dependency.
+No jQuery, no framework, no build step. The control buttons use
+[Font Awesome Free](https://fontawesome.com/) icons, so the embedding page must load
+Font Awesome Free (the demo loads it from `node_modules`).
 
 ## Install
 
@@ -53,6 +55,8 @@ working viewer with a sample game.
 | `showControls` | `true`                     | Show the first/previous/next/last/flip button row       |
 | `markLastMove` | `true`                     | Highlight the from/to squares of the viewed move        |
 | `initialPly`   | `undefined`                | Jump to this ply on load; default is the start position |
+| `icons`        | Font Awesome classes       | Override control icons, e.g. `{next: "fa-solid fa-angle-right"}` |
+| `i18n`         | English labels             | Override control button titles / aria-labels            |
 | `onMoveSelect` | `undefined`                | Callback `(move) => {}` when a move becomes active       |
 
 ### Convenience: initialise many viewers at once

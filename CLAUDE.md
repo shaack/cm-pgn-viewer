@@ -49,8 +49,10 @@ active move.
 
 ## Conventions
 
-- Vanilla ES6 modules, no TypeScript, no framework, no jQuery, no icon font (controls use
-  unicode glyphs, overridable via the `i18n` prop)
+- Vanilla ES6 modules, no TypeScript, no framework, no jQuery
+- Control buttons use Font Awesome Free (solid) icons (`CONTROL_ICONS`), overridable via the
+  `icons` prop; button titles/aria-labels via the `i18n` prop. The embedding page must load
+  Font Awesome Free (the demo loads it from `node_modules/@fortawesome/fontawesome-free`)
 - CSS class selectors (not IDs) for DOM lookup within the container context, so multiple
   viewers can live on one page (the forum case)
 - Theming via CSS custom properties on `.cm-pgn-viewer`, with light/dark variants driven by
