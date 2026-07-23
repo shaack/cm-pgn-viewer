@@ -1,0 +1,34 @@
+{
+  "name": "cm-pgn-viewer",
+  "version": "1.0.0",
+  "description": "A PGN viewer for the web which handles variations, NAGs and comments – uses cm-chessboard and cm-pgn. Written in vanilla ES6",
+  "main": "src/PgnViewer.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"No test specified\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shaack/cm-pgn-viewer.git"
+  },
+  "keywords": [
+    "chess",
+    "pgn",
+    "viewer",
+    "variations",
+    "cm-chessboard",
+    "cm-pgn"
+  ],
+  "author": "Stefan Haack (shaack.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shaack/cm-pgn-viewer/issues"
+  },
+  "homepage": "https://github.com/shaack/cm-pgn-viewer#readme",
+  "dependencies": {
+    "chess.mjs": "^2.3.2",
+    "cm-chess": "^3.6.3",
+    "cm-chessboard": "^8.12.19",
+    "cm-web-modules": "^2.8.0"
+  }
+}

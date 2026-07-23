@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <link rel="stylesheet" href="./node_modules/cm-chessboard/assets/chessboard.css"/>
+    <link rel="stylesheet" href="./node_modules/cm-chessboard/assets/extensions/markers/markers.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="stylesheet" href="./assets/style/screen.css"/>
+    <script>
+        // Mirror the OS colour scheme onto data-bs-theme so the demo page matches
+        // the viewer, which follows prefers-color-scheme. No dependency needed.
+        const setTheme = (m) => document.documentElement.setAttribute("data-bs-theme", m.matches ? "dark" : "light")
+        const mq = window.matchMedia("(prefers-color-scheme: dark)")
+        setTheme(mq)
+        mq.addEventListener("change", setTheme)
+    </script>
+    <title>cm-pgn-viewer</title>
+</head>
+<body class="bg-body text-body">
+<main>
+    <div class="container-fluid" style="max-width: 60rem">
+        <h1 class="my-4">cm-pgn-viewer</h1>
+        <p class="text-muted">A PGN viewer that handles variations, NAGs and comments. Click a move,
+            use the buttons or the arrow keys.</p>
+
+        <div class="viewer my-4"></div>
+
+        <hr>
+        <h2 class="h5">Inline via <code>PgnViewer.initFrom()</code></h2>
+        <p class="text-muted">Every <code>&lt;pgn&gt;</code> element below is replaced by a viewer.</p>
+        <pgn>1. e4 e5 2. f4 exf4 3. Bc4 Qh4+ 4. Kf1 b5 5. Bxb5 Nf6 6. Nf3 Qh6 7. d3 Nh5 *</pgn>
+
+        <ul class="list-inline mt-4">
+            <li class="list-inline-item">
+                <a href="https://github.com/shaack/cm-pgn-viewer">GitHub repository</a>
+            </li>
+        </ul>
+    </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/es-module-shims@1.7.2/dist/es-module-shims.min.js"></script>
+<!-- @formatter:off -->
+<script type="importmap">
+    {
+        "imports": {
+            "cm-chessboard/": "./node_modules/cm-chessboard/",
+            "cm-web-modules/": "./node_modules/cm-web-modules/",
+            "chess.mjs/": "./node_modules/chess.mjs/",
+            "cm-pgn/": "./node_modules/cm-pgn/",
+            "cm-chess/": "./node_modules/cm-chess/"
+        }
+    }
+</script>
+<!-- @formatter:on -->
+<script type="module">
+    import {PgnViewer} from "./src/PgnViewer.js"
+
+    const samplePgn = `[Event "Sample game"]
+[Site "Berlin"]
+[Date "1989.07.02"]
+[White "Haack, Stefan"]
+[Black "Maier, Karsten"]
+[Result "*"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bb5 {The Ruy Lopez} a6
+4. Ba4 (4. Bxc6 dxc6 5. Nxe5? Qd4 $17 {wins the knight back}) Nf6 5. O-O Be7
+6. Re1 b5 7. Bb3 d6 8. c3 O-O $1 *`
+
+    new PgnViewer(document.querySelector(".viewer"), {
+        pgn: samplePgn,
+        onMoveSelect: (move) => console.log("onMoveSelect", move ? move.san : "(start)")
+    })
+
+    PgnViewer.initFrom("pgn", {showControls: true})
+</script>
+</body>
+</html>
