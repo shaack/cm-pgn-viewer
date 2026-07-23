@@ -74,8 +74,14 @@ export class NotationRenderer {
         for (let i = 0; i < moves.length; i++) {
             const move = moves[i]
             const isFirstOfLine = i === 0
+            // commentBefore and commentMove both precede the move. cm-pgn stores a
+            // comment written before the move (e.g. at the start of a variation,
+            // "{Better} Bb2") in commentMove, so it must render before the move too.
             if (this.props.renderComments && move.commentBefore) {
                 parent.appendChild(this._comment(move.commentBefore))
+            }
+            if (this.props.renderComments && move.commentMove) {
+                parent.appendChild(this._comment(move.commentMove))
             }
             parent.appendChild(this._moveElement(move, isFirstOfLine))
             if (this.props.renderComments && move.commentAfter) {
