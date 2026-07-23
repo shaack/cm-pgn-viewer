@@ -8,27 +8,14 @@ import {Chessboard, COLOR, BORDER_TYPE} from "cm-chessboard/src/Chessboard.js"
 import {MARKER_TYPE, Markers} from "cm-chessboard/src/extensions/markers/Markers.js"
 import {Chess} from "cm-chess/src/Chess.js"
 import {TextUtils} from "cm-web-modules/src/utils/TextUtils.js"
+import {CoreUtils} from "cm-web-modules/src/utils/CoreUtils.js"
 import {NotationRenderer} from "./NotationRenderer.js"
-
-// Font Awesome Free (solid) icon classes for the control buttons. Override via
-// the `icons` prop; the embedding page must load Font Awesome Free.
-const CONTROL_ICONS = {
-    flip: "fa-solid fa-up-down",
-    first: "fa-solid fa-backward-fast",
-    previous: "fa-solid fa-backward-step",
-    next: "fa-solid fa-forward-step",
-    last: "fa-solid fa-forward-fast"
-}
-
-// Accessible labels (title / aria-label) for the control buttons.
-const CONTROL_LABELS = {
-    flip: "Flip board", first: "First move", previous: "Previous move",
-    next: "Next move", last: "Last move"
-}
 
 export class PgnViewer {
 
     constructor(context, props = {}) {
+        // Defaults are deep-merged with `props` (cm-chessboard style), so a caller
+        // can override a single icon or label without redefining the whole object.
         this.props = {
             pgn: undefined,
             orientation: COLOR.white,
@@ -41,14 +28,27 @@ export class PgnViewer {
             showNotation: true,
             markLastMove: true,
             initialPly: undefined,         // jump to a ply on load, default: start position
-            icons: {},                     // override CONTROL_ICONS (Font Awesome classes)
-            i18n: {},                      // override CONTROL_LABELS (button titles)
-            onMoveSelect: undefined,       // callback(move)
-            ...props
+            // Font Awesome Free (solid) classes for the control buttons. The
+            // embedding page must load Font Awesome Free.
+            icons: {
+                flip: "fa-solid fa-up-down",
+                first: "fa-solid fa-backward-fast",
+                previous: "fa-solid fa-backward-step",
+                next: "fa-solid fa-forward-step",
+                last: "fa-solid fa-forward-fast"
+            },
+            // Accessible labels (title / aria-label) for the control buttons.
+            i18n: {
+                flip: "Flip board",
+                first: "First move",
+                previous: "Previous move",
+                next: "Next move",
+                last: "Last move"
+            },
+            onMoveSelect: undefined        // callback(move)
         }
+        CoreUtils.mergeObjects(this.props, props)
         this.context = context
-        this.icons = {...CONTROL_ICONS, ...this.props.icons}
-        this.labels = {...CONTROL_LABELS, ...this.props.i18n}
 
         this.chess = new Chess()
         if (this.props.pgn) {
@@ -150,8 +150,8 @@ export class PgnViewer {
         if (this.props.showControls) {
             const button = (action) =>
                 `<button type="button" class="pgn-viewer-button" data-action="${action}"` +
-                ` title="${this.labels[action]}" aria-label="${this.labels[action]}">` +
-                `<i class="${this.icons[action]}" aria-hidden="true"></i></button>`
+                ` title="${this.props.i18n[action]}" aria-label="${this.props.i18n[action]}">` +
+                `<i class="${this.props.icons[action]}" aria-hidden="true"></i></button>`
             parts.push(`<div class="pgn-viewer-controls">
                 ${button("flip")}${button("first")}${button("previous")}${button("next")}${button("last")}
             </div>`)
