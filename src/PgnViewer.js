@@ -14,10 +14,10 @@ import {NotationRenderer} from "./NotationRenderer.js"
 // the `icons` prop; the embedding page must load Font Awesome Free.
 const CONTROL_ICONS = {
     flip: "fa-solid fa-arrows-rotate",
-    first: "fa-solid fa-backward-step",
-    previous: "fa-solid fa-chevron-left",
-    next: "fa-solid fa-chevron-right",
-    last: "fa-solid fa-forward-step"
+    first: "fa-solid fa-backward-fast",
+    previous: "fa-solid fa-backward-step",
+    next: "fa-solid fa-forward-step",
+    last: "fa-solid fa-forward-fast"
 }
 
 // Accessible labels (title / aria-label) for the control buttons.
