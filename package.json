@@ -1,6 +1,6 @@
 {
   "name": "cm-pgn-viewer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A PGN viewer for the web which handles variations, NAGs and comments – uses cm-chessboard and cm-pgn. Written in vanilla ES6",
   "main": "src/PgnViewer.js",
   "type": "module",
@@ -28,7 +28,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.3.1",
     "chess.mjs": "^2.3.2",
-    "cm-chess": "^3.6.3",
+    "cm-chess": "^4.0.0",
     "cm-chessboard": "^8.12.19",
     "cm-web-modules": "^2.8.0"
   }

@@ -74,18 +74,18 @@ export class NotationRenderer {
         for (let i = 0; i < moves.length; i++) {
             const move = moves[i]
             const isFirstOfLine = i === 0
-            // commentBefore and commentMove both precede the move. cm-pgn stores a
-            // comment written before the move (e.g. at the start of a variation,
-            // "{Better} Bb2") in commentMove, so it must render before the move too.
-            if (this.props.renderComments && move.commentBefore) {
-                parent.appendChild(this._comment(move.commentBefore))
-            }
-            if (this.props.renderComments && move.commentMove) {
-                parent.appendChild(this._comment(move.commentMove))
+            // cm-pgn (>= 5.0) exposes comments as arrays: startingComments before
+            // the move, comments after it.
+            if (this.props.renderComments && move.startingComments) {
+                for (const comment of move.startingComments) {
+                    parent.appendChild(this._comment(comment))
+                }
             }
             parent.appendChild(this._moveElement(move, isFirstOfLine))
-            if (this.props.renderComments && move.commentAfter) {
-                parent.appendChild(this._comment(move.commentAfter))
+            if (this.props.renderComments && move.comments) {
+                for (const comment of move.comments) {
+                    parent.appendChild(this._comment(comment))
+                }
             }
             // variations branch off *from the position before* this move, so
             // they are rendered right after it.
@@ -128,11 +128,13 @@ export class NotationRenderer {
         san.textContent = this._formatSan(move.san)
         span.appendChild(san)
 
-        if (this.props.renderNags && move.nag) {
-            const nag = document.createElement("span")
-            nag.className = "nag"
-            nag.textContent = NAGS[move.nag] || move.nag
-            span.appendChild(nag)
+        if (this.props.renderNags && move.nags) {
+            for (const nagNumber of move.nags) {
+                const nag = document.createElement("span")
+                nag.className = "nag"
+                nag.textContent = NAGS["$" + nagNumber] || ("$" + nagNumber)
+                span.appendChild(nag)
+            }
         }
         span.appendChild(document.createTextNode(" "))
         return span
