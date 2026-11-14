@@ -1,6 +1,6 @@
 {
   "name": "cm-pgn-viewer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A PGN viewer for the web. Shows a game with variations, NAGs and comments next to an SVG chessboard, supports Chess960 and games from any start position. Vanilla ES6, no build step.",
   "type": "module",
   "module": "./src/PgnViewer.js",
