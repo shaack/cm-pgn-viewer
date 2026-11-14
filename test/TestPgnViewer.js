@@ -169,25 +169,52 @@ describe("PgnViewer", () => {
         }
         const viewer = createViewer(`1. e4 {Best by test [%clk 0:05:00]} e5 2. Nf3 *`)
         const toggle = viewer.context.querySelector("[data-action=toggleBubbles]")
-        assert.equal(toggle.getAttribute("aria-pressed"), "false")
+        assert.equal(toggle.getAttribute("aria-pressed"), "true") // on by default
         viewer.next()
-        assert.equal(viewer.bubble, undefined) // off by default
-        toggle.click()
-        assert.equal(toggle.getAttribute("aria-pressed"), "true")
         assert.false(viewer.bubble.element.hidden)
-        assert.equal(viewer.bubble.element.textContent, "Best by test")
+        assert.equal(viewer.bubble.text.textContent, "Best by test")
         viewer.next()
         assert.true(viewer.bubble.element.hidden) // e5 has no comment
         viewer.previous()
         assert.false(viewer.bubble.element.hidden)
+        toggle.click()
+        assert.equal(toggle.getAttribute("aria-pressed"), "false")
+        assert.true(viewer.bubble.element.hidden)
         viewer.destroy()
         // the choice is remembered for the next viewer
         const next = createViewer(`1. e4 {Best} *`, {initialPly: 1})
-        assert.equal(next.context.querySelector("[data-action=toggleBubbles]").getAttribute("aria-pressed"), "true")
+        assert.equal(next.context.querySelector("[data-action=toggleBubbles]").getAttribute("aria-pressed"), "false")
+        assert.equal(next.bubble, undefined)
+        next.setCommentBubbles(true, true)
         assert.false(next.bubble.element.hidden)
-        next.setCommentBubbles(false, true)
-        assert.true(next.bubble.element.hidden)
         next.destroy()
+    })
+
+    it("should make the bubble small on click and big again on a click on it or the piece", () => {
+        const viewer = createViewer(`1. e4 {Best} e5 {Also good} *`, {initialPly: 1, commentBubbles: true})
+        viewer.setCommentBubbles(true)
+        const bubble = viewer.bubble
+        bubble.element.click()
+        assert.true(bubble.collapsed)
+        assert.true(bubble.element.classList.contains("collapsed"))
+        bubble.element.click()
+        assert.false(bubble.collapsed)
+        bubble.element.click()
+        // stays small on the next move
+        viewer.next()
+        assert.true(bubble.collapsed)
+        assert.equal(bubble.square, "e5")
+        // a click on the piece on e5 makes it big
+        const view = viewer.board.view
+        const rect = viewer.elements.board.getBoundingClientRect()
+        const point = view.squareToPoint("e5")
+        viewer.elements.board.dispatchEvent(new MouseEvent("click", {
+            bubbles: true,
+            clientX: rect.left + point.x + view.squareWidth / 2,
+            clientY: rect.top + point.y + view.squareHeight / 2
+        }))
+        assert.false(bubble.collapsed)
+        viewer.destroy()
     })
 
     it("should replace elements with viewers in initFrom", () => {

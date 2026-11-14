@@ -53,7 +53,7 @@ export class PgnViewer {
             showControls: true,
             showPgnToggle: true,
             showBubbleToggle: true,         // switch for the comment bubbles, next to "Show PGN"
-            commentBubbles: false,          // show the comment of a move as speech bubble on the board,
+            commentBubbles: true,           // show the comment of a move as speech bubble on the board,
                                             // a choice of the user with the switch is remembered
             lastMoveMarker: MARKER_TYPE.frame, // a cm-chessboard MARKER_TYPE on from/to, null for none
             qualityMarkers: true,           // assessed moves (!!, !, !?, ?!, ?, ??) get the marker in their colour
