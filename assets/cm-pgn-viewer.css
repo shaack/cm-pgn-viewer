@@ -31,6 +31,7 @@
     --pgn-viewer-radius: 0.375rem;
     --pgn-viewer-move-weight: 500;
     --pgn-viewer-move-number-size: 0.8em;
+    --pgn-viewer-piece-icon-size: 0.85em;
     /* move assessments: arrow on the board and symbol in the notation */
     --pgn-viewer-quality-brilliant: #1f9d3a;
     --pgn-viewer-quality-good: #4a922a;
@@ -255,9 +256,10 @@
     margin-left: 0;
 }
 
+/* fixed width like fa-fw: the width of the widest icon (queen, 512 of 544), the others centred */
 .cm-pgn-viewer svg.piece-icon {
-    width: auto;
-    height: 0.85em;
+    width: calc(var(--pgn-viewer-piece-icon-size) * 512 / 544);
+    height: var(--pgn-viewer-piece-icon-size);
     margin-right: 0.08em;
     vertical-align: -0.1em;
 }

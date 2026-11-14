@@ -114,7 +114,7 @@ element.innerHTML = pieceIcon("n")                                // solid knigh
 element.innerHTML = pieceIcon("Q", "regular", {class: "icon", "aria-label": "queen"})
 ```
 
-Size them with CSS, e.g. `svg.icon {height: 1em; width: auto}`.
+Size them with CSS, e.g. `svg.icon {height: 1em; width: auto}`. For a fixed width like `fa-fw`, give them the width of the widest icon, the queen: `svg.icon {height: 1em; width: calc(1em * 512 / 544)}`, the narrower pieces are centred.
 
 ## Methods
 
