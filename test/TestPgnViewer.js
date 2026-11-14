@@ -4,7 +4,7 @@
  * License: MIT, see file 'LICENSE'
  */
 import {describe, it, assert} from "teevi/src/teevi.js"
-import {PgnViewer} from "../src/PgnViewer.js"
+import {PgnViewer, MARKER_TYPE} from "../src/PgnViewer.js"
 
 const assetsUrl = "../node_modules/cm-chessboard/assets/"
 
@@ -85,6 +85,27 @@ describe("PgnViewer", () => {
         viewer.next()
         assert.equal(viewer.elements.live.textContent, "2. Black: knight c6")
         viewer.destroy()
+    })
+
+    it("should mark the last move with the lastMoveMarker", () => {
+        const viewer = createViewer(PGN)
+        viewer.next()
+        const squares = (type) => JSON.stringify(viewer.board.getMarkers(type).map(marker => marker.square).sort())
+        assert.equal(squares(MARKER_TYPE.frame), JSON.stringify(["e2", "e4"]))
+        viewer.next()
+        assert.equal(squares(MARKER_TYPE.frame), JSON.stringify(["e5", "e7"]))
+        viewer.first()
+        assert.equal(viewer.board.getMarkers(MARKER_TYPE.frame).length, 0)
+        viewer.destroy()
+        const square = createViewer(PGN, {lastMoveMarker: MARKER_TYPE.square})
+        square.next()
+        assert.equal(square.board.getMarkers(MARKER_TYPE.square).length, 2)
+        assert.equal(square.board.getMarkers(MARKER_TYPE.frame).length, 0)
+        square.destroy()
+        const none = createViewer(PGN, {lastMoveMarker: null})
+        none.next()
+        assert.equal(none.board.getMarkers().length, 0)
+        none.destroy()
     })
 
     it("should replace elements with viewers in initFrom", () => {

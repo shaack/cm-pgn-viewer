@@ -21,6 +21,8 @@ export const ICONS = {
     flip: `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 1.5 8.5 5.5H6V14H4V5.5H1.5zM11 14.5 7.5 10.5H10V2h2v8.5h2.5z"/></svg>`
 }
 
+export {MARKER_TYPE}
+
 const CONTROLS = ["play", "first", "previous", "next", "last", "flip"]
 
 export class PgnViewer {
@@ -41,7 +43,7 @@ export class PgnViewer {
             showHeaders: true,
             showControls: true,
             showPgnToggle: true,
-            markLastMove: true,
+            lastMoveMarker: MARKER_TYPE.frame, // a cm-chessboard MARKER_TYPE, null for no marker
             autoplayInterval: 1000,         // milliseconds per move
             initialPly: undefined,          // jump to this mainline ply on load
             accessibility: true,            // cm-chessboard Accessibility extension and spoken moves
@@ -87,11 +89,12 @@ export class PgnViewer {
         }
         this.currentMove = move
         this.board.setPosition(move ? move.fen : this.loaded.setUpFen, animated)
-        if (this.props.markLastMove) {
-            this.board.removeMarkers(MARKER_TYPE.square)
+        const marker = this.props.lastMoveMarker
+        if (marker) {
+            this.board.removeMarkers(marker)
             if (move) {
-                this.board.addMarker(MARKER_TYPE.square, move.from)
-                this.board.addMarker(MARKER_TYPE.square, move.to)
+                this.board.addMarker(marker, move.from)
+                this.board.addMarker(marker, move.to)
             }
         }
         const element = this.notationRenderer.setActiveMove(move)

@@ -90,7 +90,7 @@ PgnViewer.initFrom("pgn", {lazy: true, assetsUrl: "/node_modules/cm-chessboard/a
 | `showHeaders`      | `true`                                   | Players, event, site, round, date, ECO, result                              |
 | `showControls`     | `true`                                   | The button row                                                              |
 | `showPgnToggle`    | `true`                                   | "Show PGN" with a copy button                                               |
-| `markLastMove`     | `true`                                   | Mark the squares of the move shown                                          |
+| `lastMoveMarker`   | `MARKER_TYPE.frame`                      | Marker for the squares of the move shown, any cm-chessboard `MARKER_TYPE` (re-exported by `PgnViewer.js`), `null` for none |
 | `autoplayInterval` | `1000`                                   | Milliseconds per move when playing                                          |
 | `initialPly`       | `undefined`                              | Show the position after this ply of the mainline on load                    |
 | `accessibility`    | `true`                                   | Live region for moves and the cm-chessboard Accessibility extension         |
