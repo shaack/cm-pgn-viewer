@@ -184,7 +184,7 @@
 .cm-pgn-viewer .pgn-viewer-main {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "board" "controls" "notation" "source";
+    grid-template-areas: "board" "material" "controls" "notation" "source";
     gap: 0.5rem var(--pgn-viewer-gap);
 }
 
@@ -196,6 +196,41 @@
 
 .cm-pgn-viewer .pgn-viewer-controls {
     grid-area: controls;
+}
+
+/* captured pieces and material advantage, right below the board */
+.cm-pgn-viewer .pgn-viewer-material {
+    grid-area: material;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 1.2rem;
+    margin-top: -0.2rem;
+    font-size: 0.9rem;
+    line-height: 1;
+    color: var(--pgn-viewer-muted);
+}
+
+.cm-pgn-viewer .material-side {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.cm-pgn-viewer .material-pieces {
+    display: inline-flex;
+    align-items: center;
+}
+
+.cm-pgn-viewer .material-pieces svg.piece-icon {
+    width: auto;
+    height: 1.15em;
+    margin-right: 0.05em;
+}
+
+.cm-pgn-viewer .material-advantage {
+    font-weight: 600;
 }
 
 .cm-pgn-viewer .pgn-viewer-notation-area {
@@ -218,7 +253,7 @@
                 calc((100% - var(--pgn-viewer-gap)) * var(--pgn-viewer-board-ratio))
             ), var(--pgn-viewer-board-max)))
             minmax(0, 1fr);
-        grid-template-areas: "board notation" "controls source";
+        grid-template-areas: "board notation" "material ." "controls source";
     }
 
     .cm-pgn-viewer .pgn-viewer-notation-area {
@@ -311,19 +346,19 @@
     color: var(--pgn-viewer-comment-color);
 }
 
-.cm-pgn-viewer .move.white svg.piece-icon.auto.solid {
+.cm-pgn-viewer :is(.move, .material-pieces).white svg.piece-icon.auto.solid {
     display: var(--pgn-viewer-white-icon-solid);
 }
 
-.cm-pgn-viewer .move.white svg.piece-icon.auto.regular {
+.cm-pgn-viewer :is(.move, .material-pieces).white svg.piece-icon.auto.regular {
     display: var(--pgn-viewer-white-icon-regular);
 }
 
-.cm-pgn-viewer .move.black svg.piece-icon.auto.solid {
+.cm-pgn-viewer :is(.move, .material-pieces).black svg.piece-icon.auto.solid {
     display: var(--pgn-viewer-black-icon-solid);
 }
 
-.cm-pgn-viewer .move.black svg.piece-icon.auto.regular {
+.cm-pgn-viewer :is(.move, .material-pieces).black svg.piece-icon.auto.regular {
     display: var(--pgn-viewer-black-icon-regular);
 }
 

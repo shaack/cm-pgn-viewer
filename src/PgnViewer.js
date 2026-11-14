@@ -10,6 +10,8 @@ import {loadPgn, readPgnFromElement, VARIANT} from "./PgnLoader.js"
 import {NotationRenderer} from "./NotationRenderer.js"
 import {createI18n, describeMove} from "./I18n.js"
 import {highlightPgn} from "./PgnHighlighter.js"
+import {materialBalance} from "./Material.js"
+import {pieceIcon} from "./PieceIcons.js"
 import {CommentBubble, moveCommentText} from "./CommentBubble.js"
 
 import {MOVE_MARKER_TYPE, MOVE_CAPTURE_MARKER_TYPE, moveQuality} from "./MoveQuality.js"
@@ -54,6 +56,7 @@ export class PgnViewer {
             bubbleExpanded: true,           // start with the big bubble, otherwise the small one
             lastMoveMarker: MARKER_TYPE.frame, // a cm-chessboard MARKER_TYPE on from/to, null for none
             captureMarker: MARKER_TYPE.bevel, // on the target square of a capture, null for the frame
+            showMaterial: true,             // the captured pieces and the material advantage, below the board
             qualityMarkers: true,           // assessed moves (!!, !, !?, ?!, ?, ??) get the markers in their colour
             checkMarker: MARKER_TYPE.circleDanger, // on the king in check, null for none
             autoplayInterval: 1000,         // milliseconds per move
@@ -105,6 +108,7 @@ export class PgnViewer {
         this.currentMove = move
         this.board.setPosition(move ? move.fen : this.loaded.setUpFen, animated)
         this._markMove(move)
+        this._renderMaterial(move)
         if (this.props.checkMarker) {
             this.board.removeMarkers(this.props.checkMarker)
             if (move && move.inCheck) {
@@ -248,6 +252,9 @@ export class PgnViewer {
         }
         parts.push(`<div class="pgn-viewer-main">`)
         parts.push(`<div class="pgn-viewer-board"></div>`)
+        if (this.props.showMaterial) {
+            parts.push(`<div class="pgn-viewer-material" aria-hidden="true"></div>`)
+        }
         if (this.props.showControls) {
             parts.push(`<div class="pgn-viewer-controls">`)
             for (const action of CONTROLS) {
@@ -275,6 +282,7 @@ export class PgnViewer {
             headers: find(".pgn-viewer-headers"),
             main: find(".pgn-viewer-main"),
             board: find(".pgn-viewer-board"),
+            material: find(".pgn-viewer-material"),
             controls: find(".pgn-viewer-controls"),
             notation: find(".pgn-viewer-notation"),
             source: find(".pgn-viewer-source"),
@@ -444,6 +452,29 @@ export class PgnViewer {
             this.board.addMarker(capture, move.to)
             this.moveMarkers.push(capture)
         }
+    }
+
+    /** The captured pieces of both sides, the advantage behind the side that is ahead. */
+    _renderMaterial(move) {
+        if (!this.elements.material) {
+            return
+        }
+        const balance = materialBalance(this.loaded.setUpFen, move ? move.fen : this.loaded.setUpFen)
+        const side = (color, types, advantage) => {
+            if (types.length === 0 && advantage <= 0) {
+                return ""
+            }
+            // the icons of the captured pieces, which have the other colour
+            const icons = types.map(type =>
+                pieceIcon(type, "solid", {class: "piece-icon auto solid"}) +
+                pieceIcon(type, "regular", {class: "piece-icon auto regular"})
+            ).join("")
+            return `<span class="material-side"><span class="material-pieces ${color}">${icons}</span>` +
+                (advantage > 0 ? `<span class="material-advantage">+${advantage}</span>` : "") + `</span>`
+        }
+        this.elements.material.innerHTML =
+            side("black", balance.capturedByWhite, balance.advantage) +
+            side("white", balance.capturedByBlack, -balance.advantage)
     }
 
     _updateBubble() {

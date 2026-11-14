@@ -142,6 +142,23 @@ describe("PgnViewer", () => {
         frames.destroy()
     })
 
+    it("should show the captured pieces and the advantage below the board", () => {
+        const viewer = createViewer(`1. e4 d5 2. exd5 Qxd5 3. Nc3 Qxg2 *`)
+        const material = viewer.elements.material
+        assert.equal(material.textContent, "")
+        viewer.goToMove(viewer.history[2], false) // exd5
+        assert.equal(material.querySelectorAll(".material-pieces.black svg.solid").length, 1)
+        assert.equal(material.querySelector(".material-advantage").textContent, "+1")
+        viewer.last() // Qxg2, Black is a pawn ahead
+        assert.equal(material.querySelectorAll(".material-pieces.white svg.solid").length, 2)
+        assert.equal(material.querySelectorAll(".material-advantage").length, 1)
+        assert.equal(material.querySelector(".material-pieces.white").parentElement.querySelector(".material-advantage").textContent, "+1")
+        viewer.destroy()
+        const hidden = createViewer(PGN, {showMaterial: false})
+        assert.equal(hidden.elements.material, undefined)
+        hidden.destroy()
+    })
+
     it("should mark the king in check", () => {
         const viewer = createViewer(`1. e4 f5 2. Qh5+ g6 *`)
         const marked = () => JSON.stringify(viewer.board.getMarkers(MARKER_TYPE.circleDanger).map(marker => marker.square))

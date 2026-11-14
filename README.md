@@ -13,6 +13,7 @@ It is built on [cm-chessboard](https://github.com/shaack/cm-chessboard) for the 
 - White and black moves look different: Black gets the darker piece icon and a darker tone
 - The move shown is framed on the board, the target of a capture gets the capture marker (bevel), for an assessed move (`!!`, `!`, `!?`, `?!`, `?`, `??`) the frame has the colour of the assessment, the symbols in the notation the same colours
 - A king in check gets a red circle
+- The captured pieces of both sides and the material advantage, right below the board, compared with the start position of the game
 - The comment of a move as a speech bubble on the board, pointing to the piece and placed where it hides the fewest pieces. A click on the piece makes it small, a click on the piece or the small bubble big again
 - Click a move, use the buttons (play, start, back, forward, end, flip) or the keys Left, Right, Home and End
 - Move numbers from the FEN, so a game from a position starts at the right move, also with Black to move
@@ -99,6 +100,7 @@ PgnViewer.initFrom("pgn", {lazy: true, assetsUrl: "/node_modules/cm-chessboard/a
 | `bubbleExpanded`   | `true`                                   | Start with the big bubble, `false` for the small one                        |
 | `lastMoveMarker`   | `MARKER_TYPE.frame`                      | Marker on both squares of the move shown, any cm-chessboard `MARKER_TYPE` (re-exported by `PgnViewer.js`), `null` for none |
 | `captureMarker`    | `MARKER_TYPE.bevel`                      | Marker on the target square of a capture, `null` for the frame              |
+| `showMaterial`     | `true`                                   | Captured pieces and material advantage below the board                      |
 | `qualityMarkers`   | `true`                                   | Moves with `!!`, `!`, `!?`, `?!`, `?` or `??` get the markers in the colour of their assessment |
 | `checkMarker`      | `MARKER_TYPE.circleDanger`               | Marker on the king in check, `null` for none                                |
 | `autoplayInterval` | `1000`                                   | Milliseconds per move when playing                                          |
