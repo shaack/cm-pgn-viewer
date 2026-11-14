@@ -540,6 +540,16 @@
     justify-content: flex-end;
 }
 
+/* like the control buttons, but with an icon and a label */
+.cm-pgn-viewer .pgn-viewer-button.pgn-viewer-text-button {
+    flex: 0 0 auto;
+    max-width: none;
+    gap: 0.5rem;
+    padding: 0 1rem;
+    font: inherit;
+    font-size: 0.9rem;
+}
+
 .cm-pgn-viewer .pgn-viewer-link {
     padding: 0;
     border: 0;

@@ -21,6 +21,7 @@ export const ICONS = {
     next: `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10.5 3H12v10h-1.5zM4 3l6 5-6 5z"/></svg>`,
     last: `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M12 3h1.5v10H12zM2 3l4.5 5L2 13zM7 3l4.5 5L7 13z"/></svg>`,
     flip: `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 1.5 8.5 5.5H6V14H4V5.5H1.5zM11 14.5 7.5 10.5H10V2h2v8.5h2.5z"/></svg>`,
+    pgn: `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.3 3.6 6.7 5 3.7 8l3 3-1.4 1.4L.9 8zM10.7 3.6 9.3 5l3 3-3 3 1.4 1.4L15.1 8z"/></svg>`,
     close: `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.4 2 8 6.6 12.6 2 14 3.4 9.4 8l4.6 4.6-1.4 1.4L8 9.4 3.4 14 2 12.6 6.6 8 2 3.4z"/></svg>`
 }
 
@@ -267,7 +268,8 @@ export class PgnViewer {
 
     _pgnSourceHtml() {
         return `<div class="pgn-viewer-source">` +
-            `<button type="button" class="pgn-viewer-link" data-action="showPgn" aria-haspopup="dialog">${escapeHtml(this.t.showPgn)}</button>` +
+            `<button type="button" class="pgn-viewer-button pgn-viewer-text-button" data-action="showPgn" aria-haspopup="dialog">` +
+            `${this.icons.pgn}<span>${escapeHtml(this.t.showPgn)}</span></button>` +
             `</div>` +
             `<dialog class="pgn-viewer-dialog" aria-label="PGN">` +
             `<div class="pgn-viewer-dialog-header">` +
