@@ -32,6 +32,8 @@
     --pgn-viewer-error-color: #b02a37;
     --pgn-viewer-radius: 0.375rem;
     --pgn-viewer-move-weight: 500;
+    --pgn-viewer-bubble-bg: rgba(24, 26, 30, 0.82);
+    --pgn-viewer-bubble-color: #fff;
     /* the PGN dialog and its syntax highlighting */
     --pgn-viewer-dialog-bg: #fff;
     --pgn-viewer-backdrop: rgba(0, 0, 0, 0.45);
@@ -188,6 +190,7 @@
 .cm-pgn-viewer .pgn-viewer-board {
     grid-area: board;
     min-width: 0;
+    position: relative; /* for the comment bubble */
 }
 
 .cm-pgn-viewer .pgn-viewer-controls {
@@ -543,6 +546,59 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    gap: 0.25rem;
+}
+
+.cm-pgn-viewer .pgn-viewer-button.pgn-viewer-toggle {
+    flex: 0 0 2.75rem;
+}
+
+.cm-pgn-viewer .pgn-viewer-button.pgn-viewer-toggle[aria-pressed="true"] {
+    background: var(--pgn-viewer-active-bg);
+    color: var(--pgn-viewer-active-color);
+}
+
+/* --- comment bubble on the board ------------------------------------------- */
+
+.cm-pgn-viewer .pgn-viewer-bubble {
+    position: absolute;
+    z-index: 10;
+    width: max-content;
+    padding: 0.4rem 0.65rem;
+    border-radius: 0.5rem;
+    background: var(--pgn-viewer-bubble-bg);
+    color: var(--pgn-viewer-bubble-color);
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+    box-shadow: 0 0.15rem 0.6rem rgba(0, 0, 0, 0.3);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    pointer-events: auto;
+}
+
+.cm-pgn-viewer .pgn-viewer-bubble-text {
+    overflow-y: auto;
+}
+
+.cm-pgn-viewer .pgn-viewer-bubble[hidden] {
+    display: none;
+}
+
+/* the tail, below the bubble, or above it when the bubble is below the square */
+.cm-pgn-viewer .pgn-viewer-bubble::after {
+    content: "";
+    position: absolute;
+    left: calc(var(--tail-x, 50%) - 7px);
+    top: 100%;
+    border: 7px solid transparent;
+    border-top-color: var(--pgn-viewer-bubble-bg);
+}
+
+.cm-pgn-viewer .pgn-viewer-bubble.below::after {
+    top: auto;
+    bottom: 100%;
+    border-top-color: transparent;
+    border-bottom-color: var(--pgn-viewer-bubble-bg);
 }
 
 /* like the control buttons, but with an icon and a label */

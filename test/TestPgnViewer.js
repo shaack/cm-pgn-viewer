@@ -161,6 +161,35 @@ describe("PgnViewer", () => {
         viewer.destroy()
     })
 
+    it("should show the comment of a move as bubble on the board, switched by the toggle", () => {
+        try {
+            localStorage.removeItem("cm-pgn-viewer.commentBubbles")
+        } catch (e) {
+            // no storage
+        }
+        const viewer = createViewer(`1. e4 {Best by test [%clk 0:05:00]} e5 2. Nf3 *`)
+        const toggle = viewer.context.querySelector("[data-action=toggleBubbles]")
+        assert.equal(toggle.getAttribute("aria-pressed"), "false")
+        viewer.next()
+        assert.equal(viewer.bubble, undefined) // off by default
+        toggle.click()
+        assert.equal(toggle.getAttribute("aria-pressed"), "true")
+        assert.false(viewer.bubble.element.hidden)
+        assert.equal(viewer.bubble.element.textContent, "Best by test")
+        viewer.next()
+        assert.true(viewer.bubble.element.hidden) // e5 has no comment
+        viewer.previous()
+        assert.false(viewer.bubble.element.hidden)
+        viewer.destroy()
+        // the choice is remembered for the next viewer
+        const next = createViewer(`1. e4 {Best} *`, {initialPly: 1})
+        assert.equal(next.context.querySelector("[data-action=toggleBubbles]").getAttribute("aria-pressed"), "true")
+        assert.false(next.bubble.element.hidden)
+        next.setCommentBubbles(false, true)
+        assert.true(next.bubble.element.hidden)
+        next.destroy()
+    })
+
     it("should replace elements with viewers in initFrom", () => {
         const holder = document.createElement("div")
         holder.innerHTML = `<pgn>[White "A"]<br />[Black "B"]<br /><br />1. e4 e5 *</pgn><pgn>1. d4 *</pgn>`
