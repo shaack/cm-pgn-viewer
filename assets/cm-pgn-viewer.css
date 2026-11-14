@@ -33,7 +33,7 @@
     --pgn-viewer-move-number-size: 0.8em;
     /* move assessments: arrow on the board and symbol in the notation */
     --pgn-viewer-arrow-move: #4a6d8c;
-    --pgn-viewer-quality-brilliant: #1a9e97;
+    --pgn-viewer-quality-brilliant: #1f9d3a;
     --pgn-viewer-quality-good: #4a922a;
     --pgn-viewer-quality-interesting: #2f86c9;
     --pgn-viewer-quality-dubious: #c9970f;
@@ -65,7 +65,7 @@
         --pgn-viewer-white-move-color: currentColor;
         --pgn-viewer-black-move-color: rgba(255, 255, 255, 0.68);
         --pgn-viewer-comment-color: #8ab8dc;
-        --pgn-viewer-nag-brilliant: #3fc9c1;
+        --pgn-viewer-nag-brilliant: #4fd26b;
         --pgn-viewer-nag-good: #7cc254;
         --pgn-viewer-nag-interesting: #62b2f0;
         --pgn-viewer-nag-dubious: #e9c341;
@@ -92,7 +92,7 @@
     --pgn-viewer-white-move-color: currentColor;
     --pgn-viewer-black-move-color: rgba(255, 255, 255, 0.68);
     --pgn-viewer-comment-color: #8ab8dc;
-    --pgn-viewer-nag-brilliant: #3fc9c1;
+    --pgn-viewer-nag-brilliant: #4fd26b;
     --pgn-viewer-nag-good: #7cc254;
     --pgn-viewer-nag-interesting: #62b2f0;
     --pgn-viewer-nag-dubious: #e9c341;
