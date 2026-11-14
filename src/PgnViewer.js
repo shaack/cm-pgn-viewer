@@ -33,6 +33,7 @@ export class PgnViewer {
             chess960: undefined,            // undefined: detect from the Variant tag and the start FEN
             orientation: COLOR.white,
             boardTheme: "default",          // cm-chessboard css class
+            borderType: BORDER_TYPE.none,   // "none", "thin" or "frame" (wide border with the coordinates)
             piecesFile: "pieces/standard.svg",
             assetsUrl: "./node_modules/cm-chessboard/assets/",
             notation: "figures",            // "figures" or "letters"
@@ -288,7 +289,7 @@ export class PgnViewer {
             assetsUrl: this.props.assetsUrl,
             style: {
                 cssClass: this.props.boardTheme,
-                borderType: BORDER_TYPE.frame,
+                borderType: this.props.borderType,
                 pieces: {file: this.props.piecesFile}
             },
             extensions: extensions

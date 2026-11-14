@@ -82,6 +82,7 @@ PgnViewer.initFrom("pgn", {lazy: true, assetsUrl: "/node_modules/cm-chessboard/a
 | `chess960`         | `undefined`                              | `undefined` detects Chess960, `true` or `false` forces it                   |
 | `orientation`      | `"w"`                                    | Board orientation                                                           |
 | `boardTheme`       | `"default"`                              | cm-chessboard css class of the board                                        |
+| `borderType`       | `"none"`                                 | Board border, `"none"`, `"thin"` or `"frame"` (wide, with the coordinates) |
 | `piecesFile`       | `"pieces/standard.svg"`                  | cm-chessboard pieces sprite                                                 |
 | `assetsUrl`        | `"./node_modules/cm-chessboard/assets/"` | Where the cm-chessboard assets are                                          |
 | `notation`         | `"figures"`                              | `"figures"` (♞f3) or `"letters"`                                            |
