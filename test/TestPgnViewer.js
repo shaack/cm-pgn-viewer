@@ -87,27 +87,29 @@ describe("PgnViewer", () => {
         viewer.destroy()
     })
 
-    it("should show an arrow in the colour of the assessment, only for assessed moves", () => {
+    it("should frame assessed moves in the colour of their assessment", () => {
         const viewer = createViewer(`1. e4 e5 $2 2. Nf3 $4 Nc6 $3 *`, {language: "de"})
-        const arrows = () => JSON.stringify(viewer.board.getArrows().map(arrow => arrow.from + arrow.to + ":" + arrow.type.class))
+        const frames = () => JSON.stringify(viewer.board.getMarkers()
+            .filter(marker => marker.type.slice === "markerFrame")
+            .map(marker => marker.square + ":" + marker.type.class))
         viewer.next()
-        assert.equal(arrows(), "[]") // no assessment, no arrow
+        assert.equal(frames(), JSON.stringify(["e2:marker-frame", "e4:marker-frame"]))
         viewer.next()
-        assert.equal(arrows(), JSON.stringify(["e7e5:arrow-pgn-mistake"]))
+        assert.equal(frames(), JSON.stringify(["e7:marker-pgn-mistake", "e5:marker-pgn-mistake"]))
         viewer.next()
-        assert.equal(arrows(), JSON.stringify(["g1f3:arrow-pgn-blunder"]))
+        assert.equal(frames(), JSON.stringify(["g1:marker-pgn-blunder", "f3:marker-pgn-blunder"]))
         assert.equal(viewer.elements.live.textContent, "2. Weiß: Springer f3, grober Fehler")
         viewer.next()
-        assert.equal(arrows(), JSON.stringify(["b8c6:arrow-pgn-brilliant"]))
+        assert.equal(frames(), JSON.stringify(["b8:marker-pgn-brilliant", "c6:marker-pgn-brilliant"]))
         viewer.first()
-        assert.equal(arrows(), "[]")
+        assert.equal(frames(), "[]")
         // the same colours for the symbols in the notation
         assert.equal(viewer.elements.notation.querySelectorAll(".nag-mistake, .nag-blunder, .nag-brilliant").length, 3)
         viewer.destroy()
-        const none = createViewer(`1. e4 $1 *`, {qualityArrows: false})
-        none.next()
-        assert.equal(none.board.getArrows().length, 0)
-        none.destroy()
+        const plain = createViewer(`1. e4 $1 *`, {qualityMarkers: false})
+        plain.next()
+        assert.equal(plain.board.getMarkers(MARKER_TYPE.frame).length, 2)
+        plain.destroy()
     })
 
     it("should mark the king in check", () => {

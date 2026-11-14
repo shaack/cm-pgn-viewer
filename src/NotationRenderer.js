@@ -153,7 +153,7 @@ export class NotationRenderer {
         body.appendChild(san)
         for (const nag of move.nags || []) {
             const symbol = document.createElement("span")
-            // move assessments get the colour of their arrow on the board
+            // move assessments get the colour of their frame on the board
             symbol.className = "nag" + (MOVE_QUALITY[nag] ? " nag-" + MOVE_QUALITY[nag] : "")
             symbol.textContent = NAGS[nag] || "$" + nag
             element.appendChild(symbol)

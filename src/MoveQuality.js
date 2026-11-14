@@ -3,7 +3,7 @@
  * Repository: https://github.com/shaack/cm-pgn-viewer
  * License: MIT, see file 'LICENSE'
  *
- * The move assessments of the PGN standard ($1 to $6). They colour the arrow
+ * The move assessments of the PGN standard ($1 to $6). They colour the frame
  * of the move on the board and the symbol in the notation, see the classes
  * in assets/cm-pgn-viewer.css.
  */
@@ -16,14 +16,14 @@ export const MOVE_QUALITY = {
     6: "dubious"        // ?!
 }
 
-// cm-chessboard Arrows types, the class defines the colour
-export const MOVE_ARROW_TYPE = {
-    good: {class: "arrow-pgn-good"},
-    mistake: {class: "arrow-pgn-mistake"},
-    brilliant: {class: "arrow-pgn-brilliant"},
-    blunder: {class: "arrow-pgn-blunder"},
-    interesting: {class: "arrow-pgn-interesting"},
-    dubious: {class: "arrow-pgn-dubious"}
+// cm-chessboard marker types, the frame of MARKER_TYPE.frame, the class defines the colour
+export const MOVE_MARKER_TYPE = {
+    good: {class: "marker-pgn-good", slice: "markerFrame"},
+    mistake: {class: "marker-pgn-mistake", slice: "markerFrame"},
+    brilliant: {class: "marker-pgn-brilliant", slice: "markerFrame"},
+    blunder: {class: "marker-pgn-blunder", slice: "markerFrame"},
+    interesting: {class: "marker-pgn-interesting", slice: "markerFrame"},
+    dubious: {class: "marker-pgn-dubious", slice: "markerFrame"}
 }
 
 /** "good", "mistake", ... or undefined, if the move has no assessment */

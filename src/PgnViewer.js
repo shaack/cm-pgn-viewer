@@ -5,12 +5,11 @@
  */
 import {Chessboard, BORDER_TYPE, COLOR} from "cm-chessboard/src/Chessboard.js"
 import {Markers, MARKER_TYPE} from "cm-chessboard/src/extensions/markers/Markers.js"
-import {Arrows} from "cm-chessboard/src/extensions/arrows/Arrows.js"
 import {Accessibility} from "cm-chessboard/src/extensions/accessibility/Accessibility.js"
 import {loadPgn, readPgnFromElement, VARIANT} from "./PgnLoader.js"
 import {NotationRenderer} from "./NotationRenderer.js"
 import {createI18n, describeMove} from "./I18n.js"
-import {MOVE_ARROW_TYPE, moveQuality} from "./MoveQuality.js"
+import {MOVE_MARKER_TYPE, moveQuality} from "./MoveQuality.js"
 
 // 16x16 icons, filled with currentColor, so the viewer needs no icon font
 export const ICONS = {
@@ -47,7 +46,7 @@ export class PgnViewer {
             showControls: true,
             showPgnToggle: true,
             lastMoveMarker: MARKER_TYPE.frame, // a cm-chessboard MARKER_TYPE on from/to, null for none
-            qualityArrows: true,            // an arrow for assessed moves (!!, !, !?, ?!, ?, ??) in their colour
+            qualityMarkers: true,           // assessed moves (!!, !, !?, ?!, ?, ??) get the marker in their colour
             checkMarker: MARKER_TYPE.circleDanger, // on the king in check, null for none
             autoplayInterval: 1000,         // milliseconds per move
             initialPly: undefined,          // jump to this mainline ply on load
@@ -96,23 +95,14 @@ export class PgnViewer {
         }
         this.currentMove = move
         this.board.setPosition(move ? move.fen : this.loaded.setUpFen, animated)
-        if (this.props.qualityArrows) {
-            if (this.arrowType) {
-                this.board.removeArrows(this.arrowType)
-            }
-            const quality = moveQuality(move)
-            this.arrowType = quality ? MOVE_ARROW_TYPE[quality] : undefined
-            if (this.arrowType) {
-                this.board.addArrow(this.arrowType, move.from, move.to)
-            }
+        if (this.moveMarker) {
+            this.board.removeMarkers(this.moveMarker)
         }
-        const marker = this.props.lastMoveMarker
-        if (marker) {
-            this.board.removeMarkers(marker)
-            if (move) {
-                this.board.addMarker(marker, move.from)
-                this.board.addMarker(marker, move.to)
-            }
+        const quality = this.props.qualityMarkers ? moveQuality(move) : undefined
+        this.moveMarker = quality ? MOVE_MARKER_TYPE[quality] : this.props.lastMoveMarker
+        if (move && this.moveMarker) {
+            this.board.addMarker(this.moveMarker, move.from)
+            this.board.addMarker(this.moveMarker, move.to)
         }
         if (this.props.checkMarker) {
             this.board.removeMarkers(this.props.checkMarker)
@@ -303,7 +293,7 @@ export class PgnViewer {
     }
 
     _initBoard() {
-        const extensions = [{class: Markers}, {class: Arrows}]
+        const extensions = [{class: Markers}]
         if (this.props.accessibility) {
             extensions.push({
                 class: Accessibility, props: {

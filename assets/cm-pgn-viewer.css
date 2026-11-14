@@ -32,7 +32,7 @@
     --pgn-viewer-move-weight: 500;
     --pgn-viewer-move-number-size: 0.8em;
     --pgn-viewer-piece-icon-size: 0.85em;
-    /* move assessments: arrow on the board and symbol in the notation */
+    /* move assessments: frame on the board and symbol in the notation */
     --pgn-viewer-quality-brilliant: #1f9d3a;
     --pgn-viewer-quality-good: #4a922a;
     --pgn-viewer-quality-interesting: #2f86c9;
@@ -303,56 +303,32 @@
 
 /* --- move assessments ---------------------------------------------------- */
 
-.cm-pgn-viewer .cm-chessboard .arrow .arrow-line {
-    stroke-linecap: round;
-    opacity: 0.75;
+.cm-pgn-viewer .cm-chessboard .markers .marker[class*="marker-pgn-"] {
+    stroke-width: 2.4px;
+    opacity: 0.9;
 }
 
-.cm-pgn-viewer .cm-chessboard .arrow-pgn-brilliant .arrow-head {
-    fill: var(--pgn-viewer-quality-brilliant);
-}
-
-.cm-pgn-viewer .cm-chessboard .arrow-pgn-brilliant .arrow-line {
+.cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-brilliant {
     stroke: var(--pgn-viewer-quality-brilliant);
 }
 
-.cm-pgn-viewer .cm-chessboard .arrow-pgn-good .arrow-head {
-    fill: var(--pgn-viewer-quality-good);
-}
-
-.cm-pgn-viewer .cm-chessboard .arrow-pgn-good .arrow-line {
+.cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-good {
     stroke: var(--pgn-viewer-quality-good);
 }
 
-.cm-pgn-viewer .cm-chessboard .arrow-pgn-interesting .arrow-head {
-    fill: var(--pgn-viewer-quality-interesting);
-}
-
-.cm-pgn-viewer .cm-chessboard .arrow-pgn-interesting .arrow-line {
+.cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-interesting {
     stroke: var(--pgn-viewer-quality-interesting);
 }
 
-.cm-pgn-viewer .cm-chessboard .arrow-pgn-dubious .arrow-head {
-    fill: var(--pgn-viewer-quality-dubious);
-}
-
-.cm-pgn-viewer .cm-chessboard .arrow-pgn-dubious .arrow-line {
+.cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-dubious {
     stroke: var(--pgn-viewer-quality-dubious);
 }
 
-.cm-pgn-viewer .cm-chessboard .arrow-pgn-mistake .arrow-head {
-    fill: var(--pgn-viewer-quality-mistake);
-}
-
-.cm-pgn-viewer .cm-chessboard .arrow-pgn-mistake .arrow-line {
+.cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-mistake {
     stroke: var(--pgn-viewer-quality-mistake);
 }
 
-.cm-pgn-viewer .cm-chessboard .arrow-pgn-blunder .arrow-head {
-    fill: var(--pgn-viewer-quality-blunder);
-}
-
-.cm-pgn-viewer .cm-chessboard .arrow-pgn-blunder .arrow-line {
+.cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-blunder {
     stroke: var(--pgn-viewer-quality-blunder);
 }
 
