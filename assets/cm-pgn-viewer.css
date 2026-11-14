@@ -39,6 +39,13 @@
     --pgn-viewer-quality-dubious: #c9970f;
     --pgn-viewer-quality-mistake: #e07b24;
     --pgn-viewer-quality-blunder: #d43f3f;
+    /* the frames on the board, more saturated than in the text */
+    --pgn-viewer-marker-brilliant: var(--pgn-viewer-quality-brilliant);
+    --pgn-viewer-marker-good: var(--pgn-viewer-quality-good);
+    --pgn-viewer-marker-interesting: var(--pgn-viewer-quality-interesting);
+    --pgn-viewer-marker-dubious: #f5c400;
+    --pgn-viewer-marker-mistake: var(--pgn-viewer-quality-mistake);
+    --pgn-viewer-marker-blunder: var(--pgn-viewer-quality-blunder);
     /* the notation symbols, lighter in dark mode */
     --pgn-viewer-nag-brilliant: var(--pgn-viewer-quality-brilliant);
     --pgn-viewer-nag-good: var(--pgn-viewer-quality-good);
@@ -303,33 +310,35 @@
 
 /* --- move assessments ---------------------------------------------------- */
 
+/* a dark contour, so every colour stands out on light and dark squares */
 .cm-pgn-viewer .cm-chessboard .markers .marker[class*="marker-pgn-"] {
-    stroke-width: 2.4px;
-    opacity: 0.9;
+    stroke-width: 2.6px;
+    opacity: 1;
+    filter: drop-shadow(0 0 0.6px rgba(0, 0, 0, 0.9));
 }
 
 .cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-brilliant {
-    stroke: var(--pgn-viewer-quality-brilliant);
+    stroke: var(--pgn-viewer-marker-brilliant);
 }
 
 .cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-good {
-    stroke: var(--pgn-viewer-quality-good);
+    stroke: var(--pgn-viewer-marker-good);
 }
 
 .cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-interesting {
-    stroke: var(--pgn-viewer-quality-interesting);
+    stroke: var(--pgn-viewer-marker-interesting);
 }
 
 .cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-dubious {
-    stroke: var(--pgn-viewer-quality-dubious);
+    stroke: var(--pgn-viewer-marker-dubious);
 }
 
 .cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-mistake {
-    stroke: var(--pgn-viewer-quality-mistake);
+    stroke: var(--pgn-viewer-marker-mistake);
 }
 
 .cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-blunder {
-    stroke: var(--pgn-viewer-quality-blunder);
+    stroke: var(--pgn-viewer-marker-blunder);
 }
 
 .cm-pgn-viewer .nag-brilliant {
