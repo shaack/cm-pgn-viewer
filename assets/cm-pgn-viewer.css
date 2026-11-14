@@ -618,11 +618,22 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    gap: 0.25rem;
+}
+
+.cm-pgn-viewer .pgn-viewer-button.pgn-viewer-toggle {
+    flex: 0 0 2.75rem;
+}
+
+.cm-pgn-viewer .pgn-viewer-button.pgn-viewer-toggle[aria-pressed="true"] {
+    background: var(--pgn-viewer-active-bg);
+    color: var(--pgn-viewer-active-color);
 }
 
 /* --- comment bubble on the board ------------------------------------------- */
 
 .cm-pgn-viewer .pgn-viewer-bubble {
+    cursor: pointer;
     position: absolute;
     z-index: 10;
     width: max-content;

@@ -226,29 +226,41 @@ describe("PgnViewer", () => {
         off.destroy()
     })
 
-    it("should make the bubble small on a click on the piece, big again on the piece or the small bubble", () => {
-        const viewer = createViewer(`1. e4 {Best} e5 {Also good} *`, {initialPly: 1})
+    it("should open or close the bubble on a click only for the current move", () => {
+        const viewer = createViewer(`1. e4 {Best} e5 {Also good} 2. Nf3 {Develops} *`, {initialPly: 1})
         const bubble = viewer.bubble
+        assert.false(bubble.collapsed) // big by default
+        bubble.element.click()
+        assert.true(bubble.collapsed) // a click on the text closes it
+        bubble.element.click()
         assert.false(bubble.collapsed)
-        bubble.element.click()
-        assert.false(bubble.collapsed) // a click on the big bubble does nothing
         clickSquare(viewer, "e4")
-        assert.true(bubble.collapsed)
-        assert.true(bubble.element.classList.contains("collapsed"))
-        bubble.element.click()
-        assert.false(bubble.collapsed) // the small bubble opens it
-        clickSquare(viewer, "e4")
-        // stays small on the next move
+        assert.true(bubble.collapsed) // a click on the piece as well
         viewer.next()
-        assert.true(bubble.collapsed)
+        assert.false(bubble.collapsed) // only for that move
         assert.equal(bubble.square, "e5")
-        // a click on the piece on e5 makes it big
-        clickSquare(viewer, "e5")
-        assert.false(bubble.collapsed)
-        // and small again
-        clickSquare(viewer, "e5")
-        assert.true(bubble.collapsed)
         viewer.destroy()
+    })
+
+    it("should switch between big and small bubbles with the button next to Show PGN", () => {
+        const viewer = createViewer(`1. e4 {Best} e5 {Also good} 2. Nf3 {Develops} *`, {initialPly: 1})
+        const toggle = viewer.context.querySelector("[data-action=toggleBubbles]")
+        assert.equal(toggle.getAttribute("aria-pressed"), "true")
+        toggle.click()
+        assert.equal(toggle.getAttribute("aria-pressed"), "false")
+        assert.true(viewer.bubble.collapsed)
+        clickSquare(viewer, "e4")
+        assert.false(viewer.bubble.collapsed) // opened for this move
+        viewer.next()
+        assert.true(viewer.bubble.collapsed) // small again on the next move
+        viewer.destroy()
+        const small = createViewer(`1. e4 {Best} *`, {initialPly: 1, bubbleExpanded: false})
+        assert.true(small.bubble.collapsed)
+        assert.equal(small.context.querySelector("[data-action=toggleBubbles]").getAttribute("aria-pressed"), "false")
+        small.destroy()
+        const none = createViewer(`1. e4 {Best} *`, {commentBubbles: false})
+        assert.equal(none.context.querySelector("[data-action=toggleBubbles]"), null)
+        none.destroy()
     })
 
     it("should place the bubble where it hides the fewest pieces", () => {

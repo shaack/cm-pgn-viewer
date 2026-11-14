@@ -7,10 +7,10 @@
  * pointing to the square the move went to. Above or below the square, where
  * it hides the fewest pieces, always inside the board.
  *
- * Big by default. A click on the piece of the move makes it small, a round
- * speech icon at the corner of the square, a click on the piece or on the
- * small bubble big again. A click on the big bubble does nothing, so its text
- * can be selected. The state stays while going through the game.
+ * Big or small (a round speech icon at the corner of the square) as set with
+ * `collapsedByDefault`. A click on the bubble or on the piece of the move
+ * switches between big and small, only for this move: the next move starts
+ * with the default again.
  */
 const GAP = 4 // between the bubble and the square, in px
 const FILES = "abcdefgh"
@@ -23,6 +23,7 @@ export class CommentBubble {
         this.chessboard = chessboard
         this.square = undefined
         this.collapsed = false
+        this.collapsedByDefault = false
         this.element = document.createElement("div")
         this.element.className = "pgn-viewer-bubble"
         this.element.setAttribute("aria-hidden", "true") // the comment is in the notation
@@ -37,10 +38,8 @@ export class CommentBubble {
         this.element.appendChild(this.icon)
         boardElement.appendChild(this.element)
         this.clickHandler = (event) => {
-            if (this.isOverSquare(event)) {
+            if (this.isOverSquare(event) || this.element.contains(event.target)) {
                 this.setCollapsed(!this.collapsed)
-            } else if (this.collapsed && this.element.contains(event.target)) {
-                this.setCollapsed(false)
             }
         }
         // a pointer cursor over the piece with the comment
@@ -67,10 +66,19 @@ export class CommentBubble {
         }
         this.square = square
         this.fromSquare = fromSquare
+        // a click opens or closes the bubble only for one move
+        this.collapsed = this.collapsedByDefault
+        this.element.classList.toggle("collapsed", this.collapsed)
         this.text.textContent = text
         this.element.hidden = false
         this.text.scrollTop = 0
         this.position()
+    }
+
+    /** Big or small for every move from now on, and for the current one. */
+    setCollapsedByDefault(collapsed) {
+        this.collapsedByDefault = !!collapsed
+        this.setCollapsed(collapsed)
     }
 
     setCollapsed(collapsed) {

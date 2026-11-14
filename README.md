@@ -14,7 +14,7 @@ It is built on [cm-chessboard](https://github.com/shaack/cm-chessboard) for the 
 - The move shown is framed on the board, the target of a capture gets the capture marker (bevel), for an assessed move (`!!`, `!`, `!?`, `?!`, `?`, `??`) the frame has the colour of the assessment, the symbols in the notation the same colours
 - A king in check gets a red circle
 - The captured pieces of both sides and the material advantage, right below the board, compared with the start position of the game
-- The comment of a move as a speech bubble on the board, pointing to the piece and placed where it hides the fewest pieces. A click on the piece makes it small, a click on the piece or the small bubble big again
+- The comment of a move as a speech bubble on the board, pointing to the piece and placed where it hides the fewest pieces. A click on the bubble or the piece closes or opens it for the current move, a switch next to "Show PGN" sets whether comments start open or closed
 - Click a move, use the buttons (play, start, back, forward, end, flip) or the keys Left, Right, Home and End
 - Move numbers from the FEN, so a game from a position starts at the right move, also with Black to move
 - Chess960, detected from the `Variant` tag or from the start FEN, castling with Chess960 rules
@@ -97,7 +97,7 @@ PgnViewer.initFrom("pgn", {lazy: true, assetsUrl: "/node_modules/cm-chessboard/a
 | `showControls`     | `true`                                   | The button row                                                              |
 | `showPgnToggle`    | `true`                                   | "Show PGN", opens the PGN highlighted in a modal dialog                     |
 | `commentBubbles`   | `true`                                   | Show the comment of a move as speech bubble on the board                    |
-| `bubbleExpanded`   | `true`                                   | Start with the big bubble, `false` for the small one                        |
+| `bubbleExpanded`   | `true`                                   | Comments start in big bubbles, `false`: small ones. The switch next to "Show PGN" changes it |
 | `lastMoveMarker`   | `MARKER_TYPE.frame`                      | Marker on both squares of the move shown, any cm-chessboard `MARKER_TYPE` (re-exported by `PgnViewer.js`), `null` for none |
 | `captureMarker`    | `MARKER_TYPE.bevel`                      | Marker on the target square of a capture, `null` for the frame              |
 | `showMaterial`     | `true`                                   | Captured pieces and material advantage below the board                      |
@@ -136,7 +136,7 @@ pre.innerHTML = highlightPgn(pgn)
 
 ## Methods
 
-`goToMove(move)`, `first()`, `previous()`, `next()`, `last()`, `flip()`, `play()`, `stop()`, `showPgn()`, `setCommentBubbles(on)`, `destroy()`. `next()` and `last()` follow the line of the move shown, so inside a variation they stay in the variation.
+`goToMove(move)`, `first()`, `previous()`, `next()`, `last()`, `flip()`, `play()`, `stop()`, `showPgn()`, `setCommentBubbles(on)`, `setBubblesExpanded(expanded)`, `destroy()`. `next()` and `last()` follow the line of the move shown, so inside a variation they stay in the variation.
 
 ## Layout and theming
 
