@@ -24,14 +24,14 @@ export class NotationRenderer {
 
     /**
      * @param props notation: "icons" (SVG piece icons), "unicode" or "letters",
-     *        iconStyle: "solid" or "regular" for "icons",
+     *        iconStyle: "auto" (white moves regular, black moves solid), "solid" or "regular",
      *        pieceLetters: the letters for "letters", e.g. {K: "K", Q: "D", R: "T", B: "L", N: "S"},
      *        pieceNames: names for screen readers, e.g. {k: "king", n: "knight"}
      */
     constructor(props = {}) {
         this.props = {
             notation: "icons",
-            iconStyle: "solid",
+            iconStyle: "auto",
             pieceLetters: {K: "K", Q: "Q", R: "R", B: "B", N: "N"},
             pieceNames: {},
             ...props
@@ -81,6 +81,13 @@ export class NotationRenderer {
 
     // --- internals -------------------------------------------------------
 
+    _iconStyle(move) {
+        if (this.props.iconStyle === "auto") {
+            return move.color === "w" ? "regular" : "solid"
+        }
+        return this.props.iconStyle
+    }
+
     _renderLine(parent, moves) {
         let needsNumber = true // at the start of a line and after comments or variations
         for (const move of moves) {
@@ -107,7 +114,7 @@ export class NotationRenderer {
 
     _moveElement(move, needsNumber) {
         const element = document.createElement("span")
-        element.className = "move"
+        element.className = "move " + (move.color === "w" ? "white" : "black")
         element.dataset.moveIndex = String(this.moves.push(move) - 1)
         this.moveToElement.set(move, element)
         if (move.color === "w" || needsNumber) {
@@ -124,7 +131,7 @@ export class NotationRenderer {
                 if (/^[KQRBN]$/.test(part)) {
                     const name = this.props.pieceNames[part.toLowerCase()] || this.props.pieceLetters[part]
                     san.insertAdjacentHTML("beforeend",
-                        pieceIcon(part, this.props.iconStyle, {class: "piece-icon", "aria-label": name}))
+                        pieceIcon(part, this._iconStyle(move), {class: "piece-icon", "aria-label": name}))
                 } else if (part) {
                     san.appendChild(document.createTextNode(part))
                 }

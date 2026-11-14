@@ -57,8 +57,13 @@ describe("NotationRenderer", () => {
         assert.equal(icons[0].getAttribute("aria-label"), "knight")
         assert.equal(icons[0].nextSibling.textContent, "f3")
         assert.equal(withIcons.querySelector(".move").textContent, "1.f3") // the icon has no text
-        const regular = render(`1. Nf3 *`, {iconStyle: "regular"})
-        assert.equal(regular.querySelector("svg.piece-icon").getAttribute("viewBox"), "0 -32 448 544")
+        // "auto": white moves with regular, black moves with solid icons
+        assert.true(withIcons.querySelectorAll(".move")[0].classList.contains("white"))
+        assert.true(withIcons.querySelectorAll(".move")[5].classList.contains("black"))
+        assert.equal(icons[0].getAttribute("viewBox"), "0 -32 448 544") // regular knight
+        assert.equal(icons[2].getAttribute("viewBox"), "0 -32 384 544") // solid knight, Nc6
+        const solid = render(`1. Nf3 *`, {iconStyle: "solid"})
+        assert.equal(solid.querySelector("svg.piece-icon").getAttribute("viewBox"), "0 -32 384 544")
         const unicode = render(`1. Nf3 *`, {notation: "unicode"})
         assert.equal(unicode.querySelector(".san").textContent, "\u265E\uFE0Ef3")
         const letters = render(`1. Nf3 d5 2. g3 c5 3. Bg2 Nc6 4. O-O *`,

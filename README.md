@@ -86,7 +86,7 @@ PgnViewer.initFrom("pgn", {lazy: true, assetsUrl: "/node_modules/cm-chessboard/a
 | `piecesFile`       | `"pieces/standard.svg"`                  | cm-chessboard pieces sprite                                                 |
 | `assetsUrl`        | `"./node_modules/cm-chessboard/assets/"` | Where the cm-chessboard assets are                                          |
 | `notation`         | `"icons"`                                | `"icons"` (SVG piece icons), `"unicode"` (♞f3) or `"letters"` (Nf3)         |
-| `iconStyle`        | `"solid"`                                | `"solid"` or `"regular"` piece icons for `"icons"`                          |
+| `iconStyle`        | `"auto"`                                 | `"auto"` (white moves regular, black moves solid), `"solid"` or `"regular"` |
 | `pieceLetters`     | `{K: "K", Q: "Q", R: "R", B: "B", N: "N"}` | The letters for `notation: "letters"`                                     |
 | `showHeaders`      | `true`                                   | Players, event, site, round, date, ECO, result                              |
 | `showControls`     | `true`                                   | The button row                                                              |
