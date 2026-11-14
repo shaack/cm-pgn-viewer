@@ -8,8 +8,8 @@
  * the upper ranks, always inside the board.
  *
  * Small, a round speech icon at the corner of the square, by default. A click
- * on it or on the square makes it big, a click on the big bubble small again.
- * The state stays while going through the game.
+ * on it or on the piece of the move toggles between small and big. The state
+ * stays while going through the game.
  */
 const GAP = 4 // between the bubble and the square, in px
 const FILES = "abcdefgh"
@@ -36,13 +36,16 @@ export class CommentBubble {
         this.element.appendChild(this.icon)
         boardElement.appendChild(this.element)
         this.clickHandler = (event) => {
-            if (this.element.contains(event.target)) {
+            if (this.element.contains(event.target) || this.isOverSquare(event)) {
                 this.setCollapsed(!this.collapsed)
-            } else if (this.collapsed && this.square && this.squareAt(event) === this.square) {
-                this.setCollapsed(false)
             }
         }
+        // a pointer cursor over the piece with the comment
+        this.moveHandler = (event) => {
+            this.boardElement.style.cursor = this.isOverSquare(event) ? "pointer" : ""
+        }
         boardElement.addEventListener("click", this.clickHandler)
+        boardElement.addEventListener("pointermove", this.moveHandler)
         if (typeof ResizeObserver !== "undefined") {
             // cm-chessboard redraws in a timeout after a resize, position after it
             this.resizeObserver = new ResizeObserver(() => setTimeout(() => this.position()))
@@ -69,6 +72,10 @@ export class CommentBubble {
         this.position()
     }
 
+    isOverSquare(event) {
+        return !this.element.hidden && !!this.square && this.squareAt(event) === this.square
+    }
+
     /** The square under a pointer event, respecting the orientation. */
     squareAt(event) {
         const view = this.chessboard.view
@@ -86,6 +93,7 @@ export class CommentBubble {
     hide() {
         this.square = undefined
         this.element.hidden = true
+        this.boardElement.style.cursor = ""
     }
 
     position() {
@@ -133,6 +141,8 @@ export class CommentBubble {
             this.resizeObserver.disconnect()
         }
         this.boardElement.removeEventListener("click", this.clickHandler)
+        this.boardElement.removeEventListener("pointermove", this.moveHandler)
+        this.boardElement.style.cursor = ""
         this.element.remove()
     }
 }

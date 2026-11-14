@@ -14,6 +14,17 @@ function createViewer(pgn, props = {}) {
     return new PgnViewer(container, {pgn, assetsUrl, ...props})
 }
 
+function clickSquare(viewer, square) {
+    const view = viewer.board.view
+    const rect = viewer.elements.board.getBoundingClientRect()
+    const point = view.squareToPoint(square)
+    viewer.elements.board.dispatchEvent(new MouseEvent("click", {
+        bubbles: true,
+        clientX: rect.left + point.x + view.squareWidth / 2,
+        clientY: rect.top + point.y + view.squareHeight / 2
+    }))
+}
+
 const PGN = `[White "Haack, Stefan"]
 [Black "Maier, Karsten"]
 [Event "Test"]
@@ -194,15 +205,11 @@ describe("PgnViewer", () => {
         assert.true(bubble.collapsed)
         assert.equal(bubble.square, "e5")
         // a click on the piece on e5 makes it big
-        const view = viewer.board.view
-        const rect = viewer.elements.board.getBoundingClientRect()
-        const point = view.squareToPoint("e5")
-        viewer.elements.board.dispatchEvent(new MouseEvent("click", {
-            bubbles: true,
-            clientX: rect.left + point.x + view.squareWidth / 2,
-            clientY: rect.top + point.y + view.squareHeight / 2
-        }))
+        clickSquare(viewer, "e5")
         assert.false(bubble.collapsed)
+        // and small again
+        clickSquare(viewer, "e5")
+        assert.true(bubble.collapsed)
         viewer.destroy()
     })
 

@@ -13,7 +13,7 @@ It is built on [cm-chessboard](https://github.com/shaack/cm-chessboard) for the 
 - White and black moves look different: Black gets the darker piece icon and a darker tone
 - The move shown is framed on the board, for an assessed move (`!!`, `!`, `!?`, `?!`, `?`, `??`) the frame has the colour of the assessment, the symbols in the notation the same colours
 - A king in check gets a red circle
-- A move with a comment gets a small speech bubble at its square on the board. A click on it or on the piece shows the comment in a big bubble, a click on that makes it small again
+- A move with a comment gets a small speech bubble at its square on the board. A click on it or on the piece toggles between the small bubble and the big one with the comment
 - Click a move, use the buttons (play, start, back, forward, end, flip) or the keys Left, Right, Home and End
 - Move numbers from the FEN, so a game from a position starts at the right move, also with Black to move
 - Chess960, detected from the `Variant` tag or from the start FEN, castling with Chess960 rules
