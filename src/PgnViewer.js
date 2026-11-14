@@ -12,7 +12,7 @@ import {createI18n, describeMove} from "./I18n.js"
 import {highlightPgn} from "./PgnHighlighter.js"
 import {CommentBubble, moveCommentText} from "./CommentBubble.js"
 
-import {MOVE_MARKER_TYPE, moveQuality} from "./MoveQuality.js"
+import {MOVE_MARKER_TYPE, MOVE_CAPTURE_MARKER_TYPE, moveQuality} from "./MoveQuality.js"
 
 // 16x16 icons, filled with currentColor, so the viewer needs no icon font
 export const ICONS = {
@@ -53,7 +53,8 @@ export class PgnViewer {
             commentBubbles: true,           // the comment of a move as speech bubble on the board
             bubbleExpanded: true,           // start with the big bubble, otherwise the small one
             lastMoveMarker: MARKER_TYPE.frame, // a cm-chessboard MARKER_TYPE on from/to, null for none
-            qualityMarkers: true,           // assessed moves (!!, !, !?, ?!, ?, ??) get the marker in their colour
+            captureMarker: MARKER_TYPE.bevel, // on the target square of a capture, null for the frame
+            qualityMarkers: true,           // assessed moves (!!, !, !?, ?!, ?, ??) get the markers in their colour
             checkMarker: MARKER_TYPE.circleDanger, // on the king in check, null for none
             autoplayInterval: 1000,         // milliseconds per move
             initialPly: undefined,          // jump to this mainline ply on load
@@ -103,15 +104,7 @@ export class PgnViewer {
         }
         this.currentMove = move
         this.board.setPosition(move ? move.fen : this.loaded.setUpFen, animated)
-        if (this.moveMarker) {
-            this.board.removeMarkers(this.moveMarker)
-        }
-        const quality = this.props.qualityMarkers ? moveQuality(move) : undefined
-        this.moveMarker = quality ? MOVE_MARKER_TYPE[quality] : this.props.lastMoveMarker
-        if (move && this.moveMarker) {
-            this.board.addMarker(this.moveMarker, move.from)
-            this.board.addMarker(this.moveMarker, move.to)
-        }
+        this._markMove(move)
         if (this.props.checkMarker) {
             this.board.removeMarkers(this.props.checkMarker)
             if (move && move.inCheck) {
@@ -423,6 +416,33 @@ export class PgnViewer {
                 button.textContent = this.t.copied
                 setTimeout(() => button.textContent = this.t.copy, 2000)
             })
+        }
+    }
+
+    /**
+     * The frame on both squares of the move, the capture marker (bevel) on the
+     * target of a capture. Assessed moves get both in the colour of the assessment.
+     */
+    _markMove(move) {
+        for (const marker of this.moveMarkers || []) {
+            this.board.removeMarkers(marker)
+        }
+        this.moveMarkers = []
+        if (!move) {
+            return
+        }
+        const quality = this.props.qualityMarkers ? moveQuality(move) : undefined
+        const frame = quality ? MOVE_MARKER_TYPE[quality] : this.props.lastMoveMarker
+        const capture = move.captured && this.props.captureMarker
+            ? (quality ? MOVE_CAPTURE_MARKER_TYPE[quality] : this.props.captureMarker)
+            : frame
+        if (frame) {
+            this.board.addMarker(frame, move.from)
+            this.moveMarkers.push(frame)
+        }
+        if (capture) {
+            this.board.addMarker(capture, move.to)
+            this.moveMarkers.push(capture)
         }
     }
 

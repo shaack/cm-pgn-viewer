@@ -26,6 +26,16 @@ export const MOVE_MARKER_TYPE = {
     dubious: {class: "marker-pgn-dubious", slice: "markerFrame"}
 }
 
+// the same for the target square of a capture, the corners of MARKER_TYPE.bevel
+export const MOVE_CAPTURE_MARKER_TYPE = {
+    good: {class: "marker-pgn-good marker-pgn-capture", slice: "markerBevel"},
+    mistake: {class: "marker-pgn-mistake marker-pgn-capture", slice: "markerBevel"},
+    brilliant: {class: "marker-pgn-brilliant marker-pgn-capture", slice: "markerBevel"},
+    blunder: {class: "marker-pgn-blunder marker-pgn-capture", slice: "markerBevel"},
+    interesting: {class: "marker-pgn-interesting marker-pgn-capture", slice: "markerBevel"},
+    dubious: {class: "marker-pgn-dubious marker-pgn-capture", slice: "markerBevel"}
+}
+
 /** "good", "mistake", ... or undefined, if the move has no assessment */
 export function moveQuality(move) {
     for (const nag of (move && move.nags) || []) {

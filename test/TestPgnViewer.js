@@ -123,6 +123,25 @@ describe("PgnViewer", () => {
         plain.destroy()
     })
 
+    it("should mark the target of a capture with the capture marker", () => {
+        const viewer = createViewer(`1. e4 d5 2. exd5 $2 Qxd5 3. a4 e5 4. a5 b5 5. axb6 *`)
+        const markers = () => JSON.stringify(viewer.board.getMarkers().map(marker => marker.square + ":" + marker.type.class))
+        viewer.goToMove(viewer.history[2], false) // exd5?
+        assert.equal(markers(), JSON.stringify(["e4:marker-pgn-mistake", "d5:marker-pgn-mistake marker-pgn-capture"]))
+        viewer.next() // Qxd5
+        assert.equal(markers(), JSON.stringify(["d8:marker-frame", "d5:marker-bevel"]))
+        viewer.next() // a4, no capture
+        assert.equal(markers(), JSON.stringify(["a2:marker-frame", "a4:marker-frame"]))
+        viewer.last() // axb6 en passant
+        assert.equal(markers(), JSON.stringify(["a5:marker-frame", "b6:marker-bevel"]))
+        viewer.destroy()
+        const frames = createViewer(`1. e4 d5 2. exd5 *`, {captureMarker: null})
+        frames.last()
+        assert.equal(JSON.stringify(frames.board.getMarkers().map(marker => marker.square + ":" + marker.type.class)),
+            JSON.stringify(["e4:marker-frame", "d5:marker-frame"]))
+        frames.destroy()
+    })
+
     it("should mark the king in check", () => {
         const viewer = createViewer(`1. e4 f5 2. Qh5+ g6 *`)
         const marked = () => JSON.stringify(viewer.board.getMarkers(MARKER_TYPE.circleDanger).map(marker => marker.square))

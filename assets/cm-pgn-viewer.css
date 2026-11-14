@@ -349,6 +349,36 @@
     filter: drop-shadow(0 0 0.35px rgba(0, 0, 0, 0.9));
 }
 
+/* the capture marker (bevel corners) is filled, not stroked */
+.cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-capture {
+    stroke: none;
+    opacity: 0.9;
+}
+
+.cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-brilliant.marker-pgn-capture {
+    fill: var(--pgn-viewer-marker-brilliant);
+}
+
+.cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-good.marker-pgn-capture {
+    fill: var(--pgn-viewer-marker-good);
+}
+
+.cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-interesting.marker-pgn-capture {
+    fill: var(--pgn-viewer-marker-interesting);
+}
+
+.cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-dubious.marker-pgn-capture {
+    fill: var(--pgn-viewer-marker-dubious);
+}
+
+.cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-mistake.marker-pgn-capture {
+    fill: var(--pgn-viewer-marker-mistake);
+}
+
+.cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-blunder.marker-pgn-capture {
+    fill: var(--pgn-viewer-marker-blunder);
+}
+
 .cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-brilliant {
     stroke: var(--pgn-viewer-marker-brilliant);
 }
