@@ -2,13 +2,14 @@
  * cm-pgn-viewer, https://github.com/shaack/cm-pgn-viewer
  *
  * The layout follows the width of the container, not of the window
- * (container queries). Narrow: notation below the board. From 32rem: board
- * and notation side by side, the notation as high as the board.
+ * (container queries). Narrow: notation below the board. From 36rem: board
+ * and notation side by side in the golden ratio, the notation as high as the board.
  * Theme it with the custom properties below.
  */
 .cm-pgn-viewer {
     --pgn-viewer-gap: 1rem;
     --pgn-viewer-board-max: 30rem;
+    --pgn-viewer-board-ratio: 0.618; /* golden ratio: board 61.8 %, notation 38.2 % */
     --pgn-viewer-muted: rgba(0, 0, 0, 0.6);
     --pgn-viewer-notation-bg: rgba(0, 0, 0, 0.03);
     --pgn-viewer-variation-bg: rgba(0, 0, 0, 0.07);
@@ -198,22 +199,19 @@
     height: max(8rem, 45cqi);
 }
 
-/* side by side: the notation fills the height of the board row */
-@container pgn-viewer (min-width: 32rem) {
+/* side by side: board and notation in the golden ratio, the notation fills
+   the height of the board row. From --pgn-viewer-board-max on the board stops
+   growing and the notation takes the rest. */
+@container pgn-viewer (min-width: 36rem) {
     .cm-pgn-viewer .pgn-viewer-main {
-        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-columns:
+            minmax(0, min(calc((100% - var(--pgn-viewer-gap)) * var(--pgn-viewer-board-ratio)), var(--pgn-viewer-board-max)))
+            minmax(0, 1fr);
         grid-template-areas: "board notation" "controls source";
     }
 
     .cm-pgn-viewer .pgn-viewer-notation-area {
         height: auto;
-    }
-}
-
-/* wide container: the board stops growing, the notation takes the rest */
-@container pgn-viewer (min-width: 62rem) {
-    .cm-pgn-viewer .pgn-viewer-main {
-        grid-template-columns: minmax(0, var(--pgn-viewer-board-max)) minmax(0, 1fr);
     }
 }
 
