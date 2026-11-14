@@ -239,7 +239,7 @@
 }
 
 .cm-pgn-viewer .move-number {
-    margin-right: 0.15em;
+    margin-right: 0.3em;
     font-size: var(--pgn-viewer-move-number-size);
     font-weight: 400;
     opacity: 0.75;
@@ -247,7 +247,7 @@
 
 /* space before a move number, outside of the highlight */
 .cm-pgn-viewer .move.numbered {
-    margin-left: 0.4em;
+    margin-left: 0.6em;
 }
 
 /* but not at the start of the notation or of a variation */
