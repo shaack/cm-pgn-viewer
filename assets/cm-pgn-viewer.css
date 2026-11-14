@@ -3,13 +3,14 @@
  *
  * The layout follows the width of the container, not of the window
  * (container queries). Narrow: notation below the board. From 36rem: board
- * and notation side by side in the golden ratio, the notation as high as the board.
+ * and notation side by side, 50/50 growing to the golden ratio at 60rem, the
+ * notation as high as the board.
  * Theme it with the custom properties below.
  */
 .cm-pgn-viewer {
     --pgn-viewer-gap: 1rem;
-    --pgn-viewer-board-max: 30rem;
-    --pgn-viewer-board-ratio: 0.618; /* golden ratio: board 61.8 %, notation 38.2 % */
+    --pgn-viewer-board-max: 40rem;
+    --pgn-viewer-board-ratio: 0.618; /* wide containers: golden ratio, board 61.8 %, notation 38.2 % */
     --pgn-viewer-muted: rgba(0, 0, 0, 0.6);
     --pgn-viewer-notation-bg: rgba(0, 0, 0, 0.03);
     --pgn-viewer-variation-bg: rgba(0, 0, 0, 0.07);
@@ -199,13 +200,19 @@
     height: max(8rem, 45cqi);
 }
 
-/* side by side: board and notation in the golden ratio, the notation fills
-   the height of the board row. From --pgn-viewer-board-max on the board stops
-   growing and the notation takes the rest. */
+/* side by side: 50/50 up to a container width of 40rem, from there the board
+   grows evenly to the golden ratio (61.8 %) at 60rem, without a jump. The
+   notation fills the height of the board row, the board stops growing at
+   --pgn-viewer-board-max. 84.8cqi - 14.42rem is the line through 50 % of
+   40rem and 61.8 % of 60rem, both minus the gap of 1rem. */
 @container pgn-viewer (min-width: 36rem) {
     .cm-pgn-viewer .pgn-viewer-main {
         grid-template-columns:
-            minmax(0, min(calc((100% - var(--pgn-viewer-gap)) * var(--pgn-viewer-board-ratio)), var(--pgn-viewer-board-max)))
+            minmax(0, min(clamp(
+                calc((100% - var(--pgn-viewer-gap)) * 0.5),
+                calc(84.8cqi - 14.42rem),
+                calc((100% - var(--pgn-viewer-gap)) * var(--pgn-viewer-board-ratio))
+            ), var(--pgn-viewer-board-max)))
             minmax(0, 1fr);
         grid-template-areas: "board notation" "controls source";
     }

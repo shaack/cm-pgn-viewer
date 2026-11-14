@@ -134,7 +134,7 @@ pre.innerHTML = highlightPgn(pgn)
 
 ## Layout and theming
 
-The viewer is a CSS container. Below a container width of 36rem the notation is placed below the board. From 36rem board and notation stand side by side in the golden ratio (`--pgn-viewer-board-ratio`, 0.618), the notation exactly as high as the board. The board stops growing at `--pgn-viewer-board-max`, the notation takes the rest. Colours, font weights, sizes, radius and gap are custom properties on `.cm-pgn-viewer`, see `assets/cm-pgn-viewer.css`. Dark mode follows `prefers-color-scheme` and `data-bs-theme="dark"`.
+The viewer is a CSS container. Below a container width of 36rem the notation is placed below the board. From 36rem board and notation stand side by side, the notation exactly as high as the board. Up to 40rem they share the width 50/50, from there the board grows evenly to the golden ratio at 60rem (`--pgn-viewer-board-ratio`, 0.618). The board stops growing at `--pgn-viewer-board-max` (40rem), the notation takes the rest. Colours, font weights, sizes, radius and gap are custom properties on `.cm-pgn-viewer`, see `assets/cm-pgn-viewer.css`. Dark mode follows `prefers-color-scheme` and `data-bs-theme="dark"`.
 
 ## Demo and tests
 
