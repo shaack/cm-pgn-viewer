@@ -11,7 +11,7 @@ const TOP = -32
 const HEIGHT = 544
 
 // piece: [width of the icon, path]
-export const FIGURE_ICONS = {
+export const PIECE_ICONS = {
     solid: {
         k: [448, "M224-32c17.7 0 32 14.3 32 32l0 32 32 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0 0 64 153.8 0c21.1 0 38.2 17.1 38.2 38.2 0 6.4-1.6 12.7-4.7 18.3L352 384 408.2 454.3c5 6.3 7.8 14.1 7.8 22.2 0 19.6-15.9 35.5-35.5 35.5L67.5 512c-19.6 0-35.5-15.9-35.5-35.5 0-8.1 2.7-15.9 7.8-22.2L96 384 4.7 216.6C1.6 210.9 0 204.6 0 198.2 0 177.1 17.1 160 38.2 160l153.8 0 0-64-32 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l32 0 0-32c0-17.7 14.3-32 32-32z"],
         q: [512, "M256 80a48 48 0 1 0 0-96 48 48 0 1 0 0 96zM5.5 185L128 384 71.8 454.3c-5 6.3-7.8 14.1-7.8 22.2 0 19.6 15.9 35.5 35.5 35.5l312.9 0c19.6 0 35.5-15.9 35.5-35.5 0-8.1-2.7-15.9-7.8-22.2L384 384 506.5 185c3.6-5.9 5.5-12.7 5.5-19.6l0-.6c0-20.3-16.5-36.8-36.8-36.8-7.3 0-14.4 2.2-20.4 6.2l-16.9 11.3c-12.7 8.5-29.6 6.8-40.4-4l-34.1-34.1C356.1 100.1 346.2 96 336 96s-20.1 4.1-27.3 11.3l-30.1 30.1c-12.5 12.5-32.8 12.5-45.3 0l-30.1-30.1C196.1 100.1 186.2 96 176 96s-20.1 4.1-27.3 11.3l-34.1 34.1c-10.8 10.8-27.7 12.5-40.4 4L57.3 134.2c-6.1-4-13.2-6.2-20.4-6.2-20.3 0-36.8 16.5-36.8 36.8l0 .6c0 6.9 1.9 13.7 5.5 19.6z"],
@@ -34,11 +34,11 @@ export const FIGURE_ICONS = {
  * The SVG markup of a piece, filled with currentColor.
  * @param piece "k", "q", "r", "b", "n" or "p", also uppercase
  * @param style "solid" or "regular"
- * @param attributes more attributes, e.g. {class: "figure", "aria-label": "knight"}.
+ * @param attributes more attributes, e.g. {class: "piece-icon", "aria-label": "knight"}.
  *        Without an aria-label the icon is aria-hidden.
  */
-export function figureIcon(piece, style = "solid", attributes = {}) {
-    const icon = (FIGURE_ICONS[style] || FIGURE_ICONS.solid)[String(piece).toLowerCase()]
+export function pieceIcon(piece, style = "solid", attributes = {}) {
+    const icon = (PIECE_ICONS[style] || PIECE_ICONS.solid)[String(piece).toLowerCase()]
     if (!icon) {
         return ""
     }

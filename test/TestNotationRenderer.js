@@ -50,15 +50,15 @@ describe("NotationRenderer", () => {
         assertTexts(container.querySelectorAll(".nag"), ["!", "?!"])
     })
 
-    it("should format pieces as SVG figures, unicode or configurable letters", () => {
-        const figures = render(`1. Nf3 d5 2. g3 c5 3. Bg2 Nc6 4. O-O e5 *`, {pieceNames: {n: "knight", b: "bishop"}})
-        const icons = figures.querySelectorAll(".move svg.figure")
+    it("should format pieces as SVG icons, unicode or configurable letters", () => {
+        const withIcons = render(`1. Nf3 d5 2. g3 c5 3. Bg2 Nc6 4. O-O e5 *`, {pieceNames: {n: "knight", b: "bishop"}})
+        const icons = withIcons.querySelectorAll(".move svg.piece-icon")
         assert.equal(icons.length, 3)
         assert.equal(icons[0].getAttribute("aria-label"), "knight")
         assert.equal(icons[0].nextSibling.textContent, "f3")
-        assert.equal(figures.querySelector(".move").textContent, "1.f3") // the icon has no text
-        const regular = render(`1. Nf3 *`, {figureStyle: "regular"})
-        assert.equal(regular.querySelector("svg.figure").getAttribute("viewBox"), "0 -32 448 544")
+        assert.equal(withIcons.querySelector(".move").textContent, "1.f3") // the icon has no text
+        const regular = render(`1. Nf3 *`, {iconStyle: "regular"})
+        assert.equal(regular.querySelector("svg.piece-icon").getAttribute("viewBox"), "0 -32 448 544")
         const unicode = render(`1. Nf3 *`, {notation: "unicode"})
         assert.equal(unicode.querySelector(".san").textContent, "\u265E\uFE0Ef3")
         const letters = render(`1. Nf3 d5 2. g3 c5 3. Bg2 Nc6 4. O-O *`,

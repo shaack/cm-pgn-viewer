@@ -85,8 +85,8 @@ PgnViewer.initFrom("pgn", {lazy: true, assetsUrl: "/node_modules/cm-chessboard/a
 | `borderType`       | `"none"`                                 | Board border, `"none"`, `"thin"` or `"frame"` (wide, with the coordinates) |
 | `piecesFile`       | `"pieces/standard.svg"`                  | cm-chessboard pieces sprite                                                 |
 | `assetsUrl`        | `"./node_modules/cm-chessboard/assets/"` | Where the cm-chessboard assets are                                          |
-| `notation`         | `"figures"`                              | `"figures"` (SVG icons), `"unicode"` (♞f3) or `"letters"` (Nf3)             |
-| `figureStyle`      | `"solid"`                                | `"solid"` or `"regular"` icons for `"figures"`                              |
+| `notation`         | `"icons"`                                | `"icons"` (SVG piece icons), `"unicode"` (♞f3) or `"letters"` (Nf3)         |
+| `iconStyle`        | `"solid"`                                | `"solid"` or `"regular"` piece icons for `"icons"`                          |
 | `pieceLetters`     | `{K: "K", Q: "Q", R: "R", B: "B", N: "N"}` | The letters for `notation: "letters"`                                     |
 | `showHeaders`      | `true`                                   | Players, event, site, round, date, ECO, result                              |
 | `showControls`     | `true`                                   | The button row                                                              |
@@ -102,13 +102,13 @@ PgnViewer.initFrom("pgn", {lazy: true, assetsUrl: "/node_modules/cm-chessboard/a
 
 ## Chess piece icons
 
-`src/FigureIcons.js` is a small icon set of the six chess pieces in two styles, usable without the viewer. The icons share one baseline and scale, and they are filled with `currentColor`.
+`src/PieceIcons.js` is a small icon set of the six chess pieces in two styles, usable without the viewer. The icons share one baseline and scale, and they are filled with `currentColor`.
 
 ```js
-import {figureIcon} from "cm-pgn-viewer/src/FigureIcons.js"
+import {pieceIcon} from "cm-pgn-viewer/src/PieceIcons.js"
 
-element.innerHTML = figureIcon("n")                                // solid knight, aria-hidden
-element.innerHTML = figureIcon("Q", "regular", {class: "icon", "aria-label": "queen"})
+element.innerHTML = pieceIcon("n")                                // solid knight, aria-hidden
+element.innerHTML = pieceIcon("Q", "regular", {class: "icon", "aria-label": "queen"})
 ```
 
 Size them with CSS, e.g. `svg.icon {height: 1em; width: auto}`.
@@ -129,4 +129,4 @@ Serve the project root with any static HTTP server and open `index.html` for the
 
 MIT, see [LICENSE](LICENSE).
 
-The chess piece icons in `src/FigureIcons.js` are from [Font Awesome Free](https://fontawesome.com) 7.3.1 by Fonticons, Inc. and licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The paths are unchanged, only the viewBox is adjusted.
+The chess piece icons in `src/PieceIcons.js` are from [Font Awesome Free](https://fontawesome.com) 7.3.1 by Fonticons, Inc. and licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The paths are unchanged, only the viewBox is adjusted.

@@ -22,7 +22,7 @@ SOFTWARE.
 
 --------------------------------------------------------------------------------
 
-The chess piece icons in src/FigureIcons.js are from Font Awesome Free 7.3.1
+The chess piece icons in src/PieceIcons.js are from Font Awesome Free 7.3.1
 by Fonticons, Inc. (https://fontawesome.com) and licensed under the Creative
 Commons Attribution 4.0 International License (CC BY 4.0),
 https://creativecommons.org/licenses/by/4.0/. The paths are unchanged, only
