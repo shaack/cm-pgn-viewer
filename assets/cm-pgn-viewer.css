@@ -349,6 +349,12 @@
     filter: drop-shadow(0 0 0.35px rgba(0, 0, 0, 0.9));
 }
 
+/* the neutral capture marker as strong as the neutral frame (cm-chessboard: 0.2) */
+.cm-pgn-viewer .cm-chessboard .markers .marker.marker-bevel {
+    fill: black;
+    opacity: 0.5;
+}
+
 /* the capture marker (bevel corners) is filled, not stroked */
 .cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-capture {
     stroke: none;
