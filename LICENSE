@@ -19,3 +19,11 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+--------------------------------------------------------------------------------
+
+The chess piece icons in src/FigureIcons.js are from Font Awesome Free 7.3.1
+by Fonticons, Inc. (https://fontawesome.com) and licensed under the Creative
+Commons Attribution 4.0 International License (CC BY 4.0),
+https://creativecommons.org/licenses/by/4.0/. The paths are unchanged, only
+the viewBox is adjusted. Full license: https://fontawesome.com/license/free

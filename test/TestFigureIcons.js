@@ -1,0 +1,29 @@
+/**
+ * Author and copyright: Stefan Haack (https://shaack.com)
+ * Repository: https://github.com/shaack/cm-pgn-viewer
+ * License: MIT, see file 'LICENSE'
+ */
+import {describe, it, assert} from "teevi/src/teevi.js"
+import {figureIcon, FIGURE_ICONS} from "../src/FigureIcons.js"
+
+describe("FigureIcons", () => {
+
+    it("should have all six pieces in both styles", () => {
+        for (const style of ["solid", "regular"]) {
+            assert.equal(Object.keys(FIGURE_ICONS[style]).sort().join(""), "bknpqr")
+        }
+    })
+
+    it("should create an SVG on a common baseline", () => {
+        const holder = document.createElement("div")
+        holder.innerHTML = figureIcon("N") + figureIcon("q", "regular", {class: "x", "aria-label": "Dame"})
+        const [knight, queen] = holder.querySelectorAll("svg")
+        assert.equal(knight.getAttribute("viewBox"), "0 -32 384 544")
+        assert.equal(knight.getAttribute("aria-hidden"), "true")
+        assert.equal(queen.getAttribute("viewBox"), "0 -32 512 544")
+        assert.equal(queen.getAttribute("role"), "img")
+        assert.equal(queen.getAttribute("aria-label"), "Dame")
+        assert.equal(queen.getAttribute("class"), "x")
+        assert.equal(figureIcon("x"), "")
+    })
+})

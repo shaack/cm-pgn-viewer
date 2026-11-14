@@ -7,11 +7,11 @@
  * every variation as its own block, nested variations inside their parent.
  */
 import {moveNumber} from "./I18n.js"
+import {figureIcon} from "./FigureIcons.js"
 
-// Solid figurines take the text colour, so they read in light and dark themes.
-// U+FE0E asks for the text glyph, not an emoji.
-export const FIGURES = {K: "♚︎", Q: "♛︎", R: "♜︎", B: "♝︎", N: "♞︎"}
-const FIGURE_GLYPHS = new Set(Object.values(FIGURES))
+// For notation "unicode". Solid glyphs take the text colour, U+FE0E asks for
+// the text glyph, not an emoji.
+export const UNICODE_FIGURES = {K: "♚︎", Q: "♛︎", R: "♜︎", B: "♝︎", N: "♞︎"}
 
 export const NAGS = {
     1: "!", 2: "?", 3: "!!", 4: "??", 5: "!?", 6: "?!", 7: "□", 10: "=", 13: "∞",
@@ -23,13 +23,17 @@ export const NAGS = {
 export class NotationRenderer {
 
     /**
-     * @param props notation: "figures" or "letters", pieceLetters: the letters
-     *        for "letters", e.g. {K: "K", Q: "D", R: "T", B: "L", N: "S"}
+     * @param props notation: "figures" (SVG icons), "unicode" or "letters",
+     *        figureStyle: "solid" or "regular" for "figures",
+     *        pieceLetters: the letters for "letters", e.g. {K: "K", Q: "D", R: "T", B: "L", N: "S"},
+     *        pieceNames: names for screen readers, e.g. {k: "king", n: "knight"}
      */
     constructor(props = {}) {
         this.props = {
             notation: "figures",
+            figureStyle: "solid",
             pieceLetters: {K: "K", Q: "Q", R: "R", B: "B", N: "N"},
+            pieceNames: {},
             ...props
         }
         this.moves = [] // index (data-move-index) -> move
@@ -67,8 +71,9 @@ export class NotationRenderer {
         return moveElement ? this.moves[parseInt(moveElement.dataset.moveIndex, 10)] : undefined
     }
 
+    /** The SAN as text, for "figures" with the letters of `pieceLetters`. */
     formatSan(san) {
-        const map = this.props.notation === "letters" ? this.props.pieceLetters : FIGURES
+        const map = this.props.notation === "unicode" ? UNICODE_FIGURES : this.props.pieceLetters
         return san
             .replace(/^[KQRBN]/, piece => map[piece] || piece)
             .replace(/=([QRBN])/, (all, piece) => "=" + (map[piece] || piece))
@@ -113,15 +118,19 @@ export class NotationRenderer {
         }
         const san = document.createElement("span")
         san.className = "san"
-        for (const part of this.formatSan(move.san).split(/([♚♛♜♝♞]︎)/)) {
-            if (FIGURE_GLYPHS.has(part)) {
-                const figure = document.createElement("span")
-                figure.className = "figure"
-                figure.textContent = part
-                san.appendChild(figure)
-            } else if (part) {
-                san.appendChild(document.createTextNode(part))
+        if (this.props.notation === "figures") {
+            // the piece letters as SVG icons, the rest of the SAN as text
+            for (const part of move.san.split(/([KQRBN])/)) {
+                if (/^[KQRBN]$/.test(part)) {
+                    const name = this.props.pieceNames[part.toLowerCase()] || this.props.pieceLetters[part]
+                    san.insertAdjacentHTML("beforeend",
+                        figureIcon(part, this.props.figureStyle, {class: "figure", "aria-label": name}))
+                } else if (part) {
+                    san.appendChild(document.createTextNode(part))
+                }
             }
+        } else {
+            san.textContent = this.formatSan(move.san)
         }
         element.appendChild(san)
         for (const nag of move.nags || []) {

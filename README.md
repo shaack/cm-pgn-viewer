@@ -13,7 +13,7 @@ It is built on [cm-chessboard](https://github.com/shaack/cm-chessboard) for the 
 - Click a move, use the buttons (play, start, back, forward, end, flip) or the keys Left, Right, Home and End
 - Move numbers from the FEN, so a game from a position starts at the right move, also with Black to move
 - Chess960, detected from the `Variant` tag or from the start FEN, castling with Chess960 rules
-- Figurines or configurable piece letters (`K D T L S` for German, for example)
+- Piece icons (Font Awesome Free, solid or regular), unicode figurines or configurable piece letters (`K D T L S` for German, for example)
 - The layout follows the width of the **container**, not of the window: side by side when there is room, stacked when the container is narrow
 - A broken PGN shows an error message with the PGN instead of breaking the page
 - "Show PGN" with a copy button
@@ -85,7 +85,8 @@ PgnViewer.initFrom("pgn", {lazy: true, assetsUrl: "/node_modules/cm-chessboard/a
 | `borderType`       | `"none"`                                 | Board border, `"none"`, `"thin"` or `"frame"` (wide, with the coordinates) |
 | `piecesFile`       | `"pieces/standard.svg"`                  | cm-chessboard pieces sprite                                                 |
 | `assetsUrl`        | `"./node_modules/cm-chessboard/assets/"` | Where the cm-chessboard assets are                                          |
-| `notation`         | `"figures"`                              | `"figures"` (♞f3) or `"letters"`                                            |
+| `notation`         | `"figures"`                              | `"figures"` (SVG icons), `"unicode"` (♞f3) or `"letters"` (Nf3)             |
+| `figureStyle`      | `"solid"`                                | `"solid"` or `"regular"` icons for `"figures"`                              |
 | `pieceLetters`     | `{K: "K", Q: "Q", R: "R", B: "B", N: "N"}` | The letters for `notation: "letters"`                                     |
 | `showHeaders`      | `true`                                   | Players, event, site, round, date, ECO, result                              |
 | `showControls`     | `true`                                   | The button row                                                              |
@@ -98,6 +99,19 @@ PgnViewer.initFrom("pgn", {lazy: true, assetsUrl: "/node_modules/cm-chessboard/a
 | `i18n`             | `{}`                                     | Override single labels, see `src/I18n.js`                                   |
 | `icons`            | `{}`                                     | Override button icons with your own HTML, keys as in `ICONS`                |
 | `onMoveSelect`     | `undefined`                              | `(move) => {}`, `move` is `undefined` for the start position                |
+
+## Chess piece icons
+
+`src/FigureIcons.js` is a small icon set of the six chess pieces in two styles, usable without the viewer. The icons share one baseline and scale, and they are filled with `currentColor`.
+
+```js
+import {figureIcon} from "cm-pgn-viewer/src/FigureIcons.js"
+
+element.innerHTML = figureIcon("n")                                // solid knight, aria-hidden
+element.innerHTML = figureIcon("Q", "regular", {class: "icon", "aria-label": "queen"})
+```
+
+Size them with CSS, e.g. `svg.icon {height: 1em; width: auto}`.
 
 ## Methods
 
@@ -114,3 +128,5 @@ Serve the project root with any static HTTP server and open `index.html` for the
 ## License
 
 MIT, see [LICENSE](LICENSE).
+
+The chess piece icons in `src/FigureIcons.js` are from [Font Awesome Free](https://fontawesome.com) 7.3.1 by Fonticons, Inc. and licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The paths are unchanged, only the viewBox is adjusted.

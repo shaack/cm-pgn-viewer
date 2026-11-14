@@ -38,7 +38,8 @@ export class PgnViewer {
             borderType: BORDER_TYPE.none,   // "none", "thin" or "frame" (wide border with the coordinates)
             piecesFile: "pieces/standard.svg",
             assetsUrl: "./node_modules/cm-chessboard/assets/",
-            notation: "figures",            // "figures" or "letters"
+            notation: "figures",            // "figures" (SVG icons), "unicode" or "letters"
+            figureStyle: "solid",           // "solid" or "regular" icons for "figures"
             pieceLetters: {K: "K", Q: "Q", R: "R", B: "B", N: "N"},
             showHeaders: true,
             showControls: true,
@@ -69,7 +70,9 @@ export class PgnViewer {
         this._renderHeaders()
         this.notationRenderer = new NotationRenderer({
             notation: this.props.notation,
-            pieceLetters: this.props.pieceLetters
+            figureStyle: this.props.figureStyle,
+            pieceLetters: this.props.pieceLetters,
+            pieceNames: this.t.pieces
         })
         if (this.elements.notation) {
             this.notationRenderer.render(this.elements.notation, this.history, this.pgn.history.gameComment)
