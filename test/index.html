@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>cm-pgn-viewer tests</title>
+    <link rel="stylesheet" href="../node_modules/cm-chessboard/assets/chessboard.css"/>
+    <link rel="stylesheet" href="../assets/cm-pgn-viewer.css"/>
+    <style>
+        #viewers {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+<h1><a href="../">cm-pgn-viewer</a></h1>
+<div id="viewers"></div>
+<script type="importmap">
+    {
+        "imports": {
+            "teevi/": "../node_modules/teevi/",
+            "cm-chessboard/": "../node_modules/cm-chessboard/",
+            "cm-pgn/": "../node_modules/cm-pgn/",
+            "chess.mjs/": "../node_modules/chess.mjs/"
+        }
+    }
+</script>
+<script type="module">
+    import {teevi} from "teevi/src/teevi.js"
+    import "./TestPgnLoader.js"
+    import "./TestNotationRenderer.js"
+    import "./TestPgnViewer.js"
+    teevi.run({timeout: 10000})
+</script>
+</body>
+</html>

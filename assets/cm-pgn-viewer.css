@@ -1,0 +1,291 @@
+/*
+ * cm-pgn-viewer, https://github.com/shaack/cm-pgn-viewer
+ *
+ * The layout follows the width of the container, not of the window
+ * (container queries). Narrow: notation below the board. From 32rem: board
+ * and notation side by side, the notation as high as the board.
+ * Theme it with the custom properties below.
+ */
+.cm-pgn-viewer {
+    --pgn-viewer-gap: 1rem;
+    --pgn-viewer-board-max: 30rem;
+    --pgn-viewer-muted: rgba(0, 0, 0, 0.6);
+    --pgn-viewer-notation-bg: rgba(0, 0, 0, 0.03);
+    --pgn-viewer-variation-bg: rgba(0, 0, 0, 0.07);
+    --pgn-viewer-variation-nested-bg: rgba(0, 0, 0, 0.06);
+    --pgn-viewer-move-hover-bg: rgba(0, 0, 0, 0.08);
+    --pgn-viewer-active-bg: #ffd43b;
+    --pgn-viewer-active-color: #000;
+    --pgn-viewer-button-bg: rgba(0, 0, 0, 0.06);
+    --pgn-viewer-button-hover-bg: rgba(0, 0, 0, 0.12);
+    --pgn-viewer-badge-bg: rgba(0, 0, 0, 0.08);
+    --pgn-viewer-error-color: #b02a37;
+    --pgn-viewer-radius: 0.375rem;
+
+    container-type: inline-size;
+    container-name: pgn-viewer;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-bs-theme="light"]) .cm-pgn-viewer {
+        --pgn-viewer-muted: rgba(255, 255, 255, 0.6);
+        --pgn-viewer-notation-bg: rgba(255, 255, 255, 0.04);
+        --pgn-viewer-variation-bg: rgba(255, 255, 255, 0.08);
+        --pgn-viewer-variation-nested-bg: rgba(255, 255, 255, 0.06);
+        --pgn-viewer-move-hover-bg: rgba(255, 255, 255, 0.1);
+        --pgn-viewer-active-bg: #e8b923;
+        --pgn-viewer-button-bg: rgba(255, 255, 255, 0.08);
+        --pgn-viewer-button-hover-bg: rgba(255, 255, 255, 0.16);
+        --pgn-viewer-badge-bg: rgba(255, 255, 255, 0.12);
+        --pgn-viewer-error-color: #ea868f;
+    }
+}
+
+[data-bs-theme="dark"] .cm-pgn-viewer {
+    --pgn-viewer-muted: rgba(255, 255, 255, 0.6);
+    --pgn-viewer-notation-bg: rgba(255, 255, 255, 0.04);
+    --pgn-viewer-variation-bg: rgba(255, 255, 255, 0.08);
+    --pgn-viewer-variation-nested-bg: rgba(255, 255, 255, 0.06);
+    --pgn-viewer-move-hover-bg: rgba(255, 255, 255, 0.1);
+    --pgn-viewer-active-bg: #e8b923;
+    --pgn-viewer-button-bg: rgba(255, 255, 255, 0.08);
+    --pgn-viewer-button-hover-bg: rgba(255, 255, 255, 0.16);
+    --pgn-viewer-badge-bg: rgba(255, 255, 255, 0.12);
+    --pgn-viewer-error-color: #ea868f;
+}
+
+.cm-pgn-viewer.pending {
+    min-height: 20rem;
+}
+
+/* --- headers ----------------------------------------------------------- */
+
+.cm-pgn-viewer .pgn-viewer-headers {
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
+
+.cm-pgn-viewer .pgn-viewer-headers .players {
+    font-weight: 700;
+}
+
+.cm-pgn-viewer .pgn-viewer-headers .elo {
+    font-weight: 400;
+    color: var(--pgn-viewer-muted);
+}
+
+.cm-pgn-viewer .pgn-viewer-headers .meta {
+    color: var(--pgn-viewer-muted);
+}
+
+.cm-pgn-viewer .pgn-viewer-headers .separator {
+    opacity: 0.6;
+}
+
+.cm-pgn-viewer .pgn-viewer-headers .badge {
+    display: inline-block;
+    padding: 0 0.45em;
+    border-radius: var(--pgn-viewer-radius);
+    background: var(--pgn-viewer-badge-bg);
+    font-size: 0.85em;
+}
+
+/* --- layout ------------------------------------------------------------ */
+
+/* narrow container: board, controls, notation below each other */
+.cm-pgn-viewer .pgn-viewer-main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "board" "controls" "notation";
+    gap: 0.5rem var(--pgn-viewer-gap);
+}
+
+.cm-pgn-viewer .pgn-viewer-board {
+    grid-area: board;
+    min-width: 0;
+}
+
+.cm-pgn-viewer .pgn-viewer-controls {
+    grid-area: controls;
+}
+
+.cm-pgn-viewer .pgn-viewer-notation-area {
+    grid-area: notation;
+    position: relative;
+    height: max(8rem, 45cqi);
+}
+
+/* side by side: the notation fills the height of the board row */
+@container pgn-viewer (min-width: 32rem) {
+    .cm-pgn-viewer .pgn-viewer-main {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-areas: "board notation" "controls .";
+    }
+
+    .cm-pgn-viewer .pgn-viewer-notation-area {
+        height: auto;
+    }
+}
+
+/* wide container: the board stops growing, the notation takes the rest */
+@container pgn-viewer (min-width: 62rem) {
+    .cm-pgn-viewer .pgn-viewer-main {
+        grid-template-columns: minmax(0, var(--pgn-viewer-board-max)) minmax(0, 1fr);
+    }
+}
+
+/* --- notation ---------------------------------------------------------- */
+
+.cm-pgn-viewer .pgn-viewer-notation {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--pgn-viewer-radius);
+    background: var(--pgn-viewer-notation-bg);
+    line-height: 1.6;
+    font-size: clamp(0.875rem, 0.8rem + 0.6cqi, 1rem);
+}
+
+.cm-pgn-viewer .pgn-viewer-notation:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
+.cm-pgn-viewer .move {
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 0.2em;
+    padding: 0 0.1em;
+    white-space: nowrap;
+}
+
+.cm-pgn-viewer .move:hover {
+    background: var(--pgn-viewer-move-hover-bg);
+}
+
+.cm-pgn-viewer .move.active {
+    background: var(--pgn-viewer-active-bg);
+    color: var(--pgn-viewer-active-color);
+}
+
+.cm-pgn-viewer .move-number {
+    margin-right: 0.2em;
+}
+
+.cm-pgn-viewer .figure {
+    font-size: 1.15em;
+    line-height: 1;
+    font-weight: 400;
+    font-variant-emoji: text;
+}
+
+.cm-pgn-viewer .nag {
+    margin-left: 0.05em;
+}
+
+.cm-pgn-viewer .comment {
+    font-weight: 400;
+}
+
+.cm-pgn-viewer .variation {
+    margin: 0.4rem 0;
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--pgn-viewer-radius);
+    background: var(--pgn-viewer-variation-bg);
+}
+
+.cm-pgn-viewer .variation .variation {
+    margin-left: 0.5rem;
+    background: var(--pgn-viewer-variation-nested-bg);
+}
+
+/* --- controls ---------------------------------------------------------- */
+
+.cm-pgn-viewer .pgn-viewer-controls {
+    display: flex;
+    justify-content: center;
+    gap: 0.25rem;
+}
+
+.cm-pgn-viewer .pgn-viewer-button {
+    flex: 0 1 2.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.25rem;
+    padding: 0;
+    border: 0;
+    border-radius: var(--pgn-viewer-radius);
+    background: var(--pgn-viewer-button-bg);
+    color: inherit;
+    cursor: pointer;
+}
+
+.cm-pgn-viewer .pgn-viewer-button svg {
+    width: 1rem;
+    height: 1rem;
+    fill: currentColor;
+}
+
+.cm-pgn-viewer .pgn-viewer-button:hover:not(:disabled) {
+    background: var(--pgn-viewer-button-hover-bg);
+}
+
+.cm-pgn-viewer .pgn-viewer-button:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+/* --- pgn source and errors --------------------------------------------- */
+
+.cm-pgn-viewer .pgn-viewer-source {
+    margin-top: 0.5rem;
+}
+
+.cm-pgn-viewer .pgn-viewer-link {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--pgn-viewer-muted);
+    font: inherit;
+    cursor: pointer;
+}
+
+.cm-pgn-viewer .pgn-viewer-link:hover {
+    text-decoration: underline;
+}
+
+.cm-pgn-viewer pre {
+    margin: 0.5rem 0;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--pgn-viewer-radius);
+    background: var(--pgn-viewer-notation-bg);
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 0.85em;
+}
+
+.cm-pgn-viewer .pgn-viewer-error .message {
+    color: var(--pgn-viewer-error-color);
+    font-weight: 700;
+}
+
+.cm-pgn-viewer .pgn-viewer-error .details {
+    color: var(--pgn-viewer-muted);
+    font-size: 0.85em;
+}
+
+.cm-pgn-viewer .visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}

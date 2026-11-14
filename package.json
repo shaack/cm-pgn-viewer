@@ -1,0 +1,44 @@
+{
+  "name": "cm-pgn-viewer",
+  "version": "1.0.0",
+  "description": "A PGN viewer for the web. Shows a game with variations, NAGs and comments next to an SVG chessboard, supports Chess960 and games from any start position. Vanilla ES6, no build step.",
+  "type": "module",
+  "module": "./src/PgnViewer.js",
+  "browser": "./src/PgnViewer.js",
+  "main": "./src/PgnViewer.js",
+  "files": [
+    "src",
+    "assets",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "teevi"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shaack/cm-pgn-viewer.git"
+  },
+  "keywords": [
+    "chess",
+    "pgn",
+    "viewer",
+    "variations",
+    "chess960",
+    "cm-chessboard",
+    "cm-pgn"
+  ],
+  "author": "Stefan Haack (shaack.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shaack/cm-pgn-viewer/issues"
+  },
+  "homepage": "https://github.com/shaack/cm-pgn-viewer#readme",
+  "dependencies": {
+    "cm-chessboard": "^8.15.4",
+    "cm-pgn": "^5.0.1"
+  },
+  "devDependencies": {
+    "teevi": "^2.7.1"
+  }
+}

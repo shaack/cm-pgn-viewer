@@ -1,0 +1,62 @@
+/**
+ * Author and copyright: Stefan Haack (https://shaack.com)
+ * Repository: https://github.com/shaack/cm-pgn-viewer
+ * License: MIT, see file 'LICENSE'
+ */
+import {describe, it, assert} from "teevi/src/teevi.js"
+import {loadPgn} from "../src/PgnLoader.js"
+import {NotationRenderer} from "../src/NotationRenderer.js"
+
+function render(pgn, props = {}) {
+    const loaded = loadPgn(pgn)
+    const container = document.createElement("div")
+    const renderer = new NotationRenderer(props)
+    renderer.render(container, loaded.pgn.history.moves, loaded.pgn.history.gameComment)
+    return container
+}
+
+function assertTexts(elements, expected) {
+    assert.equal(JSON.stringify(Array.from(elements).map(element => element.textContent.trim())), JSON.stringify(expected))
+}
+
+describe("NotationRenderer", () => {
+
+    it("should number black moves only at line starts and after comments or variations", () => {
+        const container = render(`1. e4 e5 {comment} 2. Nf3 Nc6 (2... d6 3. d4) 3. Bb5 *`, {notation: "letters"})
+        assertTexts(container.querySelectorAll(":scope > .move"),
+            ["1.e4", "e5", "2.Nf3", "Nc6", "3.Bb5"])
+        assertTexts(container.querySelectorAll(".variation .move"), ["2…d6", "3.d4"])
+        const afterComment = render(`1. e4 {comment} e5 *`, {notation: "letters"})
+        assertTexts(afterComment.querySelectorAll(".move"), ["1.e4", "1…e5"])
+    })
+
+    it("should take the move numbers from the FEN", () => {
+        const container = render(`[SetUp "1"]\n[FEN "3r2k1/5ppp/8/8/8/8/5PPP/6K1 b - - 0 23"]\n\n23... Rd2 (23... h6 24. h3) 24. f3 Kf8 *`,
+            {notation: "letters"})
+        assertTexts(container.querySelectorAll(".move"), ["23…Rd2", "23…h6", "24.h3", "24.f3", "Kf8"])
+    })
+
+    it("should render variations as nested blocks", () => {
+        const container = render(`1. e4 e5 (1... c5 2. Nf3 (2. c3 d5) 2... d6) 2. Nf3 *`)
+        const outer = container.querySelector(":scope > .variation")
+        assert.true(!!outer)
+        assert.true(!!outer.querySelector(":scope > .variation"))
+        assertTexts(outer.querySelectorAll(":scope > .variation .move"), ["2.c3", "d5"])
+    })
+
+    it("should render comments, the game comment and NAGs, without embedded commands", () => {
+        const container = render(`{Game comment} 1. e4 $1 {Best [%clk 0:05:00]} e5 $6 *`)
+        assertTexts(container.querySelectorAll(".comment"), ["Game comment", "Best"])
+        assertTexts(container.querySelectorAll(".nag"), ["!", "?!"])
+    })
+
+    it("should format pieces as figures or with configurable letters", () => {
+        const figures = render(`1. Nf3 d5 2. g3 c5 3. Bg2 Nc6 4. O-O *`)
+        assert.equal(figures.querySelector(".move .figure").textContent, "♞︎")
+        const letters = render(`1. Nf3 d5 2. g3 c5 3. Bg2 Nc6 4. O-O *`,
+            {notation: "letters", pieceLetters: {K: "K", Q: "D", R: "T", B: "L", N: "S"}})
+        assertTexts(letters.querySelectorAll(".san"), ["Sf3", "d5", "g3", "c5", "Lg2", "Sc6", "O-O"])
+        const renderer = new NotationRenderer({notation: "letters", pieceLetters: {K: "K", Q: "D", R: "T", B: "L", N: "S"}})
+        assert.equal(renderer.formatSan("exd8=Q+"), "exd8=D+")
+    })
+})

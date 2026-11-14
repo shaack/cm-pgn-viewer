@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>cm-pgn-viewer</title>
+    <link rel="stylesheet" href="./node_modules/cm-chessboard/assets/chessboard.css"/>
+    <link rel="stylesheet" href="./node_modules/cm-chessboard/assets/extensions/markers/markers.css"/>
+    <link rel="stylesheet" href="./assets/cm-pgn-viewer.css"/>
+    <style>
+        :root {
+            color-scheme: light dark;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        }
+        body {
+            margin: 0;
+            padding: 1rem;
+            line-height: 1.5;
+        }
+        main {
+            max-width: 64rem;
+            margin: 0 auto;
+        }
+        h2 {
+            margin-top: 2.5rem;
+            font-size: 1.15rem;
+        }
+        .hint {
+            opacity: 0.7;
+        }
+        .resizable {
+            resize: horizontal;
+            overflow: hidden;
+            width: 40rem;
+            min-width: 14rem;
+            max-width: 100%;
+            padding: 0.5rem;
+            border: 1px dashed rgba(128, 128, 128, 0.5);
+        }
+        .sidebar {
+            width: 18rem;
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+<main>
+    <h1>cm-pgn-viewer</h1>
+    <p>A PGN viewer with variations, NAGs and comments, for Chess960 and any start position. Click a move,
+        use the buttons or the arrow keys (Home, End, Left, Right) in the notation.</p>
+
+    <h2>The layout follows the container</h2>
+    <p class="hint">Drag the lower right corner of the dashed box. The viewer switches between side by side and
+        stacked depending on the width of its container, not of the window.</p>
+    <div class="resizable">
+        <div id="resizable"></div>
+    </div>
+
+    <h2>Inline via <code>PgnViewer.initFrom("pgn", {lazy: true})</code></h2>
+    <p class="hint">Every <code>&lt;pgn&gt;</code> element is replaced by a viewer when it scrolls into view.
+        German comments, nested variations.</p>
+    <pgn>
+            [Event "It (cat.7), XII"]
+            [Site "Budapest (Hungary)"]
+            [Date "1995.12.??"]
+            [Round "7"]
+            [White "Hmadi, Slaheddine"]
+            [Black "Vadasz, Laszlo"]
+            [Result "1-0"]
+            [WhiteElo "2325"]
+            [BlackElo "2350"]
+
+            1. e4 c6 2. d4 d5 3. exd5 cxd5 4. c4 Nf6 5. Nc3 e6 {Diese so genannte
+            Panov-Variante im Caro-Kann ergibt Stellungsbilder, die mehr den
+            Damenbauern-Eröffnungen verwandt sind. } 6. Nf3 Bb4 7. Bd3 dxc4 8. Bxc4 {Nun
+            ist tatsächlich eine Position aus der Nimzowitsch-indischen Verteidigung
+            entstanden. Hier spielt Weiß typischerweise mit einem isolierten Damenbauern,
+            der die merkwürdige Eigenschaft hat, dass er immer dann schwach ist, wenn ich
+            selber ihn habe, sich aber als stark erweist, wenn mein Gegner ihn hat.} 8...
+            O-O 9. O-O b6 10. Qe2 Bb7 11. Rd1 Bxc3 {Zu diesem Tausch bestand eigentlich
+            noch keine Notwendigkeit. Der dunkelfeldrige Läufer wird Schwarz später
+            fehlen.} ( {Schwarz konnte einfach mit} 11... Nbd7 {die Entwicklung seines
+            Damenflügels beenden.} ) 12. bxc3 Qc7 13. Bd3 {Ein Bauernopfer, um den Läufer,
+            der auf c4 wenig ausrichtet, auf ein wirksameres Feld zu bringen. Weiß konnte
+            aber auch zuvor Ld2 oder Lb2 einschalten.} 13... Qxc3 {Schwarz schnappt zu, was
+            gefährlich, aber noch kein Fehler ist.} ( {Risikoloser war wiederum} 13...
+            Nbd7 {.} ) 14. Bg5 $6 ( {Besser} 14. Bb2 {, aber oft ist es ja so, dass gerade
+            schwächere Züge den Erfolg bringen, weil sie die größeren Probleme stellen und
+            daher der Gegner die richtige Antwort versäumt. So auch hier.} ) 14... Qa5 $2
+            {Offenbar fürchtet Schwarz Tac1 nebst Tc7 mehr als die Aufreißung seiner
+            Rochadestellung durch Lxf6; sehr zu Unrecht, wie die Folge beweist.} (14...
+            Nbd7 $1 {, um die erwähnte Aufreißung zu verhindern, war korrekt.} 15. Rac1 $6
+            Qa5 16. Rc7 $4 {wäre dann überhaupt nicht angängig gewesen wegen} 16... Bxf3
+            {mit Gewinn des Lg5.} ) 15. Bxf6 gxf6 {Der damit verbundenen Schwächung seiner
+            Rochadestellung hatte der Ungar wohl zu wenig Bedeutung beigemessen. Der
+            tunesische IM zieht nun in hübscher Weise Nutzen daraus.} 16. d5 $1 {Dieses
+            zweite Bauernopfer schneidet der schwarzen Dame den Weg zum Königsflügel ab.}
+            16... Bxd5 ( {Natürlich nicht} 16... Qxd5 $2 17. Bxh7+ {mit Damengewinn.} ) 17.
+            Ne5 $1 {Dieses in solchen Situationen typische Opfer macht der weißen Dame den
+            Weg nach h5 frei.} 17... f5 {Sperrt wenigstens die Diagonale des Ld3.} ( {Die
+            Annahme} 17... fxe5 $2 {verbietet sich wegen} 18. Bxh7+ Kxh7 {(die Ablehnung
+            verzögert nur)} 19. Qh5+ Kg7 20. Qg5+ Kh7 21. Rd3 {nebst Matt auf der h-Linie.}
+            ) 18. Qh5 f6 $2 {Dieser naheliegende Versuch, den lästigen weißen Springer zu
+            vertreiben, beschleunigt die schwarze Niederlage, aber die Situation war in
+            jedem Fall prekär.} 19. Rac1 $1 {Wegen der Drohung Tc7 kann Weiß seinen
+            Springer erneut zum Opfer anbieten.} 19... b5 {Verhindert Tc7, aber nun zeigt
+            es sich, dass der weiße Turm noch eine weitere Drohung in petto hatte.} (19...
+            fxe5 $2 20. Rc7 {und Schwarz kann dem Matt auf h7 oder g7 nicht entgehen.} )
+            20. Rc8 $3 {Klasse! Wegen des gefesselten Tf8 droht Df7+. Der Zug funktioniert
+            natürlich nur, weil Schwarz es im 11., 13. und 14. Zug jeweils konsequent
+            versäumt hat, den Sb8 zu entwickeln. Nun fällt ihm die fehlende Verbindung der
+            Türme in eklatanter Weise vor die Füße.} 20... fxe5 {Führt zu einem schnellen,
+            aber pikanten Ende.} ( {Die kritische Variante ist} 20... Rxc8 21. Qf7+ Kh8
+            22. Qxf6+ Kg8 {(natürlich hätte Weiß jetzt Dauerschach, so dass Tc8 zumindest
+            ohne jedes Risiko spielbar war, aber es ist mehr drin:)} 23. Nf7 $1 {(droht
+            Sh6#)} 23... h5 24. Nh6+ Kh7 25. Nxf5 $1 {(droht Dg7# und legt die
+            Läuferdiagonale frei)} 25... exf5 26. Bxf5+ Kg8 27. Bxc8 {und Weiß wird bei dem
+            freigelegten schwarzen König mindestens noch weiteres Material erobern
+            (zunächst droht z.B. Dg5+ nebst Dxd5), z.B.} 27... Nd7 (27... Qxa2 $2 28. Be6+
+            $3 Bxe6 $2 29. Rd8+ {nebst Matt!} ) 28. Qg6+ Kf8 29. Qd6+ Kg7 30. Qxd5 {. Es
+            ist zwar kaum anzunehmen, dass Hmadi das bei 20. Tc8 schon alles gesehen hat;
+            aber er wird erkannt haben, dass die weißen Figuren gegen den vereinsamten
+            schwarzen König genügend Furore machen können.} ) 21. Qg5+ Kf7 22. Be2 $1
+            {Droht Lh5#, und es bringt Schwarz auch nichts, den Tc8 zu schlagen, weil dann
+            nämlich Läufer und Dame den schwarzen König allein zur Strecke bringen, man
+            sehe:} (22. Be2 $1 Rxc8 23. Bh5+ Kf8 24. Qf6+ Kg8 25. Bf7+ Kf8 26. Bg6+ Kg8
+            27. Qf7+ Kh8 28. Qxh7# {, und diese Standard-Mattführung haben natürlich beide
+            Spieler gesehen (Schwarz freilich zu spät). Ein spektakulärer Sieg des
+            tunesischen IM.} ) 1-0
+        </pgn>
+
+    <h2>Chess960, detected without a Variant tag</h2>
+    <div id="chess960"></div>
+
+    <h2>From a position, Black to move at move 23</h2>
+    <div class="sidebar">
+        <div id="position"></div>
+    </div>
+
+    <h2>Letter notation, German labels, lenient parsing</h2>
+    <p class="hint"><code>notation: "letters"</code>, <code>pieceLetters</code>, <code>language: "de"</code>,
+        <code>lenient: true</code> reads 0-0 and German piece letters.</p>
+    <div id="letters"></div>
+
+    <h2>Broken PGN</h2>
+    <div id="broken"></div>
+
+    <p><a href="https://github.com/shaack/cm-pgn-viewer">GitHub repository</a></p>
+</main>
+<script type="importmap">
+    {
+        "imports": {
+            "cm-chessboard/": "./node_modules/cm-chessboard/",
+            "cm-pgn/": "./node_modules/cm-pgn/",
+            "chess.mjs/": "./node_modules/chess.mjs/"
+        }
+    }
+</script>
+<script type="module">
+    import {PgnViewer} from "./src/PgnViewer.js"
+
+    window.viewers = {}
+
+    window.viewers.resizable = new PgnViewer(document.getElementById("resizable"), {
+        pgn: `[Event "Sample game"]
+[Site "Berlin"]
+[Date "1989.07.02"]
+[White "Haack, Stefan"]
+[Black "Maier, Karsten"]
+[Result "*"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bb5 {The Ruy Lopez} a6
+4. Ba4 (4. Bxc6 dxc6 5. Nxe5? (5. O-O {is the main line} f6) Qd4 $17 {wins the knight back}) Nf6 5. O-O Be7
+6. Re1 b5 7. Bb3 d6 8. c3 O-O $1 *`,
+        onMoveSelect: (move) => console.log("onMoveSelect", move ? move.san : "(start)")
+    })
+
+    window.viewers.inline = PgnViewer.initFrom("pgn", {lazy: true})
+
+    window.viewers.chess960 = new PgnViewer(document.getElementById("chess960"), {
+        pgn: `[White "White"]
+[Black "Black"]
+[SetUp "1"]
+[FEN "nrkbrnbq/pppppppp/8/8/8/8/PPPPPPPP/NRKBRNBQ w KQkq - 0 1"]
+
+1. f4 Nb6 2. Nb3 f6 3. e4 e5 4. f5 d5 5. g4 Nfd7 6. exd5 Bxd5 7. Bf3 c6 8. Ng3 Be7
+9. O-O-O {In Chess960 the king goes to c1 and the rook to d1, wherever they started.} Qg8 *`
+    })
+
+    window.viewers.position = new PgnViewer(document.getElementById("position"), {
+        pgn: `[White "?"]
+[Black "?"]
+[SetUp "1"]
+[FEN "3r2k1/5ppp/8/8/8/8/5PPP/6K1 b - - 0 23"]
+
+23... Rd2 {The first move is Black's, numbered from the FEN.} (23... h6 24. h3) 24. f3 Kf8 *`
+    })
+
+    window.viewers.letters = new PgnViewer(document.getElementById("letters"), {
+        pgn: `[White "Geller, Efim P"] [Black "Liebert, Heinz"] [Event "EU Team Ch"] [Date "1970.??.??"] [Result "1-0"]
+1. e4 d6 2. d4 Sf6 3. Sc3 g6 {Pirc-Verteidigung.} 4. f3 c6 5. Le3 b5 6. Dd2 Sbd7 7. Sh3 Da5 8. Sf2 Lb7 9. Le2 a6 10. 0-0 Lg7 1:0`,
+        notation: "letters",
+        pieceLetters: {K: "K", Q: "D", R: "T", B: "L", N: "S"},
+        language: "de",
+        lenient: true
+    })
+
+    window.viewers.broken = new PgnViewer(document.getElementById("broken"), {
+        pgn: `1. e4 e5 2. Nf6 Nc6 *`
+    })
+</script>
+</body>
+</html>
