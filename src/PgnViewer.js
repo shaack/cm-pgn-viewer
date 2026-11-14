@@ -490,14 +490,16 @@ export class PgnViewer {
     }
 
     _scrollIntoView(element) {
-        // only the notation scrolls, never the page
+        // keep the active move in the vertical middle of the notation, only the
+        // notation scrolls, never the page
         const container = this.elements.notation
         const top = element.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop
-        const bottom = top + element.offsetHeight
-        if (top < container.scrollTop + 8) {
-            container.scrollTop = Math.max(0, top - 24)
-        } else if (bottom > container.scrollTop + container.clientHeight - 8) {
-            container.scrollTop = bottom - container.clientHeight + 24
+        const target = Math.max(0, top + element.offsetHeight / 2 - container.clientHeight / 2)
+        const reducedMotion = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches
+        if (typeof container.scrollTo === "function") {
+            container.scrollTo({top: target, behavior: reducedMotion ? "auto" : "smooth"})
+        } else {
+            container.scrollTop = target
         }
     }
 
