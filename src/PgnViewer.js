@@ -9,7 +9,7 @@ import {Accessibility} from "cm-chessboard/src/extensions/accessibility/Accessib
 import {loadPgn, readPgnFromElement, VARIANT} from "./PgnLoader.js"
 import {NotationRenderer} from "./NotationRenderer.js"
 import {createI18n, describeMove} from "./I18n.js"
-import {MOVE_MARKER_TYPE, MOVE_MARKER_CONTOUR, moveQuality, addContourSprite} from "./MoveQuality.js"
+import {MOVE_MARKER_TYPE, moveQuality} from "./MoveQuality.js"
 
 // 16x16 icons, filled with currentColor, so the viewer needs no icon font
 export const ICONS = {
@@ -98,16 +98,11 @@ export class PgnViewer {
         if (this.moveMarker) {
             this.board.removeMarkers(this.moveMarker)
         }
-        this.board.removeMarkers(MOVE_MARKER_CONTOUR)
         const quality = this.props.qualityMarkers ? moveQuality(move) : undefined
         this.moveMarker = quality ? MOVE_MARKER_TYPE[quality] : this.props.lastMoveMarker
         if (move && this.moveMarker) {
-            for (const square of [move.from, move.to]) {
-                if (quality) {
-                    this.board.addMarker(MOVE_MARKER_CONTOUR, square)
-                }
-                this.board.addMarker(this.moveMarker, square)
-            }
+            this.board.addMarker(this.moveMarker, move.from)
+            this.board.addMarker(this.moveMarker, move.to)
         }
         if (this.props.checkMarker) {
             this.board.removeMarkers(this.props.checkMarker)
@@ -298,9 +293,6 @@ export class PgnViewer {
     }
 
     _initBoard() {
-        if (this.props.qualityMarkers) {
-            addContourSprite()
-        }
         const extensions = [{class: Markers}]
         if (this.props.accessibility) {
             extensions.push({

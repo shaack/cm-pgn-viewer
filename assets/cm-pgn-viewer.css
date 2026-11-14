@@ -310,16 +310,12 @@
 
 /* --- move assessments ---------------------------------------------------- */
 
+/* as thick as the normal frame, with a thin dark shadow outside, so every
+   colour stands out on light and dark squares */
 .cm-pgn-viewer .cm-chessboard .markers .marker[class*="marker-pgn-"] {
-    stroke-width: 2.6px;
+    stroke-width: 1.8px;
     opacity: 1;
-}
-
-/* a dark line along the inner edge of the coloured frame, so every colour
-   stands out on light and dark squares */
-.cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-contour {
-    stroke: rgba(0, 0, 0, 0.75);
-    stroke-width: 1px;
+    filter: drop-shadow(0 0 0.35px rgba(0, 0, 0, 0.9));
 }
 
 .cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-brilliant {
