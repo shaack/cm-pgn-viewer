@@ -9,8 +9,10 @@ It is built on [cm-chessboard](https://github.com/shaack/cm-chessboard) for the 
 
 ## Features
 
-- Moves bold, comments as running text, every variation in its own block, nested variations inside their parent
-- The move shown is framed on the board, for an assessed move the frame has the colour of the assessment, the symbols in the notation the same colours
+- Moves and comments as running text, comments in their own colour, every variation in its own block, nested variations inside their parent
+- White and black moves look different: Black gets the darker piece icon and a darker tone
+- The move shown is framed on the board, for an assessed move (`!!`, `!`, `!?`, `?!`, `?`, `??`) the frame has the colour of the assessment, the symbols in the notation the same colours
+- A king in check gets a red circle
 - Click a move, use the buttons (play, start, back, forward, end, flip) or the keys Left, Right, Home and End
 - Move numbers from the FEN, so a game from a position starts at the right move, also with Black to move
 - Chess960, detected from the `Variant` tag or from the start FEN, castling with Chess960 rules
@@ -122,7 +124,7 @@ Size them with CSS, e.g. `svg.icon {height: 1em; width: auto}`. For a fixed widt
 
 ## Layout and theming
 
-The viewer is a CSS container. Below a container width of 32rem the notation is placed below the board, from 32rem board and notation stand side by side and the notation is exactly as high as the board, from 62rem the board stops growing at `--pgn-viewer-board-max`. Colors, radius and gap are custom properties on `.cm-pgn-viewer`, see `assets/cm-pgn-viewer.css`. Dark mode follows `prefers-color-scheme` and `data-bs-theme="dark"`.
+The viewer is a CSS container. Below a container width of 32rem the notation is placed below the board, from 32rem board and notation stand side by side and the notation is exactly as high as the board, from 62rem the board stops growing at `--pgn-viewer-board-max`. Colours, font weights, sizes, radius and gap are custom properties on `.cm-pgn-viewer`, see `assets/cm-pgn-viewer.css`. Dark mode follows `prefers-color-scheme` and `data-bs-theme="dark"`.
 
 ## Demo and tests
 
