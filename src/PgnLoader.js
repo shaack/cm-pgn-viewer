@@ -40,7 +40,9 @@ export function readPgnFromElement(element) {
  * typically type by hand: 0-0, 1:0, ½-½ and German piece letters.
  */
 export function normalizePgn(text, lenient = false) {
+    // no indentation, e.g. from the HTML source around a <pgn> element
     let rest = String(text || "").replace(/\r\n?/g, "\n").replace(/\u00a0/g, " ")
+        .split("\n").map(line => line.trim()).join("\n")
     const headers = []
     let match
     while ((match = rest.match(HEADER_PATTERN))) {

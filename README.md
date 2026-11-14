@@ -19,7 +19,7 @@ It is built on [cm-chessboard](https://github.com/shaack/cm-chessboard) for the 
 - Piece icons (Font Awesome Free, solid or regular), unicode figurines or configurable piece letters (`K D T L S` for German, for example)
 - The layout follows the width of the **container**, not of the window: side by side when there is room, stacked when the container is narrow
 - A broken PGN shows an error message with the PGN instead of breaking the page
-- "Show PGN" with a copy button
+- "Show PGN" opens the PGN in a modal dialog with syntax highlighting and a copy button
 - Lazy initialization for pages with many games
 - Screen reader support: moves are announced in a live region, the board uses the cm-chessboard Accessibility extension
 
@@ -93,7 +93,7 @@ PgnViewer.initFrom("pgn", {lazy: true, assetsUrl: "/node_modules/cm-chessboard/a
 | `pieceLetters`     | `{K: "K", Q: "Q", R: "R", B: "B", N: "N"}` | The letters for `notation: "letters"`                                     |
 | `showHeaders`      | `true`                                   | Players, event, site, round, date, ECO, result                              |
 | `showControls`     | `true`                                   | The button row                                                              |
-| `showPgnToggle`    | `true`                                   | "Show PGN" with a copy button                                               |
+| `showPgnToggle`    | `true`                                   | "Show PGN", opens the PGN highlighted in a modal dialog                     |
 | `lastMoveMarker`   | `MARKER_TYPE.frame`                      | Marker on both squares of the move shown, any cm-chessboard `MARKER_TYPE` (re-exported by `PgnViewer.js`), `null` for none |
 | `qualityMarkers`   | `true`                                   | Moves with `!!`, `!`, `!?`, `?!`, `?` or `??` get the frame in the colour of their assessment |
 | `checkMarker`      | `MARKER_TYPE.circleDanger`               | Marker on the king in check, `null` for none                                |
@@ -118,9 +118,19 @@ element.innerHTML = pieceIcon("Q", "regular", {class: "icon", "aria-label": "que
 
 Size them with CSS, e.g. `svg.icon {height: 1em; width: auto}`. For a fixed width like `fa-fw`, give them the width of the widest icon, the queen: `svg.icon {height: 1em; width: calc(1em * 512 / 544)}`, the narrower pieces are centred.
 
+## PGN syntax highlighting
+
+`src/PgnHighlighter.js` turns PGN text into HTML with a span per token (`pgn-tag-name`, `pgn-tag-value`, `pgn-number`, `pgn-move`, `pgn-comment`, `pgn-variation`, `pgn-nag`, `pgn-result`), usable without the viewer.
+
+```js
+import {highlightPgn} from "cm-pgn-viewer/src/PgnHighlighter.js"
+
+pre.innerHTML = highlightPgn(pgn)
+```
+
 ## Methods
 
-`goToMove(move)`, `first()`, `previous()`, `next()`, `last()`, `flip()`, `play()`, `stop()`, `destroy()`. `next()` and `last()` follow the line of the move shown, so inside a variation they stay in the variation.
+`goToMove(move)`, `first()`, `previous()`, `next()`, `last()`, `flip()`, `play()`, `stop()`, `showPgn()`, `destroy()`. `next()` and `last()` follow the line of the move shown, so inside a variation they stay in the variation.
 
 ## Layout and theming
 

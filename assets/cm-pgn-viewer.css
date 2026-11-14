@@ -30,6 +30,14 @@
     --pgn-viewer-error-color: #b02a37;
     --pgn-viewer-radius: 0.375rem;
     --pgn-viewer-move-weight: 500;
+    /* the PGN dialog and its syntax highlighting */
+    --pgn-viewer-dialog-bg: #fff;
+    --pgn-viewer-backdrop: rgba(0, 0, 0, 0.45);
+    --pgn-viewer-pgn-tag-name: #8250df;
+    --pgn-viewer-pgn-tag-value: #0a3069;
+    --pgn-viewer-pgn-number: #6e7781;
+    --pgn-viewer-pgn-variation: #953800;
+    --pgn-viewer-pgn-result: #8250df;
     --pgn-viewer-move-number-size: 0.8em;
     --pgn-viewer-piece-icon-size: 0.85em;
     /* move assessments: frame on the board and symbol in the notation */
@@ -72,6 +80,13 @@
         --pgn-viewer-white-move-color: currentColor;
         --pgn-viewer-black-move-color: rgba(255, 255, 255, 0.68);
         --pgn-viewer-comment-color: #8ab8dc;
+        --pgn-viewer-dialog-bg: #24262a;
+        --pgn-viewer-backdrop: rgba(0, 0, 0, 0.6);
+        --pgn-viewer-pgn-tag-name: #d2a8ff;
+        --pgn-viewer-pgn-tag-value: #a5d6ff;
+        --pgn-viewer-pgn-number: #8b949e;
+        --pgn-viewer-pgn-variation: #ffa657;
+        --pgn-viewer-pgn-result: #d2a8ff;
         --pgn-viewer-nag-brilliant: #4fd26b;
         --pgn-viewer-nag-good: #7cc254;
         --pgn-viewer-nag-interesting: #62b2f0;
@@ -99,6 +114,13 @@
     --pgn-viewer-white-move-color: currentColor;
     --pgn-viewer-black-move-color: rgba(255, 255, 255, 0.68);
     --pgn-viewer-comment-color: #8ab8dc;
+    --pgn-viewer-dialog-bg: #24262a;
+    --pgn-viewer-backdrop: rgba(0, 0, 0, 0.6);
+    --pgn-viewer-pgn-tag-name: #d2a8ff;
+    --pgn-viewer-pgn-tag-value: #a5d6ff;
+    --pgn-viewer-pgn-number: #8b949e;
+    --pgn-viewer-pgn-variation: #ffa657;
+    --pgn-viewer-pgn-result: #d2a8ff;
     --pgn-viewer-nag-brilliant: #4fd26b;
     --pgn-viewer-nag-good: #7cc254;
     --pgn-viewer-nag-interesting: #62b2f0;
@@ -404,6 +426,109 @@
 .cm-pgn-viewer .pgn-viewer-button:disabled {
     opacity: 0.35;
     cursor: default;
+}
+
+/* --- PGN dialog ------------------------------------------------------------ */
+
+.cm-pgn-viewer .pgn-viewer-dialog {
+    width: min(44rem, calc(100vw - 2rem));
+    max-height: calc(100vh - 4rem);
+    padding: 0;
+    border: 0;
+    border-radius: 0.5rem;
+    background: var(--pgn-viewer-dialog-bg);
+    color: inherit;
+    box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.35);
+}
+
+.cm-pgn-viewer .pgn-viewer-dialog[open] {
+    display: flex;
+    flex-direction: column;
+}
+
+.cm-pgn-viewer .pgn-viewer-dialog::backdrop {
+    background: var(--pgn-viewer-backdrop);
+}
+
+.cm-pgn-viewer .pgn-viewer-dialog-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+    border-bottom: 1px solid var(--pgn-viewer-button-bg);
+}
+
+.cm-pgn-viewer .pgn-viewer-dialog-title {
+    font-weight: 700;
+    margin-right: auto;
+}
+
+.cm-pgn-viewer .pgn-viewer-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 0;
+    border-radius: var(--pgn-viewer-radius);
+    background: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.cm-pgn-viewer .pgn-viewer-close:hover {
+    background: var(--pgn-viewer-button-hover-bg);
+}
+
+.cm-pgn-viewer .pgn-viewer-close svg {
+    width: 0.9rem;
+    height: 0.9rem;
+    fill: currentColor;
+}
+
+.cm-pgn-viewer pre.pgn-viewer-pgn {
+    margin: 0;
+    padding: 1rem;
+    overflow: auto;
+    border-radius: 0;
+    background: none;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.cm-pgn-viewer .pgn-tag {
+    color: var(--pgn-viewer-muted);
+}
+
+.cm-pgn-viewer .pgn-tag-name {
+    color: var(--pgn-viewer-pgn-tag-name);
+}
+
+.cm-pgn-viewer .pgn-tag-value {
+    color: var(--pgn-viewer-pgn-tag-value);
+}
+
+.cm-pgn-viewer .pgn-number {
+    color: var(--pgn-viewer-pgn-number);
+}
+
+.cm-pgn-viewer .pgn-move {
+    font-weight: 700;
+}
+
+.cm-pgn-viewer .pgn-comment {
+    color: var(--pgn-viewer-comment-color);
+}
+
+.cm-pgn-viewer .pgn-variation {
+    color: var(--pgn-viewer-pgn-variation);
+    font-weight: 700;
+}
+
+.cm-pgn-viewer .pgn-result {
+    color: var(--pgn-viewer-pgn-result);
+    font-weight: 700;
 }
 
 /* --- pgn source and errors --------------------------------------------- */

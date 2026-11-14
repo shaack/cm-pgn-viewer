@@ -11,6 +11,7 @@ describe("PgnLoader", () => {
     it("should put headers on their own lines and separate the movetext", () => {
         assert.equal(normalizePgn(`[White "A"] [Black "B"] 1. e4 e5 *`), `[White "A"]\n[Black "B"]\n\n1. e4 e5 *`)
         assert.equal(normalizePgn(`  1. e4 e5 *  `), `1. e4 e5 *`)
+        assert.equal(normalizePgn(`    [White "A"]\n    1. e4 {indented\n        comment} e5 *\n`), `[White "A"]\n\n1. e4 {indented\ncomment} e5 *`)
     })
 
     it("should repair hand typed PGNs in lenient mode, but not inside comments", () => {

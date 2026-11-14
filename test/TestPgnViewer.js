@@ -148,6 +148,19 @@ describe("PgnViewer", () => {
         none.destroy()
     })
 
+    it("should show the PGN highlighted in a modal dialog", () => {
+        const viewer = createViewer(PGN, {language: "de"})
+        const dialog = viewer.elements.dialog
+        assert.false(dialog.open)
+        viewer.elements.source.querySelector("[data-action=showPgn]").click()
+        assert.true(dialog.open)
+        assert.equal(dialog.querySelector(".pgn-tag-name").textContent, "White")
+        assert.true(dialog.querySelectorAll(".pgn-move").length > 0)
+        dialog.querySelector("[data-action=closePgn]").click()
+        assert.false(dialog.open)
+        viewer.destroy()
+    })
+
     it("should replace elements with viewers in initFrom", () => {
         const holder = document.createElement("div")
         holder.innerHTML = `<pgn>[White "A"]<br />[Black "B"]<br /><br />1. e4 e5 *</pgn><pgn>1. d4 *</pgn>`

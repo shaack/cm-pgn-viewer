@@ -9,6 +9,7 @@ import {Accessibility} from "cm-chessboard/src/extensions/accessibility/Accessib
 import {loadPgn, readPgnFromElement, VARIANT} from "./PgnLoader.js"
 import {NotationRenderer} from "./NotationRenderer.js"
 import {createI18n, describeMove} from "./I18n.js"
+import {highlightPgn} from "./PgnHighlighter.js"
 import {MOVE_MARKER_TYPE, moveQuality} from "./MoveQuality.js"
 
 // 16x16 icons, filled with currentColor, so the viewer needs no icon font
@@ -19,7 +20,8 @@ export const ICONS = {
     previous: `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 3h1.5v10H4zM12 3v10L6 8z"/></svg>`,
     next: `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10.5 3H12v10h-1.5zM4 3l6 5-6 5z"/></svg>`,
     last: `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M12 3h1.5v10H12zM2 3l4.5 5L2 13zM7 3l4.5 5L7 13z"/></svg>`,
-    flip: `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 1.5 8.5 5.5H6V14H4V5.5H1.5zM11 14.5 7.5 10.5H10V2h2v8.5h2.5z"/></svg>`
+    flip: `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 1.5 8.5 5.5H6V14H4V5.5H1.5zM11 14.5 7.5 10.5H10V2h2v8.5h2.5z"/></svg>`,
+    close: `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.4 2 8 6.6 12.6 2 14 3.4 9.4 8l4.6 4.6-1.4 1.4L8 9.4 3.4 14 2 12.6 6.6 8 2 3.4z"/></svg>`
 }
 
 export {MARKER_TYPE}
@@ -159,6 +161,20 @@ export class PgnViewer {
         }
     }
 
+    /** Open the modal with the PGN, syntax highlighted. */
+    showPgn() {
+        const dialog = this.elements && this.elements.dialog
+        if (!dialog) {
+            return
+        }
+        const pre = dialog.querySelector(".pgn-viewer-pgn")
+        if (!pre.innerHTML) {
+            pre.innerHTML = highlightPgn(this.loaded.text)
+        }
+        this.stop()
+        dialog.showModal()
+    }
+
     flip() {
         if (!this.board) {
             return
@@ -244,17 +260,24 @@ export class PgnViewer {
             controls: find(".pgn-viewer-controls"),
             notation: find(".pgn-viewer-notation"),
             source: find(".pgn-viewer-source"),
+            dialog: find(".pgn-viewer-dialog"),
             live: find(".pgn-viewer-live")
         }
     }
 
     _pgnSourceHtml() {
         return `<div class="pgn-viewer-source">` +
-            `<button type="button" class="pgn-viewer-link" data-action="togglePgn" aria-expanded="false">${escapeHtml(this.t.showPgn)}</button>` +
-            `<div class="pgn-viewer-source-text" hidden>` +
-            `<pre>${escapeHtml(this.loaded.text)}</pre>` +
+            `<button type="button" class="pgn-viewer-link" data-action="showPgn" aria-haspopup="dialog">${escapeHtml(this.t.showPgn)}</button>` +
+            `</div>` +
+            `<dialog class="pgn-viewer-dialog" aria-label="PGN">` +
+            `<div class="pgn-viewer-dialog-header">` +
+            `<span class="pgn-viewer-dialog-title">PGN</span>` +
             `<button type="button" class="pgn-viewer-link" data-action="copyPgn">${escapeHtml(this.t.copy)}</button>` +
-            `</div></div>`
+            `<button type="button" class="pgn-viewer-close" data-action="closePgn" autofocus ` +
+            `title="${escapeHtml(this.t.close)}" aria-label="${escapeHtml(this.t.close)}">${this.icons.close}</button>` +
+            `</div>` +
+            `<pre class="pgn-viewer-pgn"></pre>` +
+            `</dialog>`
     }
 
     _renderHeaders() {
@@ -330,8 +353,16 @@ export class PgnViewer {
                 }
             }
         })
+        if (this.elements.dialog) {
+            // a click on the backdrop lands on the dialog itself
+            this.elements.dialog.addEventListener("click", (event) => {
+                if (event.target === this.elements.dialog) {
+                    this.elements.dialog.close()
+                }
+            })
+        }
         this.context.addEventListener("keydown", (event) => {
-            if (event.target.closest("pre") || event.altKey || event.ctrlKey || event.metaKey) {
+            if (event.target.closest("pre, dialog") || event.altKey || event.ctrlKey || event.metaKey) {
                 return
             }
             const actions = {ArrowRight: "next", ArrowLeft: "previous", Home: "first", End: "last"}
@@ -343,8 +374,10 @@ export class PgnViewer {
     }
 
     _action(action) {
-        if (action === "togglePgn") {
-            this._togglePgn()
+        if (action === "showPgn") {
+            this.showPgn()
+        } else if (action === "closePgn") {
+            this.elements.dialog.close()
         } else if (action === "copyPgn") {
             this._copyPgn()
         } else if (action === "play") {
@@ -357,16 +390,8 @@ export class PgnViewer {
         }
     }
 
-    _togglePgn() {
-        const button = this.elements.source.querySelector("[data-action=togglePgn]")
-        const text = this.elements.source.querySelector(".pgn-viewer-source-text")
-        text.hidden = !text.hidden
-        button.textContent = text.hidden ? this.t.showPgn : this.t.hidePgn
-        button.setAttribute("aria-expanded", String(!text.hidden))
-    }
-
     _copyPgn() {
-        const button = this.elements.source.querySelector("[data-action=copyPgn]")
+        const button = this.elements.dialog.querySelector("[data-action=copyPgn]")
         if (navigator.clipboard) {
             navigator.clipboard.writeText(this.loaded.text).then(() => {
                 button.textContent = this.t.copied
