@@ -244,10 +244,10 @@ export class PgnViewer {
                 `<div class="pgn-viewer-notation" tabindex="0" role="region" aria-label="${escapeHtml(this.t.notation)}"></div>` +
                 `</div>`)
         }
-        parts.push(`</div>`)
         if (this.props.showPgnToggle) {
-            parts.push(this._pgnSourceHtml())
+            parts.push(this._pgnSourceHtml()) // below the notation, right
         }
+        parts.push(`</div>`)
         if (this.props.accessibility) {
             parts.push(`<div class="pgn-viewer-live visually-hidden" aria-live="polite"></div>`)
         }

@@ -179,7 +179,7 @@
 .cm-pgn-viewer .pgn-viewer-main {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "board" "controls" "notation";
+    grid-template-areas: "board" "controls" "notation" "source";
     gap: 0.5rem var(--pgn-viewer-gap);
 }
 
@@ -202,7 +202,7 @@
 @container pgn-viewer (min-width: 32rem) {
     .cm-pgn-viewer .pgn-viewer-main {
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-        grid-template-areas: "board notation" "controls .";
+        grid-template-areas: "board notation" "controls source";
     }
 
     .cm-pgn-viewer .pgn-viewer-notation-area {
@@ -534,7 +534,10 @@
 /* --- pgn source and errors --------------------------------------------- */
 
 .cm-pgn-viewer .pgn-viewer-source {
-    margin-top: 0.5rem;
+    grid-area: source;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 }
 
 .cm-pgn-viewer .pgn-viewer-link {
