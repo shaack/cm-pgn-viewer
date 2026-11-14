@@ -5,10 +5,12 @@
  */
 import {Chessboard, BORDER_TYPE, COLOR} from "cm-chessboard/src/Chessboard.js"
 import {Markers, MARKER_TYPE} from "cm-chessboard/src/extensions/markers/Markers.js"
+import {Arrows} from "cm-chessboard/src/extensions/arrows/Arrows.js"
 import {Accessibility} from "cm-chessboard/src/extensions/accessibility/Accessibility.js"
 import {loadPgn, readPgnFromElement, VARIANT} from "./PgnLoader.js"
 import {NotationRenderer} from "./NotationRenderer.js"
 import {createI18n, describeMove} from "./I18n.js"
+import {MOVE_ARROW_TYPE, moveQuality} from "./MoveQuality.js"
 
 // 16x16 icons, filled with currentColor, so the viewer needs no icon font
 export const ICONS = {
@@ -44,7 +46,9 @@ export class PgnViewer {
             showHeaders: true,
             showControls: true,
             showPgnToggle: true,
-            lastMoveMarker: MARKER_TYPE.frame, // a cm-chessboard MARKER_TYPE, null for no marker
+            lastMoveArrow: true,            // arrow from/to, coloured by the move assessment (!, ?, ...)
+            lastMoveMarker: null,           // additionally a cm-chessboard MARKER_TYPE on from/to
+            checkMarker: MARKER_TYPE.circleDanger, // on the king in check, null for none
             autoplayInterval: 1000,         // milliseconds per move
             initialPly: undefined,          // jump to this mainline ply on load
             accessibility: true,            // cm-chessboard Accessibility extension and spoken moves
@@ -92,12 +96,30 @@ export class PgnViewer {
         }
         this.currentMove = move
         this.board.setPosition(move ? move.fen : this.loaded.setUpFen, animated)
+        if (this.props.lastMoveArrow) {
+            if (this.arrowType) {
+                this.board.removeArrows(this.arrowType)
+            }
+            this.arrowType = move ? MOVE_ARROW_TYPE[moveQuality(move) || "move"] : undefined
+            if (move) {
+                this.board.addArrow(this.arrowType, move.from, move.to)
+            }
+        }
         const marker = this.props.lastMoveMarker
         if (marker) {
             this.board.removeMarkers(marker)
             if (move) {
                 this.board.addMarker(marker, move.from)
                 this.board.addMarker(marker, move.to)
+            }
+        }
+        if (this.props.checkMarker) {
+            this.board.removeMarkers(this.props.checkMarker)
+            if (move && move.inCheck) {
+                const king = kingSquare(move.fen)
+                if (king) {
+                    this.board.addMarker(this.props.checkMarker, king)
+                }
             }
         }
         const element = this.notationRenderer.setActiveMove(move)
@@ -280,7 +302,7 @@ export class PgnViewer {
     }
 
     _initBoard() {
-        const extensions = [{class: Markers}]
+        const extensions = [{class: Markers}, {class: Arrows}]
         if (this.props.accessibility) {
             extensions.push({
                 class: Accessibility, props: {
@@ -443,6 +465,20 @@ export class PgnViewer {
         }
         return viewers
     }
+}
+
+/** The square of the king of the side to move in `fen`. */
+export function kingSquare(fen) {
+    const [placement, turn] = fen.split(/\s+/)
+    const king = turn === "w" ? "K" : "k"
+    const ranks = placement.split("/")
+    for (let r = 0; r < 8; r++) {
+        const file = ranks[r].replace(/\d/g, n => "1".repeat(parseInt(n, 10))).indexOf(king)
+        if (file !== -1) {
+            return "abcdefgh"[file] + (8 - r)
+        }
+    }
+    return undefined
 }
 
 function escapeHtml(text) {

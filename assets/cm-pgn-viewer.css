@@ -30,6 +30,21 @@
     --pgn-viewer-error-color: #b02a37;
     --pgn-viewer-radius: 0.375rem;
     --pgn-viewer-move-weight: 500;
+    /* move assessments: arrow on the board and symbol in the notation */
+    --pgn-viewer-arrow-move: #4a6d8c;
+    --pgn-viewer-quality-brilliant: #1a9e97;
+    --pgn-viewer-quality-good: #4a922a;
+    --pgn-viewer-quality-interesting: #2f86c9;
+    --pgn-viewer-quality-dubious: #c9970f;
+    --pgn-viewer-quality-mistake: #e07b24;
+    --pgn-viewer-quality-blunder: #d43f3f;
+    /* the notation symbols, lighter in dark mode */
+    --pgn-viewer-nag-brilliant: var(--pgn-viewer-quality-brilliant);
+    --pgn-viewer-nag-good: var(--pgn-viewer-quality-good);
+    --pgn-viewer-nag-interesting: var(--pgn-viewer-quality-interesting);
+    --pgn-viewer-nag-dubious: var(--pgn-viewer-quality-dubious);
+    --pgn-viewer-nag-mistake: var(--pgn-viewer-quality-mistake);
+    --pgn-viewer-nag-blunder: var(--pgn-viewer-quality-blunder);
     --pgn-viewer-button-max: 5rem;
 
     container-type: inline-size;
@@ -49,6 +64,12 @@
         --pgn-viewer-white-move-color: currentColor;
         --pgn-viewer-black-move-color: rgba(255, 255, 255, 0.68);
         --pgn-viewer-comment-color: #8ab8dc;
+        --pgn-viewer-nag-brilliant: #3fc9c1;
+        --pgn-viewer-nag-good: #7cc254;
+        --pgn-viewer-nag-interesting: #62b2f0;
+        --pgn-viewer-nag-dubious: #e9c341;
+        --pgn-viewer-nag-mistake: #f39a52;
+        --pgn-viewer-nag-blunder: #f26a6a;
         --pgn-viewer-white-icon-solid: inline;
         --pgn-viewer-white-icon-regular: none;
         --pgn-viewer-black-icon-solid: none;
@@ -70,6 +91,12 @@
     --pgn-viewer-white-move-color: currentColor;
     --pgn-viewer-black-move-color: rgba(255, 255, 255, 0.68);
     --pgn-viewer-comment-color: #8ab8dc;
+    --pgn-viewer-nag-brilliant: #3fc9c1;
+    --pgn-viewer-nag-good: #7cc254;
+    --pgn-viewer-nag-interesting: #62b2f0;
+    --pgn-viewer-nag-dubious: #e9c341;
+    --pgn-viewer-nag-mistake: #f39a52;
+    --pgn-viewer-nag-blunder: #f26a6a;
     --pgn-viewer-white-icon-solid: inline;
     --pgn-viewer-white-icon-regular: none;
     --pgn-viewer-black-icon-solid: none;
@@ -181,12 +208,15 @@
 .cm-pgn-viewer .move {
     font-weight: var(--pgn-viewer-move-weight);
     cursor: pointer;
-    border-radius: 0.2em;
-    padding: 0 0.1em;
     white-space: nowrap;
 }
 
-.cm-pgn-viewer .move:hover {
+.cm-pgn-viewer .move-body {
+    border-radius: 0.2em;
+    padding: 0 0.1em;
+}
+
+.cm-pgn-viewer .move:hover .move-body {
     background: var(--pgn-viewer-move-hover-bg);
 }
 
@@ -198,7 +228,7 @@
     color: var(--pgn-viewer-black-move-color);
 }
 
-.cm-pgn-viewer .move.active {
+.cm-pgn-viewer .move.active .move-body {
     background: var(--pgn-viewer-active-bg);
     color: var(--pgn-viewer-active-color);
     /* light ground, so the icons as in light mode */
@@ -209,12 +239,16 @@
 }
 
 .cm-pgn-viewer .move-number {
-    margin-left: 0.4em;
     margin-right: 0.2em;
 }
 
-/* no extra space at the start of the notation or of a variation */
-.cm-pgn-viewer :is(.pgn-viewer-notation, .variation) > .move:first-child .move-number {
+/* space before a move number, outside of the highlight */
+.cm-pgn-viewer .move.numbered {
+    margin-left: 0.4em;
+}
+
+/* but not at the start of the notation or of a variation */
+.cm-pgn-viewer :is(.pgn-viewer-notation, .variation) > .move.numbered:first-child {
     margin-left: 0;
 }
 
@@ -260,6 +294,93 @@
 .cm-pgn-viewer .variation .variation {
     margin-left: 0.5rem;
     background: var(--pgn-viewer-variation-nested-bg);
+}
+
+/* --- move assessments ---------------------------------------------------- */
+
+.cm-pgn-viewer .cm-chessboard .arrow .arrow-line {
+    stroke-linecap: round;
+    opacity: 0.75;
+}
+
+.cm-pgn-viewer .cm-chessboard .arrow-pgn-move .arrow-head {
+    fill: var(--pgn-viewer-arrow-move);
+}
+
+.cm-pgn-viewer .cm-chessboard .arrow-pgn-move .arrow-line {
+    stroke: var(--pgn-viewer-arrow-move);
+}
+
+.cm-pgn-viewer .cm-chessboard .arrow-pgn-brilliant .arrow-head {
+    fill: var(--pgn-viewer-quality-brilliant);
+}
+
+.cm-pgn-viewer .cm-chessboard .arrow-pgn-brilliant .arrow-line {
+    stroke: var(--pgn-viewer-quality-brilliant);
+}
+
+.cm-pgn-viewer .cm-chessboard .arrow-pgn-good .arrow-head {
+    fill: var(--pgn-viewer-quality-good);
+}
+
+.cm-pgn-viewer .cm-chessboard .arrow-pgn-good .arrow-line {
+    stroke: var(--pgn-viewer-quality-good);
+}
+
+.cm-pgn-viewer .cm-chessboard .arrow-pgn-interesting .arrow-head {
+    fill: var(--pgn-viewer-quality-interesting);
+}
+
+.cm-pgn-viewer .cm-chessboard .arrow-pgn-interesting .arrow-line {
+    stroke: var(--pgn-viewer-quality-interesting);
+}
+
+.cm-pgn-viewer .cm-chessboard .arrow-pgn-dubious .arrow-head {
+    fill: var(--pgn-viewer-quality-dubious);
+}
+
+.cm-pgn-viewer .cm-chessboard .arrow-pgn-dubious .arrow-line {
+    stroke: var(--pgn-viewer-quality-dubious);
+}
+
+.cm-pgn-viewer .cm-chessboard .arrow-pgn-mistake .arrow-head {
+    fill: var(--pgn-viewer-quality-mistake);
+}
+
+.cm-pgn-viewer .cm-chessboard .arrow-pgn-mistake .arrow-line {
+    stroke: var(--pgn-viewer-quality-mistake);
+}
+
+.cm-pgn-viewer .cm-chessboard .arrow-pgn-blunder .arrow-head {
+    fill: var(--pgn-viewer-quality-blunder);
+}
+
+.cm-pgn-viewer .cm-chessboard .arrow-pgn-blunder .arrow-line {
+    stroke: var(--pgn-viewer-quality-blunder);
+}
+
+.cm-pgn-viewer .nag-brilliant {
+    color: var(--pgn-viewer-nag-brilliant);
+}
+
+.cm-pgn-viewer .nag-good {
+    color: var(--pgn-viewer-nag-good);
+}
+
+.cm-pgn-viewer .nag-interesting {
+    color: var(--pgn-viewer-nag-interesting);
+}
+
+.cm-pgn-viewer .nag-dubious {
+    color: var(--pgn-viewer-nag-dubious);
+}
+
+.cm-pgn-viewer .nag-mistake {
+    color: var(--pgn-viewer-nag-mistake);
+}
+
+.cm-pgn-viewer .nag-blunder {
+    color: var(--pgn-viewer-nag-blunder);
 }
 
 /* --- controls ---------------------------------------------------------- */

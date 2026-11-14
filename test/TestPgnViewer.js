@@ -4,7 +4,7 @@
  * License: MIT, see file 'LICENSE'
  */
 import {describe, it, assert} from "teevi/src/teevi.js"
-import {PgnViewer, MARKER_TYPE} from "../src/PgnViewer.js"
+import {PgnViewer, MARKER_TYPE, kingSquare} from "../src/PgnViewer.js"
 
 const assetsUrl = "../node_modules/cm-chessboard/assets/"
 
@@ -87,8 +87,47 @@ describe("PgnViewer", () => {
         viewer.destroy()
     })
 
+    it("should show the move as arrow, coloured by its assessment", () => {
+        const viewer = createViewer(`1. e4 e5 $2 2. Nf3 $4 Nc6 $3 *`, {language: "de"})
+        const arrows = () => viewer.board.getArrows().map(arrow => arrow.from + arrow.to + ":" + arrow.type.class)
+        assert.equal(viewer.board.getArrows().length, 0)
+        viewer.next()
+        assert.equal(JSON.stringify(arrows()), JSON.stringify(["e2e4:arrow-pgn-move"]))
+        viewer.next()
+        assert.equal(JSON.stringify(arrows()), JSON.stringify(["e7e5:arrow-pgn-mistake"]))
+        viewer.next()
+        assert.equal(JSON.stringify(arrows()), JSON.stringify(["g1f3:arrow-pgn-blunder"]))
+        assert.equal(viewer.elements.live.textContent, "2. Weiß: Springer f3, grober Fehler")
+        viewer.next()
+        assert.equal(JSON.stringify(arrows()), JSON.stringify(["b8c6:arrow-pgn-brilliant"]))
+        viewer.first()
+        assert.equal(viewer.board.getArrows().length, 0)
+        // the same colours for the symbols in the notation
+        assert.equal(viewer.elements.notation.querySelectorAll(".nag-mistake, .nag-blunder, .nag-brilliant").length, 3)
+        viewer.destroy()
+        const none = createViewer(PGN, {lastMoveArrow: false})
+        none.next()
+        assert.equal(none.board.getArrows().length, 0)
+        none.destroy()
+    })
+
+    it("should mark the king in check", () => {
+        const viewer = createViewer(`1. e4 f5 2. Qh5+ g6 *`)
+        const marked = () => JSON.stringify(viewer.board.getMarkers(MARKER_TYPE.circleDanger).map(marker => marker.square))
+        viewer.next()
+        viewer.next()
+        assert.equal(marked(), "[]")
+        viewer.next()
+        assert.equal(marked(), JSON.stringify(["e8"]))
+        viewer.next()
+        assert.equal(marked(), "[]")
+        viewer.destroy()
+        assert.equal(kingSquare("rnbqkbnr/ppppp2p/6p1/5p1Q/4P3/8/PPPP1PPP/RNB1KBNR b KQkq - 1 2"), "e8")
+        assert.equal(kingSquare("8/8/8/8/8/8/8/6K1 w - - 0 1"), "g1")
+    })
+
     it("should mark the last move with the lastMoveMarker", () => {
-        const viewer = createViewer(PGN)
+        const viewer = createViewer(PGN, {lastMoveMarker: MARKER_TYPE.frame})
         viewer.next()
         const squares = (type) => JSON.stringify(viewer.board.getMarkers(type).map(marker => marker.square).sort())
         assert.equal(squares(MARKER_TYPE.frame), JSON.stringify(["e2", "e4"]))
@@ -102,9 +141,9 @@ describe("PgnViewer", () => {
         assert.equal(square.board.getMarkers(MARKER_TYPE.square).length, 2)
         assert.equal(square.board.getMarkers(MARKER_TYPE.frame).length, 0)
         square.destroy()
-        const none = createViewer(PGN, {lastMoveMarker: null})
+        const none = createViewer(PGN)
         none.next()
-        assert.equal(none.board.getMarkers().length, 0)
+        assert.equal(none.board.getMarkers().length, 0) // no marker by default, the arrow shows the move
         none.destroy()
     })
 

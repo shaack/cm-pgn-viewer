@@ -6,6 +6,8 @@
  * Labels and the words for spoken moves. Override single entries with the
  * `i18n` prop of the viewer.
  */
+import {moveQuality} from "./MoveQuality.js"
+
 export const TRANSLATIONS = {
     en: {
         play: "Play", stop: "Stop", first: "Start position", previous: "Previous move",
@@ -18,7 +20,11 @@ export const TRANSLATIONS = {
         white: "White", black: "Black",
         pieces: {p: "pawn", n: "knight", b: "bishop", r: "rook", q: "queen", k: "king"},
         captures: "takes", castlesShort: "castles short", castlesLong: "castles long",
-        promotes: "promotes to", check: "check", checkmate: "checkmate"
+        promotes: "promotes to", check: "check", checkmate: "checkmate",
+        quality: {
+            good: "good move", mistake: "mistake", brilliant: "brilliant move",
+            blunder: "blunder", interesting: "interesting move", dubious: "dubious move"
+        }
     },
     de: {
         play: "Abspielen", stop: "Anhalten", first: "Ausgangsstellung", previous: "Zug zurück",
@@ -31,7 +37,11 @@ export const TRANSLATIONS = {
         white: "Weiß", black: "Schwarz",
         pieces: {p: "Bauer", n: "Springer", b: "Läufer", r: "Turm", q: "Dame", k: "König"},
         captures: "schlägt", castlesShort: "kurze Rochade", castlesLong: "lange Rochade",
-        promotes: "wandelt um in", check: "Schach", checkmate: "Matt"
+        promotes: "wandelt um in", check: "Schach", checkmate: "Matt",
+        quality: {
+            good: "guter Zug", mistake: "Fehler", brilliant: "sehr guter Zug",
+            blunder: "grober Fehler", interesting: "interessanter Zug", dubious: "zweifelhafter Zug"
+        }
     }
 }
 
@@ -40,7 +50,8 @@ export function createI18n(language, overrides = {}) {
     return {
         ...base,
         ...overrides,
-        pieces: {...base.pieces, ...(overrides.pieces || {})}
+        pieces: {...base.pieces, ...(overrides.pieces || {})},
+        quality: {...base.quality, ...(overrides.quality || {})}
     }
 }
 
@@ -73,6 +84,10 @@ export function describeMove(move, t) {
         text += ", " + t.checkmate
     } else if (move.inCheck) {
         text += ", " + t.check
+    }
+    const quality = moveQuality(move)
+    if (quality) {
+        text += ", " + t.quality[quality]
     }
     return text
 }

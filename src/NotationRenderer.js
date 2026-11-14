@@ -8,6 +8,7 @@
  */
 import {moveNumber} from "./I18n.js"
 import {pieceIcon} from "./PieceIcons.js"
+import {MOVE_QUALITY} from "./MoveQuality.js"
 
 // For notation "unicode". Solid glyphs take the text colour, U+FE0E asks for
 // the text glyph, not an emoji.
@@ -120,11 +121,16 @@ export class NotationRenderer {
         element.className = "move " + (move.color === "w" ? "white" : "black")
         element.dataset.moveIndex = String(this.moves.push(move) - 1)
         this.moveToElement.set(move, element)
+        // number and SAN get the highlight, the assessment symbol stands beside it
+        const body = document.createElement("span")
+        body.className = "move-body"
+        element.appendChild(body)
         if (move.color === "w" || needsNumber) {
             const number = document.createElement("span")
             number.className = "move-number"
             number.textContent = moveNumber(move) + (move.color === "w" ? "." : "…")
-            element.appendChild(number)
+            element.classList.add("numbered")
+            body.appendChild(number)
         }
         const san = document.createElement("span")
         san.className = "san"
@@ -144,10 +150,11 @@ export class NotationRenderer {
         } else {
             san.textContent = this.formatSan(move.san)
         }
-        element.appendChild(san)
+        body.appendChild(san)
         for (const nag of move.nags || []) {
             const symbol = document.createElement("span")
-            symbol.className = "nag"
+            // move assessments get the colour of their arrow on the board
+            symbol.className = "nag" + (MOVE_QUALITY[nag] ? " nag-" + MOVE_QUALITY[nag] : "")
             symbol.textContent = NAGS[nag] || "$" + nag
             element.appendChild(symbol)
         }
