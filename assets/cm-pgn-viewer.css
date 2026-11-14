@@ -625,9 +625,13 @@
     flex: 0 0 2.75rem;
 }
 
+/* on: the speech icon in the blue of the comments, off: muted */
+.cm-pgn-viewer .pgn-viewer-button.pgn-viewer-toggle {
+    color: var(--pgn-viewer-muted);
+}
+
 .cm-pgn-viewer .pgn-viewer-button.pgn-viewer-toggle[aria-pressed="true"] {
-    background: var(--pgn-viewer-active-bg);
-    color: var(--pgn-viewer-active-color);
+    color: var(--pgn-viewer-comment-color);
 }
 
 /* --- comment bubble on the board ------------------------------------------- */
