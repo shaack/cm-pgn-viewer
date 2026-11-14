@@ -32,9 +32,9 @@
     --pgn-viewer-error-color: #b02a37;
     --pgn-viewer-radius: 0.375rem;
     --pgn-viewer-move-weight: 500;
-    /* the comment bubble on the board, light in light mode, dark in dark mode */
-    --pgn-viewer-bubble-bg: rgba(255, 255, 255, 0.78);
-    --pgn-viewer-bubble-color: var(--pgn-viewer-comment-color);
+    /* the comment bubble on the board, dark in both modes, the text a light comment blue */
+    --pgn-viewer-bubble-bg: rgba(24, 26, 30, 0.8);
+    --pgn-viewer-bubble-color: #b9d6ee;
     /* the PGN dialog and its syntax highlighting */
     --pgn-viewer-dialog-bg: #fff;
     --pgn-viewer-backdrop: rgba(0, 0, 0, 0.45);
@@ -85,7 +85,6 @@
         --pgn-viewer-white-move-color: currentColor;
         --pgn-viewer-black-move-color: rgba(255, 255, 255, 0.68);
         --pgn-viewer-comment-color: #8ab8dc;
-        --pgn-viewer-bubble-bg: rgba(24, 26, 30, 0.7);
         --pgn-viewer-dialog-bg: #24262a;
         --pgn-viewer-backdrop: rgba(0, 0, 0, 0.6);
         --pgn-viewer-pgn-tag-name: #d2a8ff;
@@ -120,7 +119,6 @@
     --pgn-viewer-white-move-color: currentColor;
     --pgn-viewer-black-move-color: rgba(255, 255, 255, 0.68);
     --pgn-viewer-comment-color: #8ab8dc;
-    --pgn-viewer-bubble-bg: rgba(24, 26, 30, 0.7);
     --pgn-viewer-dialog-bg: #24262a;
     --pgn-viewer-backdrop: rgba(0, 0, 0, 0.6);
     --pgn-viewer-pgn-tag-name: #d2a8ff;
