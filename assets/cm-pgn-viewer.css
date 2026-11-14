@@ -18,11 +18,18 @@
     --pgn-viewer-active-color: #000;
     --pgn-viewer-white-move-color: rgba(0, 0, 0, 0.72);
     --pgn-viewer-black-move-color: currentColor;
+    --pgn-viewer-comment-color: #2f6690;
+    /* iconStyle "auto": which icon each side gets, the darker one for Black */
+    --pgn-viewer-white-icon-solid: none;
+    --pgn-viewer-white-icon-regular: inline;
+    --pgn-viewer-black-icon-solid: inline;
+    --pgn-viewer-black-icon-regular: none;
     --pgn-viewer-button-bg: rgba(0, 0, 0, 0.06);
     --pgn-viewer-button-hover-bg: rgba(0, 0, 0, 0.12);
     --pgn-viewer-badge-bg: rgba(0, 0, 0, 0.08);
     --pgn-viewer-error-color: #b02a37;
     --pgn-viewer-radius: 0.375rem;
+    --pgn-viewer-move-weight: 500;
     --pgn-viewer-button-max: 5rem;
 
     container-type: inline-size;
@@ -41,6 +48,11 @@
         --pgn-viewer-active-bg: #e8b923;
         --pgn-viewer-white-move-color: currentColor;
         --pgn-viewer-black-move-color: rgba(255, 255, 255, 0.68);
+        --pgn-viewer-comment-color: #8ab8dc;
+        --pgn-viewer-white-icon-solid: inline;
+        --pgn-viewer-white-icon-regular: none;
+        --pgn-viewer-black-icon-solid: none;
+        --pgn-viewer-black-icon-regular: inline;
         --pgn-viewer-button-bg: rgba(255, 255, 255, 0.08);
         --pgn-viewer-button-hover-bg: rgba(255, 255, 255, 0.16);
         --pgn-viewer-badge-bg: rgba(255, 255, 255, 0.12);
@@ -57,6 +69,11 @@
     --pgn-viewer-active-bg: #e8b923;
     --pgn-viewer-white-move-color: currentColor;
     --pgn-viewer-black-move-color: rgba(255, 255, 255, 0.68);
+    --pgn-viewer-comment-color: #8ab8dc;
+    --pgn-viewer-white-icon-solid: inline;
+    --pgn-viewer-white-icon-regular: none;
+    --pgn-viewer-black-icon-solid: none;
+    --pgn-viewer-black-icon-regular: inline;
     --pgn-viewer-button-bg: rgba(255, 255, 255, 0.08);
     --pgn-viewer-button-hover-bg: rgba(255, 255, 255, 0.16);
     --pgn-viewer-badge-bg: rgba(255, 255, 255, 0.12);
@@ -162,7 +179,7 @@
 }
 
 .cm-pgn-viewer .move {
-    font-weight: 700;
+    font-weight: var(--pgn-viewer-move-weight);
     cursor: pointer;
     border-radius: 0.2em;
     padding: 0 0.1em;
@@ -184,15 +201,26 @@
 .cm-pgn-viewer .move.active {
     background: var(--pgn-viewer-active-bg);
     color: var(--pgn-viewer-active-color);
+    /* light ground, so the icons as in light mode */
+    --pgn-viewer-white-icon-solid: none;
+    --pgn-viewer-white-icon-regular: inline;
+    --pgn-viewer-black-icon-solid: inline;
+    --pgn-viewer-black-icon-regular: none;
 }
 
 .cm-pgn-viewer .move-number {
+    margin-left: 0.4em;
     margin-right: 0.2em;
+}
+
+/* no extra space at the start of the notation or of a variation */
+.cm-pgn-viewer :is(.pgn-viewer-notation, .variation) > .move:first-child .move-number {
+    margin-left: 0;
 }
 
 .cm-pgn-viewer svg.piece-icon {
     width: auto;
-    height: 0.95em;
+    height: 0.85em;
     margin-right: 0.08em;
     vertical-align: -0.1em;
 }
@@ -203,6 +231,23 @@
 
 .cm-pgn-viewer .comment {
     font-weight: 400;
+    color: var(--pgn-viewer-comment-color);
+}
+
+.cm-pgn-viewer .move.white svg.piece-icon.auto.solid {
+    display: var(--pgn-viewer-white-icon-solid);
+}
+
+.cm-pgn-viewer .move.white svg.piece-icon.auto.regular {
+    display: var(--pgn-viewer-white-icon-regular);
+}
+
+.cm-pgn-viewer .move.black svg.piece-icon.auto.solid {
+    display: var(--pgn-viewer-black-icon-solid);
+}
+
+.cm-pgn-viewer .move.black svg.piece-icon.auto.regular {
+    display: var(--pgn-viewer-black-icon-regular);
 }
 
 .cm-pgn-viewer .variation {

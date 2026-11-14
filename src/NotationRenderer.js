@@ -24,7 +24,7 @@ export class NotationRenderer {
 
     /**
      * @param props notation: "icons" (SVG piece icons), "unicode" or "letters",
-     *        iconStyle: "auto" (white moves regular, black moves solid), "solid" or "regular",
+     *        iconStyle: "auto" (the darker icon for black, depends on the colour scheme), "solid" or "regular",
      *        pieceLetters: the letters for "letters", e.g. {K: "K", Q: "D", R: "T", B: "L", N: "S"},
      *        pieceNames: names for screen readers, e.g. {k: "king", n: "knight"}
      */
@@ -81,11 +81,14 @@ export class NotationRenderer {
 
     // --- internals -------------------------------------------------------
 
-    _iconStyle(move) {
-        if (this.props.iconStyle === "auto") {
-            return move.color === "w" ? "regular" : "solid"
-        }
-        return this.props.iconStyle
+    // "auto" renders both styles, the stylesheet shows the one that fits the
+    // side and the colour scheme, so it also follows a switch of the scheme
+    _iconStyles() {
+        return this.props.iconStyle === "auto" ? ["solid", "regular"] : [this.props.iconStyle]
+    }
+
+    _iconClass(style) {
+        return "piece-icon " + style + (this.props.iconStyle === "auto" ? " auto" : "")
     }
 
     _renderLine(parent, moves) {
@@ -130,8 +133,10 @@ export class NotationRenderer {
             for (const part of move.san.split(/([KQRBN])/)) {
                 if (/^[KQRBN]$/.test(part)) {
                     const name = this.props.pieceNames[part.toLowerCase()] || this.props.pieceLetters[part]
-                    san.insertAdjacentHTML("beforeend",
-                        pieceIcon(part, this._iconStyle(move), {class: "piece-icon", "aria-label": name}))
+                    for (const style of this._iconStyles()) {
+                        san.insertAdjacentHTML("beforeend",
+                            pieceIcon(part, style, {class: this._iconClass(style), "aria-label": name}))
+                    }
                 } else if (part) {
                     san.appendChild(document.createTextNode(part))
                 }

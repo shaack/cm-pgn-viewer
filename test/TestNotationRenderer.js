@@ -52,18 +52,21 @@ describe("NotationRenderer", () => {
 
     it("should format pieces as SVG icons, unicode or configurable letters", () => {
         const withIcons = render(`1. Nf3 d5 2. g3 c5 3. Bg2 Nc6 4. O-O e5 *`, {pieceNames: {n: "knight", b: "bishop"}})
-        const icons = withIcons.querySelectorAll(".move svg.piece-icon")
-        assert.equal(icons.length, 3)
+        // "auto" renders both styles, the stylesheet picks one by side and colour scheme
+        assert.equal(withIcons.querySelectorAll(".move svg.piece-icon.auto.solid").length, 3)
+        assert.equal(withIcons.querySelectorAll(".move svg.piece-icon.auto.regular").length, 3)
+        const icons = withIcons.querySelectorAll(".move svg.piece-icon.solid")
         assert.equal(icons[0].getAttribute("aria-label"), "knight")
-        assert.equal(icons[0].nextSibling.textContent, "f3")
+        assert.equal(icons[0].parentElement.lastChild.textContent, "f3")
         assert.equal(withIcons.querySelector(".move").textContent, "1.f3") // the icon has no text
-        // "auto": white moves with regular, black moves with solid icons
+        // every move knows its side, the stylesheet colours it
         assert.true(withIcons.querySelectorAll(".move")[0].classList.contains("white"))
         assert.true(withIcons.querySelectorAll(".move")[5].classList.contains("black"))
-        assert.equal(icons[0].getAttribute("viewBox"), "0 -32 448 544") // regular knight
-        assert.equal(icons[2].getAttribute("viewBox"), "0 -32 384 544") // solid knight, Nc6
+        assert.equal(withIcons.querySelector(".move svg.piece-icon.regular").getAttribute("viewBox"), "0 -32 448 544")
         const solid = render(`1. Nf3 *`, {iconStyle: "solid"})
         assert.equal(solid.querySelector("svg.piece-icon").getAttribute("viewBox"), "0 -32 384 544")
+        assert.equal(solid.querySelectorAll("svg.piece-icon").length, 1)
+        assert.false(solid.querySelector("svg.piece-icon").classList.contains("auto"))
         const unicode = render(`1. Nf3 *`, {notation: "unicode"})
         assert.equal(unicode.querySelector(".san").textContent, "\u265E\uFE0Ef3")
         const letters = render(`1. Nf3 d5 2. g3 c5 3. Bg2 Nc6 4. O-O *`,

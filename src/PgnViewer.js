@@ -39,7 +39,7 @@ export class PgnViewer {
             piecesFile: "pieces/standard.svg",
             assetsUrl: "./node_modules/cm-chessboard/assets/",
             notation: "icons",              // "icons" (SVG piece icons), "unicode" or "letters"
-            iconStyle: "auto",              // "auto" (white regular, black solid), "solid" or "regular"
+            iconStyle: "auto",              // "auto" (the darker icon for black, by colour scheme), "solid" or "regular"
             pieceLetters: {K: "K", Q: "Q", R: "R", B: "B", N: "N"},
             showHeaders: true,
             showControls: true,
