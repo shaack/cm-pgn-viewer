@@ -13,7 +13,7 @@ It is built on [cm-chessboard](https://github.com/shaack/cm-chessboard) for the 
 - White and black moves look different: Black gets the darker piece icon and a darker tone
 - The move shown is framed on the board, for an assessed move (`!!`, `!`, `!?`, `?!`, `?`, `??`) the frame has the colour of the assessment, the symbols in the notation the same colours
 - A king in check gets a red circle
-- A move with a comment gets a small speech bubble at its square on the board. A click on it or on the piece toggles between the small bubble and the big one with the comment
+- The comment of a move as a speech bubble on the board, pointing to the piece and placed where it hides the fewest pieces. A click on the piece makes it small, a click on the piece or the small bubble big again
 - Click a move, use the buttons (play, start, back, forward, end, flip) or the keys Left, Right, Home and End
 - Move numbers from the FEN, so a game from a position starts at the right move, also with Black to move
 - Chess960, detected from the `Variant` tag or from the start FEN, castling with Chess960 rules
@@ -96,7 +96,7 @@ PgnViewer.initFrom("pgn", {lazy: true, assetsUrl: "/node_modules/cm-chessboard/a
 | `showControls`     | `true`                                   | The button row                                                              |
 | `showPgnToggle`    | `true`                                   | "Show PGN", opens the PGN highlighted in a modal dialog                     |
 | `commentBubbles`   | `true`                                   | Show the comment of a move as speech bubble on the board                    |
-| `bubbleExpanded`   | `false`                                  | Start with the big bubble instead of the small one                          |
+| `bubbleExpanded`   | `true`                                   | Start with the big bubble, `false` for the small one                        |
 | `lastMoveMarker`   | `MARKER_TYPE.frame`                      | Marker on both squares of the move shown, any cm-chessboard `MARKER_TYPE` (re-exported by `PgnViewer.js`), `null` for none |
 | `qualityMarkers`   | `true`                                   | Moves with `!!`, `!`, `!?`, `?!`, `?` or `??` get the frame in the colour of their assessment |
 | `checkMarker`      | `MARKER_TYPE.circleDanger`               | Marker on the king in check, `null` for none                                |

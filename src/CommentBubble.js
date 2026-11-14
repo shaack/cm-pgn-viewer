@@ -4,12 +4,13 @@
  * License: MIT, see file 'LICENSE'
  *
  * Shows the comment of a move as a speech bubble on the board, the tail
- * pointing to the square the move went to. Above the square, below it for
- * the upper ranks, always inside the board.
+ * pointing to the square the move went to. Above or below the square, where
+ * it hides the fewest pieces, always inside the board.
  *
- * Small, a round speech icon at the corner of the square, by default. A click
- * on it or on the piece of the move toggles between small and big. The state
- * stays while going through the game.
+ * Big by default. A click on the piece of the move makes it small, a round
+ * speech icon at the corner of the square, a click on the piece or on the
+ * small bubble big again. A click on the big bubble does nothing, so its text
+ * can be selected. The state stays while going through the game.
  */
 const GAP = 4 // between the bubble and the square, in px
 const FILES = "abcdefgh"
@@ -36,8 +37,10 @@ export class CommentBubble {
         this.element.appendChild(this.icon)
         boardElement.appendChild(this.element)
         this.clickHandler = (event) => {
-            if (this.element.contains(event.target) || this.isOverSquare(event)) {
+            if (this.isOverSquare(event)) {
                 this.setCollapsed(!this.collapsed)
+            } else if (this.collapsed && this.element.contains(event.target)) {
+                this.setCollapsed(false)
             }
         }
         // a pointer cursor over the piece with the comment
@@ -53,13 +56,17 @@ export class CommentBubble {
         }
     }
 
-    /** Show `text` at `square`, hide the bubble without text. */
-    show(text, square) {
+    /**
+     * Show `text` at `square`, hide the bubble without text.
+     * @param fromSquare where the piece came from, the bubble avoids it
+     */
+    show(text, square, fromSquare = undefined) {
         if (!text || !square) {
             this.hide()
             return
         }
         this.square = square
+        this.fromSquare = fromSquare
         this.text.textContent = text
         this.element.hidden = false
         this.text.scrollTop = 0
@@ -116,24 +123,88 @@ export class CommentBubble {
             style.bottom = ""
             return
         }
-        const centerX = point.x + view.squareWidth / 2
-        const below = point.y < boardHeight * 0.35 // upper ranks: below the square
         style.maxWidth = Math.round(boardWidth * 0.7) + "px"
         this.text.style.maxHeight = Math.round(boardHeight * 0.45) + "px"
         style.left = "0px"
+        style.top = "0px"
+        style.bottom = ""
         const width = this.element.offsetWidth
-        const left = Math.min(Math.max(centerX - width / 2, GAP), boardWidth - width - GAP)
-        style.left = Math.round(left) + "px"
-        if (below) {
-            style.top = Math.round(point.y + view.squareHeight + GAP) + "px"
-            style.bottom = ""
-        } else {
-            style.top = ""
-            style.bottom = Math.round(boardHeight - point.y + GAP) + "px"
-        }
-        this.element.classList.toggle("below", below)
+        const height = this.element.offsetHeight
+        const placement = this.bestPlacement(point, width, height)
+        style.left = Math.round(placement.left) + "px"
+        style.top = Math.round(placement.top) + "px"
+        this.element.classList.toggle("below", placement.below)
         // the tail points to the middle of the square, as far as the corners allow
-        style.setProperty("--tail-x", Math.round(Math.min(Math.max(centerX - left, 14), width - 14)) + "px")
+        const centerX = point.x + view.squareWidth / 2
+        style.setProperty("--tail-x", Math.round(Math.min(Math.max(centerX - placement.left, 14), width - 14)) + "px")
+    }
+
+    /**
+     * Above or below the square, centred or aligned to one of its edges: the
+     * place inside the board that hides the fewest pieces. The square the
+     * piece came from counts three times. On a tie the order below decides.
+     */
+    bestPlacement(point, width, height) {
+        const view = this.chessboard.view
+        const boardWidth = view.width
+        const boardHeight = view.height
+        const clampLeft = (left) => Math.min(Math.max(left, GAP), boardWidth - width - GAP)
+        const lefts = [
+            point.x + view.squareWidth / 2 - width / 2, // centred
+            point.x,                                    // left edges aligned
+            point.x + view.squareWidth - width          // right edges aligned
+        ].map(clampLeft)
+        const above = point.y - GAP - height
+        const below = point.y + view.squareHeight + GAP
+        const candidates = []
+        for (const isBelow of [false, true]) {
+            const top = isBelow ? below : above
+            if (top < 0 || top + height > boardHeight) {
+                continue // does not fit on this side
+            }
+            for (const left of lefts) {
+                candidates.push({left, top, below: isBelow})
+            }
+        }
+        if (candidates.length === 0) {
+            // too high for both sides: the side with more room, as far inside as possible
+            const isBelow = point.y < boardHeight / 2
+            const top = isBelow ? Math.min(below, boardHeight - height) : Math.max(above, 0)
+            return {left: lefts[0], top, below: isBelow}
+        }
+        let best = candidates[0]
+        let bestScore = Infinity
+        for (const candidate of candidates) {
+            const score = this.coverage(candidate.left, candidate.top, width, height)
+            if (score < bestScore - 0.01) {
+                best = candidate
+                bestScore = score
+            }
+        }
+        return best
+    }
+
+    /** How much of the pieces the rectangle hides, in squares, the from square three times. */
+    coverage(left, top, width, height) {
+        const view = this.chessboard.view
+        let score = 0
+        for (let f = 0; f < 8; f++) {
+            for (let r = 1; r <= 8; r++) {
+                const square = FILES[f] + r
+                const isFrom = square === this.fromSquare
+                if (!isFrom && !this.chessboard.getPiece(square)) {
+                    continue
+                }
+                const p = view.squareToPoint(square)
+                const overlapX = Math.min(left + width, p.x + view.squareWidth) - Math.max(left, p.x)
+                const overlapY = Math.min(top + height, p.y + view.squareHeight) - Math.max(top, p.y)
+                if (overlapX > 0 && overlapY > 0) {
+                    const share = (overlapX * overlapY) / (view.squareWidth * view.squareHeight)
+                    score += isFrom ? share * 3 : share
+                }
+            }
+        }
+        return score
     }
 
     destroy() {

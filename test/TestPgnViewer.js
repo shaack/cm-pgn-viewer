@@ -176,7 +176,7 @@ describe("PgnViewer", () => {
         const viewer = createViewer(`1. e4 {Best by test [%clk 0:05:00]} e5 2. Nf3 *`)
         viewer.next()
         assert.false(viewer.bubble.element.hidden) // on by default
-        assert.true(viewer.bubble.collapsed) // and small
+        assert.false(viewer.bubble.collapsed) // and big
         assert.equal(viewer.bubble.text.textContent, "Best by test")
         viewer.next()
         assert.true(viewer.bubble.element.hidden) // e5 has no comment
@@ -190,16 +190,18 @@ describe("PgnViewer", () => {
         off.destroy()
     })
 
-    it("should make the bubble small on click and big again on a click on it or the piece", () => {
-        const viewer = createViewer(`1. e4 {Best} e5 {Also good} *`, {initialPly: 1, bubbleExpanded: true})
+    it("should make the bubble small on a click on the piece, big again on the piece or the small bubble", () => {
+        const viewer = createViewer(`1. e4 {Best} e5 {Also good} *`, {initialPly: 1})
         const bubble = viewer.bubble
         assert.false(bubble.collapsed)
         bubble.element.click()
+        assert.false(bubble.collapsed) // a click on the big bubble does nothing
+        clickSquare(viewer, "e4")
         assert.true(bubble.collapsed)
         assert.true(bubble.element.classList.contains("collapsed"))
         bubble.element.click()
-        assert.false(bubble.collapsed)
-        bubble.element.click()
+        assert.false(bubble.collapsed) // the small bubble opens it
+        clickSquare(viewer, "e4")
         // stays small on the next move
         viewer.next()
         assert.true(bubble.collapsed)
@@ -211,6 +213,23 @@ describe("PgnViewer", () => {
         clickSquare(viewer, "e5")
         assert.true(bubble.collapsed)
         viewer.destroy()
+    })
+
+    it("should place the bubble where it hides the fewest pieces", () => {
+        // the queen goes to d5, above it three full ranks, below it empty squares
+        const crowdedAbove = createViewer(`[SetUp "1"]
+[FEN "rnbqkbnr/pppppppp/pppppppp/8/8/8/8/3QK3 w kq - 0 1"]
+
+1. Qd5 {Into the middle} *`, {initialPly: 1, bubbleExpanded: true})
+        assert.true(crowdedAbove.bubble.element.classList.contains("below"))
+        crowdedAbove.destroy()
+        // free squares above, pawns below: the bubble stays above
+        const freeAbove = createViewer(`[SetUp "1"]
+[FEN "4k3/8/8/8/3Q4/PPPPPPPP/PPPPPPPP/4K3 w - - 0 1"]
+
+1. Qd5 {Into the middle} *`, {initialPly: 1, bubbleExpanded: true})
+        assert.false(freeAbove.bubble.element.classList.contains("below"))
+        freeAbove.destroy()
     })
 
     it("should replace elements with viewers in initFrom", () => {

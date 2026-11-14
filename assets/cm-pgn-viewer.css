@@ -565,7 +565,6 @@
     font-size: 1rem;
     line-height: 1.4;
     pointer-events: auto;
-    cursor: pointer;
 }
 
 .cm-pgn-viewer .pgn-viewer-bubble-icon {
@@ -574,6 +573,7 @@
 
 /* small: a round speech icon at the corner of the square */
 .cm-pgn-viewer .pgn-viewer-bubble.collapsed {
+    cursor: pointer;
     width: 1.75rem;
     height: 1.75rem;
     padding: 0;

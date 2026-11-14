@@ -51,7 +51,7 @@ export class PgnViewer {
             showControls: true,
             showPgnToggle: true,
             commentBubbles: true,           // the comment of a move as speech bubble on the board
-            bubbleExpanded: false,          // start with the big bubble, otherwise the small one
+            bubbleExpanded: true,           // start with the big bubble, otherwise the small one
             lastMoveMarker: MARKER_TYPE.frame, // a cm-chessboard MARKER_TYPE on from/to, null for none
             qualityMarkers: true,           // assessed moves (!!, !, !?, ?!, ?, ??) get the marker in their colour
             checkMarker: MARKER_TYPE.circleDanger, // on the king in check, null for none
@@ -437,7 +437,7 @@ export class PgnViewer {
             this.bubble = new CommentBubble(this.elements.board, this.board)
             this.bubble.setCollapsed(!this.props.bubbleExpanded)
         }
-        this.bubble.show(moveCommentText(this.currentMove), this.currentMove.to)
+        this.bubble.show(moveCommentText(this.currentMove), this.currentMove.to, this.currentMove.from)
     }
 
     _nextMove() {
