@@ -46,8 +46,8 @@ export class PgnViewer {
             showHeaders: true,
             showControls: true,
             showPgnToggle: true,
-            lastMoveArrow: true,            // arrow from/to, coloured by the move assessment (!, ?, ...)
-            lastMoveMarker: null,           // additionally a cm-chessboard MARKER_TYPE on from/to
+            lastMoveMarker: MARKER_TYPE.frame, // a cm-chessboard MARKER_TYPE on from/to, null for none
+            qualityArrows: true,            // an arrow for assessed moves (!!, !, !?, ?!, ?, ??) in their colour
             checkMarker: MARKER_TYPE.circleDanger, // on the king in check, null for none
             autoplayInterval: 1000,         // milliseconds per move
             initialPly: undefined,          // jump to this mainline ply on load
@@ -96,12 +96,13 @@ export class PgnViewer {
         }
         this.currentMove = move
         this.board.setPosition(move ? move.fen : this.loaded.setUpFen, animated)
-        if (this.props.lastMoveArrow) {
+        if (this.props.qualityArrows) {
             if (this.arrowType) {
                 this.board.removeArrows(this.arrowType)
             }
-            this.arrowType = move ? MOVE_ARROW_TYPE[moveQuality(move) || "move"] : undefined
-            if (move) {
+            const quality = moveQuality(move)
+            this.arrowType = quality ? MOVE_ARROW_TYPE[quality] : undefined
+            if (this.arrowType) {
                 this.board.addArrow(this.arrowType, move.from, move.to)
             }
         }

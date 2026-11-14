@@ -10,7 +10,7 @@ It is built on [cm-chessboard](https://github.com/shaack/cm-chessboard) for the 
 ## Features
 
 - Moves bold, comments as running text, every variation in its own block, nested variations inside their parent
-- The move shown as an arrow on the board, coloured by its assessment, the symbols in the notation in the same colours
+- The move shown is framed on the board, an assessed move also gets an arrow in the colour of its assessment, the symbols in the notation in the same colours
 - Click a move, use the buttons (play, start, back, forward, end, flip) or the keys Left, Right, Home and End
 - Move numbers from the FEN, so a game from a position starts at the right move, also with Black to move
 - Chess960, detected from the `Variant` tag or from the start FEN, castling with Chess960 rules
@@ -29,7 +29,7 @@ npm install cm-pgn-viewer
 
 ## Usage
 
-Load the stylesheets of cm-chessboard and of the viewer. `markers.css` is needed for the check marker, the arrow colours come with `cm-pgn-viewer.css`.
+Load the stylesheets of cm-chessboard and of the viewer. `markers.css` is needed for the markers, the arrow colours come with `cm-pgn-viewer.css`.
 
 ```html
 <link rel="stylesheet" href="./node_modules/cm-chessboard/assets/chessboard.css"/>
@@ -92,9 +92,9 @@ PgnViewer.initFrom("pgn", {lazy: true, assetsUrl: "/node_modules/cm-chessboard/a
 | `showHeaders`      | `true`                                   | Players, event, site, round, date, ECO, result                              |
 | `showControls`     | `true`                                   | The button row                                                              |
 | `showPgnToggle`    | `true`                                   | "Show PGN" with a copy button                                               |
-| `lastMoveArrow`    | `true`                                   | An arrow for the move shown, coloured by its assessment (`!!`, `!`, `!?`, `?!`, `?`, `??`) |
+| `lastMoveMarker`   | `MARKER_TYPE.frame`                      | Marker on both squares of the move shown, any cm-chessboard `MARKER_TYPE` (re-exported by `PgnViewer.js`), `null` for none |
+| `qualityArrows`    | `true`                                   | An arrow in the colour of the assessment for moves with `!!`, `!`, `!?`, `?!`, `?` or `??` |
 | `checkMarker`      | `MARKER_TYPE.circleDanger`               | Marker on the king in check, `null` for none                                |
-| `lastMoveMarker`   | `null`                                   | Additionally a marker on both squares of the move shown, any cm-chessboard `MARKER_TYPE` (re-exported by `PgnViewer.js`) |
 | `autoplayInterval` | `1000`                                   | Milliseconds per move when playing                                          |
 | `initialPly`       | `undefined`                              | Show the position after this ply of the mainline on load                    |
 | `accessibility`    | `true`                                   | Live region for moves and the cm-chessboard Accessibility extension         |

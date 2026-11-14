@@ -32,7 +32,6 @@
     --pgn-viewer-move-weight: 500;
     --pgn-viewer-move-number-size: 0.8em;
     /* move assessments: arrow on the board and symbol in the notation */
-    --pgn-viewer-arrow-move: #4a6d8c;
     --pgn-viewer-quality-brilliant: #1f9d3a;
     --pgn-viewer-quality-good: #4a922a;
     --pgn-viewer-quality-interesting: #2f86c9;
@@ -305,14 +304,6 @@
 .cm-pgn-viewer .cm-chessboard .arrow .arrow-line {
     stroke-linecap: round;
     opacity: 0.75;
-}
-
-.cm-pgn-viewer .cm-chessboard .arrow-pgn-move .arrow-head {
-    fill: var(--pgn-viewer-arrow-move);
-}
-
-.cm-pgn-viewer .cm-chessboard .arrow-pgn-move .arrow-line {
-    stroke: var(--pgn-viewer-arrow-move);
 }
 
 .cm-pgn-viewer .cm-chessboard .arrow-pgn-brilliant .arrow-head {

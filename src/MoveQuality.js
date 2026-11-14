@@ -18,7 +18,6 @@ export const MOVE_QUALITY = {
 
 // cm-chessboard Arrows types, the class defines the colour
 export const MOVE_ARROW_TYPE = {
-    move: {class: "arrow-pgn-move"},
     good: {class: "arrow-pgn-good"},
     mistake: {class: "arrow-pgn-mistake"},
     brilliant: {class: "arrow-pgn-brilliant"},
