@@ -30,6 +30,7 @@
     --pgn-viewer-error-color: #b02a37;
     --pgn-viewer-radius: 0.375rem;
     --pgn-viewer-move-weight: 500;
+    --pgn-viewer-move-number-size: 0.8em;
     /* move assessments: arrow on the board and symbol in the notation */
     --pgn-viewer-arrow-move: #4a6d8c;
     --pgn-viewer-quality-brilliant: #1a9e97;
@@ -239,7 +240,10 @@
 }
 
 .cm-pgn-viewer .move-number {
-    margin-right: 0.2em;
+    margin-right: 0.15em;
+    font-size: var(--pgn-viewer-move-number-size);
+    font-weight: 400;
+    opacity: 0.75;
 }
 
 /* space before a move number, outside of the highlight */
