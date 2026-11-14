@@ -7,8 +7,8 @@
  * pointing to the square the move went to. Above the square, below it for
  * the upper ranks, always inside the board.
  *
- * A click on the bubble makes it small, a round speech icon at the corner of
- * the square. A click on the small bubble or on the square makes it big again.
+ * Small, a round speech icon at the corner of the square, by default. A click
+ * on it or on the square makes it big, a click on the big bubble small again.
  * The state stays while going through the game.
  */
 const GAP = 4 // between the bubble and the square, in px

@@ -12,7 +12,6 @@ import {createI18n, describeMove} from "./I18n.js"
 import {highlightPgn} from "./PgnHighlighter.js"
 import {CommentBubble, moveCommentText} from "./CommentBubble.js"
 
-const BUBBLES_STORAGE_KEY = "cm-pgn-viewer.commentBubbles"
 import {MOVE_MARKER_TYPE, moveQuality} from "./MoveQuality.js"
 
 // 16x16 icons, filled with currentColor, so the viewer needs no icon font
@@ -24,7 +23,6 @@ export const ICONS = {
     next: `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10.5 3H12v10h-1.5zM4 3l6 5-6 5z"/></svg>`,
     last: `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M12 3h1.5v10H12zM2 3l4.5 5L2 13zM7 3l4.5 5L7 13z"/></svg>`,
     flip: `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 1.5 8.5 5.5H6V14H4V5.5H1.5zM11 14.5 7.5 10.5H10V2h2v8.5h2.5z"/></svg>`,
-    bubble: `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H7.5L4 15v-3H3a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm1 3v1.5h8V5zm0 3v1.5h5.5V8z"/></svg>`,
     pgn: `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.3 3.6 6.7 5 3.7 8l3 3-1.4 1.4L.9 8zM10.7 3.6 9.3 5l3 3-3 3 1.4 1.4L15.1 8z"/></svg>`,
     close: `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.4 2 8 6.6 12.6 2 14 3.4 9.4 8l4.6 4.6-1.4 1.4L8 9.4 3.4 14 2 12.6 6.6 8 2 3.4z"/></svg>`
 }
@@ -52,9 +50,8 @@ export class PgnViewer {
             showHeaders: true,
             showControls: true,
             showPgnToggle: true,
-            showBubbleToggle: true,         // switch for the comment bubbles, next to "Show PGN"
-            commentBubbles: true,           // show the comment of a move as speech bubble on the board,
-                                            // a choice of the user with the switch is remembered
+            commentBubbles: true,           // the comment of a move as speech bubble on the board
+            bubbleExpanded: false,          // start with the big bubble, otherwise the small one
             lastMoveMarker: MARKER_TYPE.frame, // a cm-chessboard MARKER_TYPE on from/to, null for none
             qualityMarkers: true,           // assessed moves (!!, !, !?, ?!, ?, ??) get the marker in their colour
             checkMarker: MARKER_TYPE.circleDanger, // on the king in check, null for none
@@ -92,7 +89,7 @@ export class PgnViewer {
         }
         this._initBoard()
         this._bindEvents()
-        this.setCommentBubbles(this._rememberedCommentBubbles())
+        this.setCommentBubbles(this.props.commentBubbles)
         const initial = this.props.initialPly ? this.history[this.props.initialPly - 1] : undefined
         this.goToMove(initial, false, false)
     }
@@ -171,26 +168,12 @@ export class PgnViewer {
         }
     }
 
-    /**
-     * Switch the comment bubbles on the board on or off.
-     * @param remember store the choice in the browser, for the next page
-     */
-    setCommentBubbles(on, remember = false) {
+    /** Switch the comment bubbles on the board on or off. */
+    setCommentBubbles(on) {
         if (!this.board) {
             return
         }
         this.commentBubbles = !!on
-        if (remember) {
-            try {
-                localStorage.setItem(BUBBLES_STORAGE_KEY, this.commentBubbles ? "1" : "0")
-            } catch (e) {
-                // no storage, e.g. in a private window, the switch still works
-            }
-        }
-        const toggle = this.context.querySelector("[data-action=toggleBubbles]")
-        if (toggle) {
-            toggle.setAttribute("aria-pressed", String(this.commentBubbles))
-        }
         this._updateBubble()
     }
 
@@ -286,8 +269,8 @@ export class PgnViewer {
                 `<div class="pgn-viewer-notation" tabindex="0" role="region" aria-label="${escapeHtml(this.t.notation)}"></div>` +
                 `</div>`)
         }
-        if (this.props.showPgnToggle || this.props.showBubbleToggle) {
-            parts.push(this._sourceHtml()) // below the notation, right
+        if (this.props.showPgnToggle) {
+            parts.push(this._pgnSourceHtml()) // below the notation, right
         }
         parts.push(`</div>`)
         if (this.props.accessibility) {
@@ -307,22 +290,11 @@ export class PgnViewer {
         }
     }
 
-    _sourceHtml() {
-        let html = `<div class="pgn-viewer-source">`
-        if (this.props.showBubbleToggle) {
-            html += `<button type="button" class="pgn-viewer-button pgn-viewer-toggle" data-action="toggleBubbles" ` +
-                `aria-pressed="false" title="${escapeHtml(this.t.commentBubbles)}" aria-label="${escapeHtml(this.t.commentBubbles)}">` +
-                `${this.icons.bubble}</button>`
-        }
-        if (this.props.showPgnToggle) {
-            html += `<button type="button" class="pgn-viewer-button pgn-viewer-text-button" data-action="showPgn" aria-haspopup="dialog">` +
-                `${this.icons.pgn}<span>${escapeHtml(this.t.showPgn)}</span></button>`
-        }
-        html += `</div>`
-        if (!this.props.showPgnToggle) {
-            return html
-        }
-        return html +
+    _pgnSourceHtml() {
+        return `<div class="pgn-viewer-source">` +
+            `<button type="button" class="pgn-viewer-button pgn-viewer-text-button" data-action="showPgn" aria-haspopup="dialog">` +
+            `${this.icons.pgn}<span>${escapeHtml(this.t.showPgn)}</span></button>` +
+            `</div>` +
             `<dialog class="pgn-viewer-dialog" aria-label="PGN">` +
             `<div class="pgn-viewer-dialog-header">` +
             `<span class="pgn-viewer-dialog-title">PGN</span>` +
@@ -428,9 +400,7 @@ export class PgnViewer {
     }
 
     _action(action) {
-        if (action === "toggleBubbles") {
-            this.setCommentBubbles(!this.commentBubbles, true)
-        } else if (action === "showPgn") {
+        if (action === "showPgn") {
             this.showPgn()
         } else if (action === "closePgn") {
             this.elements.dialog.close()
@@ -456,18 +426,6 @@ export class PgnViewer {
         }
     }
 
-    _rememberedCommentBubbles() {
-        try {
-            const stored = localStorage.getItem(BUBBLES_STORAGE_KEY)
-            if (stored !== null) {
-                return stored === "1"
-            }
-        } catch (e) {
-            // no storage, use the prop
-        }
-        return this.props.commentBubbles
-    }
-
     _updateBubble() {
         if (!this.commentBubbles || !this.currentMove) {
             if (this.bubble) {
@@ -477,6 +435,7 @@ export class PgnViewer {
         }
         if (!this.bubble) {
             this.bubble = new CommentBubble(this.elements.board, this.board)
+            this.bubble.setCollapsed(!this.props.bubbleExpanded)
         }
         this.bubble.show(moveCommentText(this.currentMove), this.currentMove.to)
     }

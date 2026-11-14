@@ -161,39 +161,28 @@ describe("PgnViewer", () => {
         viewer.destroy()
     })
 
-    it("should show the comment of a move as bubble on the board, switched by the toggle", () => {
-        try {
-            localStorage.removeItem("cm-pgn-viewer.commentBubbles")
-        } catch (e) {
-            // no storage
-        }
+    it("should show the comment of a move as bubble on the board", () => {
         const viewer = createViewer(`1. e4 {Best by test [%clk 0:05:00]} e5 2. Nf3 *`)
-        const toggle = viewer.context.querySelector("[data-action=toggleBubbles]")
-        assert.equal(toggle.getAttribute("aria-pressed"), "true") // on by default
         viewer.next()
-        assert.false(viewer.bubble.element.hidden)
+        assert.false(viewer.bubble.element.hidden) // on by default
+        assert.true(viewer.bubble.collapsed) // and small
         assert.equal(viewer.bubble.text.textContent, "Best by test")
         viewer.next()
         assert.true(viewer.bubble.element.hidden) // e5 has no comment
         viewer.previous()
         assert.false(viewer.bubble.element.hidden)
-        toggle.click()
-        assert.equal(toggle.getAttribute("aria-pressed"), "false")
+        viewer.setCommentBubbles(false)
         assert.true(viewer.bubble.element.hidden)
         viewer.destroy()
-        // the choice is remembered for the next viewer
-        const next = createViewer(`1. e4 {Best} *`, {initialPly: 1})
-        assert.equal(next.context.querySelector("[data-action=toggleBubbles]").getAttribute("aria-pressed"), "false")
-        assert.equal(next.bubble, undefined)
-        next.setCommentBubbles(true, true)
-        assert.false(next.bubble.element.hidden)
-        next.destroy()
+        const off = createViewer(`1. e4 {Best} *`, {initialPly: 1, commentBubbles: false})
+        assert.equal(off.bubble, undefined)
+        off.destroy()
     })
 
     it("should make the bubble small on click and big again on a click on it or the piece", () => {
-        const viewer = createViewer(`1. e4 {Best} e5 {Also good} *`, {initialPly: 1, commentBubbles: true})
-        viewer.setCommentBubbles(true)
+        const viewer = createViewer(`1. e4 {Best} e5 {Also good} *`, {initialPly: 1, bubbleExpanded: true})
         const bubble = viewer.bubble
+        assert.false(bubble.collapsed)
         bubble.element.click()
         assert.true(bubble.collapsed)
         assert.true(bubble.element.classList.contains("collapsed"))
