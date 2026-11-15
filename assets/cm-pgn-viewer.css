@@ -74,8 +74,9 @@
     margin-bottom: 1rem;
 }
 
+/* dark: from the system, unless the page or the viewer says light (colorScheme prop) */
 @media (prefers-color-scheme: dark) {
-    :root:not([data-bs-theme="light"]) .cm-pgn-viewer {
+    :root:not([data-bs-theme="light"]) .cm-pgn-viewer:not(.pgn-viewer-light) {
         --pgn-viewer-muted: rgba(255, 255, 255, 0.6);
         --pgn-viewer-notation-bg: rgba(255, 255, 255, 0.04);
         --pgn-viewer-variation-bg: rgba(255, 255, 255, 0.08);
@@ -109,7 +110,8 @@
     }
 }
 
-[data-bs-theme="dark"] .cm-pgn-viewer {
+[data-bs-theme="dark"] .cm-pgn-viewer:not(.pgn-viewer-light),
+.cm-pgn-viewer.pgn-viewer-dark {
     --pgn-viewer-muted: rgba(255, 255, 255, 0.6);
     --pgn-viewer-notation-bg: rgba(255, 255, 255, 0.04);
     --pgn-viewer-variation-bg: rgba(255, 255, 255, 0.08);

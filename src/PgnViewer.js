@@ -63,6 +63,7 @@ export class PgnViewer {
             autoplayInterval: 1000,         // milliseconds per move
             initialPly: undefined,          // jump to this mainline ply on load
             accessibility: true,            // cm-chessboard Accessibility extension and spoken moves
+            colorScheme: "auto",            // "auto" (system, data-bs-theme), "light" or "dark"
             language: "en",
             i18n: {},
             icons: {},
@@ -75,6 +76,9 @@ export class PgnViewer {
         this.currentMove = undefined
         this.autoplayTimer = undefined
         this.context.classList.add("cm-pgn-viewer")
+        if (this.props.colorScheme === "light" || this.props.colorScheme === "dark") {
+            this.context.classList.add("pgn-viewer-" + this.props.colorScheme)
+        }
         if (this.loaded.error) {
             this._renderError()
             return
@@ -254,7 +258,7 @@ export class PgnViewer {
             this.board.destroy()
         }
         this.context.innerHTML = ""
-        this.context.classList.remove("cm-pgn-viewer")
+        this.context.classList.remove("cm-pgn-viewer", "pgn-viewer-light", "pgn-viewer-dark")
     }
 
     // --- dom -------------------------------------------------------------

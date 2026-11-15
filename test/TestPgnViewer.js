@@ -280,6 +280,16 @@ describe("PgnViewer", () => {
         freeAbove.destroy()
     })
 
+    it("should force the colour scheme with colorScheme", () => {
+        const dark = createViewer(PGN, {colorScheme: "dark"})
+        assert.true(dark.context.classList.contains("pgn-viewer-dark"))
+        assert.equal(getComputedStyle(dark.context).getPropertyValue("--pgn-viewer-comment-color").trim(), "#8ab8dc")
+        dark.destroy()
+        const light = createViewer(PGN, {colorScheme: "light"})
+        assert.equal(getComputedStyle(light.context).getPropertyValue("--pgn-viewer-comment-color").trim(), "#2f6690")
+        light.destroy()
+    })
+
     it("should replace elements with viewers in initFrom", () => {
         const holder = document.createElement("div")
         holder.innerHTML = `<pgn>[White "A"]<br />[Black "B"]<br /><br />1. e4 e5 *</pgn><pgn>1. d4 *</pgn>`
