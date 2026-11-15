@@ -28,6 +28,10 @@
     --pgn-viewer-black-icon-regular: none;
     --pgn-viewer-button-bg: rgba(0, 0, 0, 0.06);
     --pgn-viewer-button-hover-bg: rgba(0, 0, 0, 0.12);
+    /* the play button stands out in green, in both modes */
+    --pgn-viewer-play-bg: #2f8a3f;
+    --pgn-viewer-play-hover-bg: #277534;
+    --pgn-viewer-play-color: #fff;
     --pgn-viewer-badge-bg: rgba(0, 0, 0, 0.08);
     --pgn-viewer-error-color: #b02a37;
     --pgn-viewer-radius: 0.375rem;
@@ -545,6 +549,15 @@
 
 .cm-pgn-viewer .pgn-viewer-button:hover:not(:disabled) {
     background: var(--pgn-viewer-button-hover-bg);
+}
+
+.cm-pgn-viewer .pgn-viewer-button[data-action="play"] {
+    background: var(--pgn-viewer-play-bg);
+    color: var(--pgn-viewer-play-color);
+}
+
+.cm-pgn-viewer .pgn-viewer-button[data-action="play"]:hover:not(:disabled) {
+    background: var(--pgn-viewer-play-hover-bg);
 }
 
 .cm-pgn-viewer .pgn-viewer-button:disabled {
