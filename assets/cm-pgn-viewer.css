@@ -651,9 +651,17 @@
 
 .cm-pgn-viewer .pgn-viewer-dialog-footer {
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
     padding: 0.5rem;
     border-top: 1px solid var(--pgn-viewer-button-bg);
+}
+
+.cm-pgn-viewer .pgn-viewer-dialog-hint {
+    flex: 1;
+    padding-left: 0.5rem;
+    color: var(--pgn-viewer-muted);
+    font-size: 0.85rem;
 }
 
 .cm-pgn-viewer pre.pgn-viewer-pgn {

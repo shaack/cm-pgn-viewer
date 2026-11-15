@@ -34,11 +34,13 @@ export const ICONS = {
 export {MARKER_TYPE}
 
 const CONTROLS = ["play", "first", "previous", "next", "last", "flip"]
+let viewerCount = 0 // unique ids, several viewers per page
 
 export class PgnViewer {
 
     constructor(context, props = {}) {
         this.context = context
+        this.id = "pgn-viewer-" + (++viewerCount)
         this.props = {
             pgn: "",
             lenient: false,                 // repair hand typed PGNs (0-0, 1:0, German piece letters)
@@ -412,8 +414,10 @@ export class PgnViewer {
             `title="${escapeHtml(this.t.close)}" aria-label="${escapeHtml(this.t.close)}">${this.icons.close}</button>` +
             `</div>` +
             (editable
-                ? `<textarea class="pgn-viewer-pgn-editor" spellcheck="false" autofocus aria-label="PGN"></textarea>` +
+                ? `<textarea class="pgn-viewer-pgn-editor" spellcheck="false" autofocus aria-label="PGN" ` +
+                `aria-describedby="${this.id}-pgn-hint"></textarea>` +
                 `<div class="pgn-viewer-dialog-footer">` +
+                `<span class="pgn-viewer-dialog-hint" id="${this.id}-pgn-hint">${escapeHtml(this.t.pgnEditHint)}</span>` +
                 `<button type="button" class="pgn-viewer-button pgn-viewer-text-button" data-action="applyPgn">` +
                 `${escapeHtml(this.t.applyPgn)}</button></div>`
                 : `<pre class="pgn-viewer-pgn"></pre>`) +
