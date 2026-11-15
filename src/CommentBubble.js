@@ -11,6 +11,9 @@
  * `collapsedByDefault`. A click on the bubble or on the piece of the move
  * switches between big and small, only for this move: the next move starts
  * with the default again.
+ *
+ * While the viewer plays the game it halts at an open bubble, which then shows
+ * a "continue" button (setContinue).
  */
 const GAP = 4 // between the bubble and the square, in px
 const FILES = "abcdefgh"
@@ -85,7 +88,37 @@ export class CommentBubble {
         this.fill(content)
     }
 
+    /**
+     * A "continue →" button at the end of the text, `label` undefined removes it.
+     * Removed with the next content as well.
+     */
+    setContinue(label, onClick = undefined) {
+        if (this.continueButton) {
+            this.continueButton.remove()
+            this.continueButton = undefined
+        }
+        if (label) {
+            this.continueButton = document.createElement("button")
+            this.continueButton.type = "button"
+            this.continueButton.className = "pgn-viewer-bubble-continue"
+            this.continueButton.tabIndex = -1 // the bubble is aria-hidden, the keyboard has the controls
+            this.continueButton.textContent = label + " →"
+            this.continueButton.addEventListener("click", (event) => {
+                event.stopPropagation() // no toggling of the bubble
+                onClick()
+            })
+            this.text.appendChild(this.continueButton)
+            this.position()
+        }
+    }
+
+    /** Shown big, with its text. */
+    isOpen() {
+        return !this.element.hidden && !this.collapsed
+    }
+
     fill(content) {
+        this.continueButton = undefined // replaced with the content
         this.element.classList.toggle("intro", this.intro)
         // a click opens or closes the bubble only for one move
         this.collapsed = this.collapsedByDefault

@@ -781,6 +781,23 @@
     background: none;
 }
 
+/* "continue →" while playing, on its own line at the end of the comment */
+.cm-pgn-viewer .pgn-viewer-bubble-continue {
+    display: block;
+    margin: 0.25rem 0 0 auto;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #fff;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.cm-pgn-viewer .pgn-viewer-bubble-continue:hover {
+    text-decoration: underline;
+}
+
 .cm-pgn-viewer .pgn-viewer-bubble[hidden] {
     display: none;
 }

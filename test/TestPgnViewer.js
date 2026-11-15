@@ -275,6 +275,24 @@ describe("PgnViewer", () => {
         viewer.destroy()
     })
 
+    it("should halt playing at an open bubble until continue is clicked", () => {
+        const viewer = createViewer(`1. e4 {Best by test} e5 2. Nf3 *`, {autoplayInterval: 100000})
+        viewer.play()
+        clearTimeout(viewer.autoplayTimer) // the steps by hand, not by the timer
+        viewer._autoplayStep()
+        assert.equal(viewer.currentMove.san, "e4")
+        assert.true(viewer.playing)
+        assert.equal(viewer.autoplayTimer, undefined) // halted at the comment
+        const button = viewer.bubble.element.querySelector(".pgn-viewer-bubble-continue")
+        assert.equal(button.textContent, "continue →")
+        button.click()
+        assert.equal(viewer.currentMove.san, "e5")
+        assert.false(viewer.bubble.collapsed) // the click did not toggle the bubble
+        assert.true(viewer.autoplayTimer !== undefined) // no comment, playing on
+        viewer.stop()
+        assert.false(viewer.playing)
+    })
+
     it("should switch between big and small bubbles with the button next to Show PGN", () => {
         const viewer = createViewer(`1. e4 {Best} e5 {Also good} 2. Nf3 {Develops} *`, {initialPly: 1})
         const toggle = viewer.context.querySelector("[data-action=toggleBubbles]")

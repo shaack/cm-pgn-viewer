@@ -10,7 +10,7 @@ import {moveQuality} from "./MoveQuality.js"
 
 export const TRANSLATIONS = {
     en: {
-        play: "Play", stop: "Stop", first: "Start position", previous: "Previous move",
+        play: "Play", stop: "Stop", continue: "continue", first: "Start position", previous: "Previous move",
         next: "Next move", last: "End of line", flip: "Flip board",
         notation: "Notation", startPosition: "Start position",
         showPgn: "Show PGN", editPgn: "PGN source", applyPgn: "Apply", copy: "Copy", copied: "Copied", close: "Close", expand: "Show larger",
@@ -28,7 +28,7 @@ export const TRANSLATIONS = {
         }
     },
     de: {
-        play: "Abspielen", stop: "Anhalten", first: "Ausgangsstellung", previous: "Zug zurück",
+        play: "Abspielen", stop: "Anhalten", continue: "weiter", first: "Ausgangsstellung", previous: "Zug zurück",
         next: "Nächster Zug", last: "Ende der Zugfolge", flip: "Brett drehen",
         notation: "Notation", startPosition: "Ausgangsstellung",
         showPgn: "PGN anzeigen", editPgn: "PGN-Quelltext", applyPgn: "Übernehmen", copy: "Kopieren", copied: "Kopiert", close: "Schließen", expand: "Größer anzeigen",

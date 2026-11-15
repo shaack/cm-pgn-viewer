@@ -105,7 +105,7 @@ PgnViewer.initFrom("pgn", {lazy: true, assetsUrl: "/node_modules/cm-chessboard/a
 | `showMaterial`     | `true`                                   | Captured pieces and material advantage below the board                      |
 | `qualityMarkers`   | `true`                                   | Moves with `!!`, `!`, `!?`, `?!`, `?` or `??` get the markers in the colour of their assessment |
 | `checkMarker`      | `MARKER_TYPE.circleDanger`               | Marker on the king in check, `null` for none                                |
-| `autoplayInterval` | `1000`                                   | Milliseconds per move when playing                                          |
+| `autoplayInterval` | `1000`                                   | Milliseconds per move when playing, it halts at open comment bubbles        |
 | `initialPly`       | `undefined`                              | Show the position after this ply of the mainline on load                    |
 | `accessibility`    | `true`                                   | Live region for moves and the cm-chessboard Accessibility extension         |
 | `colorScheme`      | `"auto"`                                 | `"auto"` follows `prefers-color-scheme` and `data-bs-theme`, `"light"` or `"dark"` force it, for pages with their own light/dark setting |

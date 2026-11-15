@@ -61,7 +61,7 @@ export class PgnViewer {
             showMaterial: true,             // the captured pieces and the material advantage, below the board
             qualityMarkers: true,           // assessed moves (!!, !, !?, ?!, ?, ??) get the markers in their colour
             checkMarker: MARKER_TYPE.circleDanger, // on the king in check, null for none
-            autoplayInterval: 1000,         // milliseconds per move
+            autoplayInterval: 1000,         // milliseconds per move, playing halts at open comment bubbles
             initialPly: undefined,          // jump to this mainline ply on load
             accessibility: true,            // cm-chessboard Accessibility extension and spoken moves
             colorScheme: "auto",            // "auto" (system, data-bs-theme), "light" or "dark"
@@ -77,6 +77,7 @@ export class PgnViewer {
         this.t = createI18n(this.props.language, this.props.i18n)
         this.icons = {...ICONS, ...this.props.icons}
         this.autoplayTimer = undefined
+        this.playing = false
         this.bubbleExpanded = this.props.bubbleExpanded
         this.context.classList.add("cm-pgn-viewer")
         if (this.props.colorScheme === "light" || this.props.colorScheme === "dark") {
@@ -256,29 +257,47 @@ export class PgnViewer {
         if (!this.board) {
             return
         }
-        if (this.autoplayTimer) {
+        if (this.playing) {
             this.stop()
             return
         }
         if (!this._nextMove()) {
             this.goToMove(undefined) // at the end, play from the start
         }
-        this.autoplayTimer = setInterval(() => {
-            if (this._nextMove()) {
-                this.goToMove(this._nextMove(), true, false)
-            }
-            if (!this._nextMove()) {
-                this.stop()
-            }
-        }, this.props.autoplayInterval)
+        this.playing = true
+        this._scheduleAutoplay()
         this._updateControls()
     }
 
     stop() {
-        if (this.autoplayTimer) {
-            clearInterval(this.autoplayTimer)
+        if (this.playing) {
+            clearTimeout(this.autoplayTimer)
             this.autoplayTimer = undefined
+            this.playing = false
+            if (this.bubble) {
+                this.bubble.setContinue(undefined)
+            }
             this._updateControls()
+        }
+    }
+
+    _scheduleAutoplay() {
+        clearTimeout(this.autoplayTimer)
+        this.autoplayTimer = setTimeout(() => this._autoplayStep(), this.props.autoplayInterval)
+    }
+
+    /** The next move while playing; at an open comment bubble it halts until "continue" in the bubble. */
+    _autoplayStep() {
+        this.autoplayTimer = undefined
+        if (this._nextMove()) {
+            this.goToMove(this._nextMove(), true, false)
+        }
+        if (!this._nextMove()) {
+            this.stop()
+        } else if (this.bubble && this.bubble.isOpen()) {
+            this.bubble.setContinue(this.t.continue, () => this._autoplayStep())
+        } else {
+            this._scheduleAutoplay()
         }
     }
 
@@ -657,7 +676,7 @@ export class PgnViewer {
         set("last", atEnd)
         set("play", this.history.length === 0)
         const play = this.elements.controls.querySelector(`[data-action="play"]`)
-        const playing = !!this.autoplayTimer
+        const playing = this.playing
         play.innerHTML = playing ? this.icons.stop : this.icons.play
         play.title = playing ? this.t.stop : this.t.play
         play.setAttribute("aria-label", play.title)
