@@ -517,7 +517,7 @@ export class PgnViewer {
     }
 
     /**
-     * The move as in the notation, with its assessment, and its comments: the
+     * The move as in the notation, without its number, with its assessment, and its comments: the
      * one before the move, like {Black could simply play} 11... Nbd7, and the
      * one after. A comment starting with punctuation, like {, to prevent ...},
      * follows the move without a space.
@@ -539,6 +539,7 @@ export class PgnViewer {
             for (const part of notationMove.querySelectorAll(":scope > .move-body, :scope > .nag")) {
                 moveElement.appendChild(part.cloneNode(true))
             }
+            moveElement.querySelectorAll(".move-number").forEach(number => number.remove())
         } else {
             moveElement.textContent = move.san
         }

@@ -213,7 +213,7 @@ describe("PgnViewer", () => {
         viewer.next()
         assert.false(viewer.bubble.element.hidden) // on by default
         assert.false(viewer.bubble.collapsed) // and big
-        assert.equal(viewer.bubble.text.textContent, "1.e4 Best by test")
+        assert.equal(viewer.bubble.text.textContent, "e4 Best by test")
         viewer.next()
         assert.true(viewer.bubble.element.hidden) // e5 has no comment
         viewer.previous()
@@ -230,14 +230,14 @@ describe("PgnViewer", () => {
         const viewer = createViewer(`1. e4 e5 ({Black could simply play} 1... c5 {the Sicilian}) 2. Nf3 *`)
         const c5 = viewer.notationRenderer.moves.find(move => move.san === "c5")
         viewer.goToMove(c5, false)
-        assert.equal(viewer.bubble.text.textContent, "Black could simply play 1…c5 the Sicilian")
+        assert.equal(viewer.bubble.text.textContent, "Black could simply play c5 the Sicilian")
         assert.true(!!viewer.bubble.text.querySelector(".move.black .move-body"))
         viewer.first()
         assert.true(viewer.bubble.element.hidden)
         viewer.destroy()
         // a comment starting with a comma follows the move and its assessment directly
         const comma = createViewer(`1. e4 $1 {, the best move} *`, {initialPly: 1})
-        assert.equal(comma.bubble.text.textContent, "1.e4!, the best move")
+        assert.equal(comma.bubble.text.textContent, "e4!, the best move")
         comma.destroy()
     })
 
