@@ -305,6 +305,17 @@ describe("PgnViewer", () => {
         light.destroy()
     })
 
+    it("should show the expand button only with onExpand and call it", () => {
+        const plain = createViewer(PGN)
+        assert.equal(plain.context.querySelector("[data-action=expand]"), null)
+        plain.destroy()
+        let expanded
+        const viewer = createViewer(PGN, {onExpand: (v) => expanded = v})
+        viewer.context.querySelector("[data-action=expand]").click()
+        assert.equal(expanded, viewer)
+        viewer.destroy()
+    })
+
     it("should replace elements with viewers in initFrom", () => {
         const holder = document.createElement("div")
         holder.innerHTML = `<pgn>[White "A"]<br />[Black "B"]<br /><br />1. e4 e5 *</pgn><pgn>1. d4 *</pgn>`

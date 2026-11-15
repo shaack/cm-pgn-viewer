@@ -111,6 +111,7 @@ PgnViewer.initFrom("pgn", {lazy: true, assetsUrl: "/node_modules/cm-chessboard/a
 | `i18n`             | `{}`                                     | Override single labels, see `src/I18n.js`                                   |
 | `icons`            | `{}`                                     | Override button icons with your own HTML, keys as in `ICONS`                |
 | `onMoveSelect`     | `undefined`                              | `(move) => {}`, `move` is `undefined` for the start position                |
+| `onExpand`         | `undefined`                              | `(viewer) => {}`, with it the viewer shows a button "show larger" in the upper right corner, e.g. to open the game on its own page |
 
 ## Chess piece icons
 

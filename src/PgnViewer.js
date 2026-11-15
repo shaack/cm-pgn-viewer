@@ -27,6 +27,7 @@ export const ICONS = {
     flip: `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 1.5 8.5 5.5H6V14H4V5.5H1.5zM11 14.5 7.5 10.5H10V2h2v8.5h2.5z"/></svg>`,
     bubble: `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2h10a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H7.5L4 15v-3H3a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm1 3v1.5h8V5zm0 3v1.5h5.5V8z"/></svg>`,
     pgn: `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.3 3.6 6.7 5 3.7 8l3 3-1.4 1.4L.9 8zM10.7 3.6 9.3 5l3 3-3 3 1.4 1.4L15.1 8z"/></svg>`,
+    expand: `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 1.5h5v2H4.9l2.6 2.6-1.4 1.4-2.6-2.6v1.6h-2zM14.5 14.5h-5v-2h1.6l-2.6-2.6 1.4-1.4 2.6 2.6v-1.6h2z"/></svg>`,
     close: `<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.4 2 8 6.6 12.6 2 14 3.4 9.4 8l4.6 4.6-1.4 1.4L8 9.4 3.4 14 2 12.6 6.6 8 2 3.4z"/></svg>`
 }
 
@@ -68,6 +69,7 @@ export class PgnViewer {
             i18n: {},
             icons: {},
             onMoveSelect: undefined,        // callback(move), move is undefined for the start position
+            onExpand: undefined,            // callback(viewer), shows a button "show larger" in the upper right corner
             ...props
         }
         this.t = createI18n(this.props.language, this.props.i18n)
@@ -258,13 +260,18 @@ export class PgnViewer {
             this.board.destroy()
         }
         this.context.innerHTML = ""
-        this.context.classList.remove("cm-pgn-viewer", "pgn-viewer-light", "pgn-viewer-dark")
+        this.context.classList.remove("cm-pgn-viewer", "pgn-viewer-light", "pgn-viewer-dark", "expandable")
     }
 
     // --- dom -------------------------------------------------------------
 
     _buildDom() {
         const parts = []
+        if (typeof this.props.onExpand === "function") {
+            this.context.classList.add("expandable")
+            parts.push(`<button type="button" class="pgn-viewer-expand" data-action="expand"` +
+                ` title="${escapeHtml(this.t.expand)}" aria-label="${escapeHtml(this.t.expand)}">${this.icons.expand}</button>`)
+        }
         if (this.props.showHeaders) {
             parts.push(`<div class="pgn-viewer-headers"></div>`)
         }
@@ -424,7 +431,10 @@ export class PgnViewer {
     }
 
     _action(action) {
-        if (action === "toggleBubbles") {
+        if (action === "expand") {
+            this.stop()
+            this.props.onExpand(this)
+        } else if (action === "toggleBubbles") {
             this.setBubblesExpanded(!this.bubbleExpanded)
         } else if (action === "showPgn") {
             this.showPgn()

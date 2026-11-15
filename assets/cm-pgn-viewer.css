@@ -155,6 +155,43 @@
     line-height: 1.4;
 }
 
+/* the button "show larger" (prop onExpand), in the upper right corner */
+.cm-pgn-viewer.expandable {
+    position: relative;
+}
+
+.cm-pgn-viewer.expandable .pgn-viewer-headers {
+    padding-right: 2.75rem;
+    min-height: 2.25rem;
+}
+
+.cm-pgn-viewer .pgn-viewer-expand {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    padding: 0;
+    border: 0;
+    border-radius: var(--pgn-viewer-radius);
+    background: var(--pgn-viewer-button-bg);
+    color: inherit;
+    cursor: pointer;
+}
+
+.cm-pgn-viewer .pgn-viewer-expand:hover {
+    background: var(--pgn-viewer-button-hover-bg);
+}
+
+.cm-pgn-viewer .pgn-viewer-expand svg {
+    width: 1rem;
+    height: 1rem;
+    fill: currentColor;
+}
+
 .cm-pgn-viewer .pgn-viewer-headers .players {
     font-weight: 700;
 }
