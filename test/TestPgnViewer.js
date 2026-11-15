@@ -226,6 +226,17 @@ describe("PgnViewer", () => {
         off.destroy()
     })
 
+    it("should show a comment before the move with the move in the bubble", () => {
+        const viewer = createViewer(`1. e4 e5 ({Black could simply play} 1... c5 {the Sicilian}) 2. Nf3 *`)
+        const c5 = viewer.notationRenderer.moves.find(move => move.san === "c5")
+        viewer.goToMove(c5, false)
+        assert.equal(viewer.bubble.text.textContent, "Black could simply play 1…c5 the Sicilian")
+        assert.true(!!viewer.bubble.text.querySelector(".move.black .move-body"))
+        viewer.first()
+        assert.true(viewer.bubble.element.hidden)
+        viewer.destroy()
+    })
+
     it("should open or close the bubble on a click only for the current move", () => {
         const viewer = createViewer(`1. e4 {Best} e5 {Also good} 2. Nf3 {Develops} *`, {initialPly: 1})
         const bubble = viewer.bubble

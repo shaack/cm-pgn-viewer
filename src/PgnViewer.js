@@ -12,7 +12,7 @@ import {createI18n, describeMove} from "./I18n.js"
 import {highlightPgn} from "./PgnHighlighter.js"
 import {materialBalance} from "./Material.js"
 import {pieceIcon} from "./PieceIcons.js"
-import {CommentBubble, moveCommentText} from "./CommentBubble.js"
+import {CommentBubble, moveCommentText, moveStartingCommentText} from "./CommentBubble.js"
 
 import {MOVE_MARKER_TYPE, MOVE_CAPTURE_MARKER_TYPE, moveQuality} from "./MoveQuality.js"
 
@@ -513,7 +513,35 @@ export class PgnViewer {
             this.bubble = new CommentBubble(this.elements.board, this.board)
             this.bubble.setCollapsedByDefault(!this.bubbleExpanded)
         }
-        this.bubble.show(moveCommentText(this.currentMove), this.currentMove.to, this.currentMove.from)
+        this.bubble.show(this._bubbleContent(this.currentMove), this.currentMove.to, this.currentMove.from)
+    }
+
+    /**
+     * The comment after the move. With a comment before the move, like
+     * {Black could simply play} 11... Nbd7 {to finish the development}, the
+     * sentence needs the move: before, the move as in the notation, after.
+     */
+    _bubbleContent(move) {
+        const before = moveStartingCommentText(move)
+        const after = moveCommentText(move)
+        if (!before) {
+            return after
+        }
+        const content = document.createDocumentFragment()
+        content.append(before + " ")
+        const notationMove = this.notationRenderer.moveToElement.get(move)
+        const moveElement = document.createElement("span")
+        moveElement.className = "move " + (move.color === "w" ? "white" : "black")
+        if (notationMove) {
+            moveElement.appendChild(notationMove.querySelector(".move-body").cloneNode(true))
+        } else {
+            moveElement.textContent = move.san
+        }
+        content.append(moveElement)
+        if (after) {
+            content.append(" " + after)
+        }
+        return content
     }
 
     _nextMove() {

@@ -691,6 +691,25 @@
     overflow-y: auto;
 }
 
+/* a move in the bubble (comment before the move): the bubble is always dark,
+   so moves and icons as in dark mode */
+.cm-pgn-viewer .pgn-viewer-bubble {
+    --pgn-viewer-white-move-color: #fff;
+    --pgn-viewer-black-move-color: rgba(255, 255, 255, 0.72);
+    --pgn-viewer-white-icon-solid: inline;
+    --pgn-viewer-white-icon-regular: none;
+    --pgn-viewer-black-icon-solid: none;
+    --pgn-viewer-black-icon-regular: inline;
+}
+
+.cm-pgn-viewer .pgn-viewer-bubble .move {
+    cursor: inherit;
+}
+
+.cm-pgn-viewer .pgn-viewer-bubble .move:hover .move-body {
+    background: none;
+}
+
 .cm-pgn-viewer .pgn-viewer-bubble[hidden] {
     display: none;
 }

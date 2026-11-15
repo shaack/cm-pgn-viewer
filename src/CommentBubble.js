@@ -56,11 +56,11 @@ export class CommentBubble {
     }
 
     /**
-     * Show `text` at `square`, hide the bubble without text.
+     * Show `content` (text or a DOM node) at `square`, hide the bubble without content.
      * @param fromSquare where the piece came from, the bubble avoids it
      */
-    show(text, square, fromSquare = undefined) {
-        if (!text || !square) {
+    show(content, square, fromSquare = undefined) {
+        if (!content || !square) {
             this.hide()
             return
         }
@@ -69,7 +69,11 @@ export class CommentBubble {
         // a click opens or closes the bubble only for one move
         this.collapsed = this.collapsedByDefault
         this.element.classList.toggle("collapsed", this.collapsed)
-        this.text.textContent = text
+        if (typeof content === "string") {
+            this.text.textContent = content
+        } else {
+            this.text.replaceChildren(content)
+        }
         this.element.hidden = false
         this.text.scrollTop = 0
         this.position()
@@ -228,7 +232,16 @@ export class CommentBubble {
 
 /** The comments after a move as one text, without embedded commands like [%clk]. */
 export function moveCommentText(move) {
-    return [].concat((move && move.comments) || [])
+    return commentText(move && move.comments)
+}
+
+/** The comments before a move as one text, e.g. "Black could simply play" in front of 11... Nbd7. */
+export function moveStartingCommentText(move) {
+    return commentText(move && move.startingComments)
+}
+
+function commentText(comments) {
+    return [].concat(comments || [])
         .map(comment => String(comment).replace(/\[%[^\]]*\]/g, "").trim())
         .filter(text => text)
         .join(" ")
