@@ -442,8 +442,9 @@
     opacity: 0.5;
 }
 
-/* the capture marker (bevel corners) is filled, not stroked */
-.cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-capture {
+/* the capture marker (bevel corners) is filled, not stroked; stronger than the
+   colour rules below, whose stroke would make the corners bigger than the square */
+.cm-pgn-viewer .cm-chessboard .markers .marker.marker-pgn-capture.marker-pgn-capture {
     stroke: none;
     opacity: 0.9;
 }
