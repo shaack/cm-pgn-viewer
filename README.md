@@ -21,7 +21,7 @@ It is built on [cm-chessboard](https://github.com/shaack/cm-chessboard) for the 
 - Piece icons (Font Awesome Free, solid or regular), unicode figurines or configurable piece letters (`K D T L S` for German, for example)
 - The layout follows the width of the **container**, not of the window: side by side when there is room, stacked when the container is narrow
 - A broken PGN shows an error message with the PGN instead of breaking the page
-- "PGN source" opens the PGN in a modal dialog with syntax highlighting and a copy button, with `pgnEditable` as editor
+- "Show PGN" opens the PGN in a modal dialog with syntax highlighting and a copy button, with `pgnEditable` it is the editor "PGN source"
 - Lazy initialization for pages with many games
 - Screen reader support: moves are announced in a live region, the board uses the cm-chessboard Accessibility extension
 
@@ -95,7 +95,7 @@ PgnViewer.initFrom("pgn", {lazy: true, assetsUrl: "/node_modules/cm-chessboard/a
 | `pieceLetters`     | `{K: "K", Q: "Q", R: "R", B: "B", N: "N"}` | The letters for `notation: "letters"`                                     |
 | `showHeaders`      | `true`                                   | Players, event, site, round, date, ECO, result                              |
 | `showControls`     | `true`                                   | The button row                                                              |
-| `showPgnToggle`    | `true`                                   | "PGN source", opens the PGN highlighted in a modal dialog                   |
+| `showPgnToggle`    | `true`                                   | "Show PGN", opens the PGN highlighted in a modal dialog, "PGN source" with `pgnEditable` |
 | `pgnEditable`      | `false`                                  | The PGN dialog is an editor, "Apply" loads the edited game                  |
 | `onPgnChange`      | `undefined`                              | `(pgn) => {}`, after an edited PGN was applied, e.g. to store it            |
 | `commentBubbles`   | `true`                                   | Show the comment of a move as speech bubble on the board                    |

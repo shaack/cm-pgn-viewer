@@ -351,6 +351,7 @@ describe("PgnViewer", () => {
     it("should edit the PGN in the dialog with pgnEditable", () => {
         let changed
         const viewer = createViewer(`1. e4 *`, {pgnEditable: true, onPgnChange: (pgn) => changed = pgn})
+        assert.equal(viewer.context.querySelector("[data-action=showPgn]").textContent, "PGN source")
         viewer.showPgn()
         const editor = viewer.elements.dialog.querySelector(".pgn-viewer-pgn-editor")
         assert.equal(editor.value, "1. e4 *")
@@ -368,6 +369,7 @@ describe("PgnViewer", () => {
         viewer.destroy()
         const readOnly = createViewer(`1. e4 *`)
         assert.equal(readOnly.context.querySelector(".pgn-viewer-pgn-editor"), null)
+        assert.equal(readOnly.context.querySelector("[data-action=showPgn]").textContent, "Show PGN")
         readOnly.destroy()
     })
 

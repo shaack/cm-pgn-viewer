@@ -361,7 +361,7 @@ export class PgnViewer {
                 `aria-label="${escapeHtml(this.t.bubblesExpanded)}">${this.icons.bubble}</button>`
                 : "") +
             `<button type="button" class="pgn-viewer-button pgn-viewer-text-button" data-action="showPgn" aria-haspopup="dialog">` +
-            `${this.icons.pgn}<span>${escapeHtml(this.t.showPgn)}</span></button>` +
+            `${this.icons.pgn}<span>${escapeHtml(editable ? this.t.editPgn : this.t.showPgn)}</span></button>` +
             `</div>` +
             `<dialog class="pgn-viewer-dialog" aria-label="PGN">` +
             `<div class="pgn-viewer-dialog-header">` +
