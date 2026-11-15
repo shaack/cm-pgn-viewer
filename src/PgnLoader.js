@@ -18,6 +18,8 @@ export const VARIANT = {
 
 const HEADER_PATTERN = /^\s*\[\s*[A-Za-z0-9_]+\s+"(?:[^"\\]|\\.)*"\s*\]/
 const COMMENT_PATTERN = /(\{[^}]*\})/
+// a tag that is not a valid header, at the start of the PGN: [Event], [White NN], [[White "A"]
+const BROKEN_HEADER_PATTERN = /^\s*\[[^\]\n]*\]+/
 
 // German piece letters, only used in lenient mode. None of them is a valid
 // English SAN piece letter, so translating them cannot break an English PGN.
@@ -45,9 +47,16 @@ export function normalizePgn(text, lenient = false) {
         .split("\n").map(line => line.trim()).join("\n")
     const headers = []
     let match
-    while ((match = rest.match(HEADER_PATTERN))) {
-        headers.push(match[0].trim())
-        rest = rest.substring(match[0].length)
+    while (true) {
+        if ((match = rest.match(HEADER_PATTERN))) {
+            headers.push(match[0].trim())
+            rest = rest.substring(match[0].length)
+        } else if (lenient && (match = rest.match(BROKEN_HEADER_PATTERN))) {
+            // a broken tag like [Event] or [[White "A"]: dropped, the game still shows
+            rest = rest.substring(match[0].length)
+        } else {
+            break
+        }
     }
     // no empty lines inside the movetext, cm-pgn splits header and movetext at "]\n\n"
     let movetext = rest.trim().replace(/\n\s*\n/g, "\n")
@@ -64,11 +73,19 @@ export function normalizePgn(text, lenient = false) {
 
 function repairMovetext(text) {
     return text
-        .replace(/(^|[\s.(])0-0-0(?=$|[\s+#!?)(])/g, "$1O-O-O")
-        .replace(/(^|[\s.(])0-0(?=$|[\s+#!?)(])/g, "$1O-O")
-        .replace(/(^|\s)(?:1\/2|½)\s*[-:]\s*(?:1\/2|½)(?=$|\s)/g, "$11/2-1/2")
-        .replace(/(^|\s)1\s*:\s*0(?=$|\s)/g, "$11-0")
-        .replace(/(^|\s)0\s*:\s*1(?=$|\s)/g, "$10-1")
+        // castling with zeros, dashes or lower case: 0-0, 0–0, o-o
+        .replace(/(^|[\s.(])[0Oo][-–—][0Oo][-–—][0Oo](?=$|[\s+#!?)(])/g, "$1O-O-O")
+        .replace(/(^|[\s.(])[0Oo][-–—][0Oo](?=$|[\s+#!?)(])/g, "$1O-O")
+        // en passant marks after the move: exf3e.p., exd3eP
+        .replace(/([a-h][1-8])\s*e\.?\s?p\.?(?=$|[\s+#!?)(])/gi, "$1")
+        // the number of a black move with spaces or two dots: "9. .. Bxg5", "6. ... exd4", "9.. Bxg5"
+        .replace(/(^|[\s(])(\d+)\.\s*\.{1,3}/g, "$1$2...")
+        // dots without a number: "... 17... Ne8", "...19. Nf7"
+        .replace(/(^|[\s(])\.{2,3}\s*(?=\d)/g, "$1")
+        // results with a colon or a dash: 1:0, 1–0, ½-½, 0,5-0,5
+        .replace(/(^|\s)(?:1\/2|½|0,5)\s*[-–—:]\s*(?:1\/2|½|0,5)(?=$|\s)/g, "$11/2-1/2")
+        .replace(/(^|\s)1\s*[:–—]\s*0(?=$|\s)/g, "$11-0")
+        .replace(/(^|\s)0\s*[:–—]\s*1(?=$|\s)/g, "$10-1")
         .replace(/(^|[\s.(])([SLTD])(?=[a-h]?[1-8]?x?[a-h][1-8])/g,
             (all, before, piece) => before + GERMAN_PIECES[piece])
         .replace(/=([SLTD])/g, (all, piece) => "=" + GERMAN_PIECES[piece])

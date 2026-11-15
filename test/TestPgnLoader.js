@@ -23,6 +23,16 @@ describe("PgnLoader", () => {
         assert.equal(normalizePgn(`1. e4 e5 2. Sf3 *`), `1. e4 e5 2. Sf3 *`)
     })
 
+    it("should repair more hand typed notations in lenient mode", () => {
+        assert.equal(normalizePgn(`1. e4 e5 (1... c5 2. Nf3) 2. Nf3 (2. f4 exf4 3. Nf3) (2. .. Nc6) *`, true),
+            `1. e4 e5 (1... c5 2. Nf3) 2. Nf3 (2. f4 exf4 3. Nf3) (2... Nc6) *`)
+        assert.equal(normalizePgn(`6. ... exd4 ... 17... Ne8`, true), `6... exd4 17... Ne8`)
+        assert.equal(normalizePgn(`23.gxf6 e.p. Bxf6 34.f4 exf3e.p. 4.d4 exd3eP 1–0`, true),
+            `23.gxf6 Bxf6 34.f4 exf3 4.d4 exd3 1-0`)
+        assert.equal(normalizePgn(`5. 0–0 o-o-o 0,5-0,5`, true), `5. O-O O-O-O 1/2-1/2`)
+        assert.equal(normalizePgn(`[Event]\n[[White "A"]\n[Black "B"]\n\n1. e4 *`, true), `[Black "B"]\n\n1. e4 *`)
+    })
+
     it("should read a PGN from an element with <br> and escaped HTML", () => {
         const element = document.createElement("pgn")
         element.innerHTML = `[White "A &amp; B"]<br />[Black "C"]<br /><br />1. e4 {&lt;!&gt;} e5 *`
