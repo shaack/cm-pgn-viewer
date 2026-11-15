@@ -789,8 +789,9 @@
     background: none;
 }
 
-/* "continue →" while playing, on its own line at the end of the comment */
-.cm-pgn-viewer .pgn-viewer-bubble-continue {
+/* "continue →" while playing and "Start →" in the start position, on its own
+   line at the end of the comment */
+.cm-pgn-viewer .pgn-viewer-bubble-action {
     display: block;
     margin: 0.25rem 0 0 auto;
     padding: 0;
@@ -802,7 +803,7 @@
     cursor: pointer;
 }
 
-.cm-pgn-viewer .pgn-viewer-bubble-continue:hover {
+.cm-pgn-viewer .pgn-viewer-bubble-action:hover {
     text-decoration: underline;
 }
 

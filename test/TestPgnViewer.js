@@ -233,7 +233,7 @@ describe("PgnViewer", () => {
         assert.equal(viewer.bubble.text.textContent, "Black could simply play c5 the Sicilian")
         assert.true(!!viewer.bubble.text.querySelector(".move.black .move-body"))
         viewer.first()
-        assert.true(viewer.bubble.element.hidden)
+        assert.equal(viewer.bubble.text.textContent, "Start →") // only the button in the start position
         viewer.destroy()
         // a comment starting with a comma follows the move and its assessment directly
         const comma = createViewer(`1. e4 $1 {, the best move} *`, {initialPly: 1})
@@ -245,18 +245,30 @@ describe("PgnViewer", () => {
         const viewer = createViewer(`{A famous game.} 1. e4 {Best} e5 *`)
         assert.false(viewer.bubble.element.hidden)
         assert.true(viewer.bubble.element.classList.contains("intro"))
-        assert.equal(viewer.bubble.text.textContent, "A famous game.")
+        assert.equal(viewer.bubble.text.textContent, "A famous game.Start →")
         viewer.next()
         assert.false(viewer.bubble.element.classList.contains("intro"))
         assert.equal(viewer.bubble.text.textContent, "e4 Best")
         viewer.next()
         assert.true(viewer.bubble.element.hidden)
         viewer.first()
-        assert.equal(viewer.bubble.text.textContent, "A famous game.")
+        assert.equal(viewer.bubble.text.textContent, "A famous game.Start →")
         viewer.destroy()
-        const none = createViewer(`1. e4 {Best} *`)
-        assert.equal(none.bubble, undefined) // no game comment, no bubble in the start position
-        none.destroy()
+    })
+
+    it("should start playing with the Start button in the start position, also without a comment", () => {
+        const viewer = createViewer(`1. e4 {Best} *`, {bubbleExpanded: false, autoplayInterval: 100000})
+        assert.false(viewer.bubble.element.hidden)
+        assert.false(viewer.bubble.collapsed) // only the button, always big
+        viewer.bubble.element.querySelector(".pgn-viewer-bubble-action").click()
+        assert.true(viewer.playing)
+        assert.equal(viewer.bubble.element.querySelector(".pgn-viewer-bubble-action"), null)
+        viewer.stop()
+        assert.equal(viewer.bubble.text.textContent, "Start →") // back again
+        viewer.destroy()
+        const empty = createViewer(`[Event "No moves"]\n\n*`)
+        assert.equal(empty.bubble, undefined) // nothing to play, no Start
+        empty.destroy()
     })
 
     it("should open or close the bubble on a click only for the current move", () => {
@@ -283,7 +295,7 @@ describe("PgnViewer", () => {
         assert.equal(viewer.currentMove.san, "e4")
         assert.true(viewer.playing)
         assert.equal(viewer.autoplayTimer, undefined) // halted at the comment
-        const button = viewer.bubble.element.querySelector(".pgn-viewer-bubble-continue")
+        const button = viewer.bubble.element.querySelector(".pgn-viewer-bubble-action")
         assert.equal(button.textContent, "continue →")
         button.click()
         assert.equal(viewer.currentMove.san, "e5")

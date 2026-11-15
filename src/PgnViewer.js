@@ -265,6 +265,9 @@ export class PgnViewer {
             this.goToMove(undefined) // at the end, play from the start
         }
         this.playing = true
+        if (this.bubble) {
+            this.bubble.setAction(undefined) // "Start" in the start position
+        }
         this._scheduleAutoplay()
         this._updateControls()
     }
@@ -275,7 +278,10 @@ export class PgnViewer {
             this.autoplayTimer = undefined
             this.playing = false
             if (this.bubble) {
-                this.bubble.setContinue(undefined)
+                this.bubble.setAction(undefined)
+            }
+            if (!this.currentMove) {
+                this._updateBubble() // "Start" again
             }
             this._updateControls()
         }
@@ -295,7 +301,7 @@ export class PgnViewer {
         if (!this._nextMove()) {
             this.stop()
         } else if (this.bubble && this.bubble.isOpen()) {
-            this.bubble.setContinue(this.t.continue, () => this._autoplayStep())
+            this.bubble.setAction(this.t.continue, () => this._autoplayStep())
         } else {
             this._scheduleAutoplay()
         }
@@ -602,7 +608,9 @@ export class PgnViewer {
 
     _updateBubble() {
         const gameComment = commentText(this.pgn && this.pgn.history.gameComment)
-        if (!this.commentBubbles || (!this.currentMove && !gameComment)) {
+        // in the start position a "Start →" button starts playing, also without a comment
+        const canStart = !this.currentMove && !this.playing && !!this._nextMove()
+        if (!this.commentBubbles || (!this.currentMove && !gameComment && !canStart)) {
             if (this.bubble) {
                 this.bubble.hide()
             }
@@ -616,7 +624,7 @@ export class PgnViewer {
             this.bubble.show(this._bubbleContent(this.currentMove), this.currentMove.to, this.currentMove.from)
         } else {
             // start position: the comment of the game, the text before the first move
-            this.bubble.showIntro(gameComment)
+            this.bubble.showIntro(gameComment, canStart ? [this.t.start, () => this.play()] : undefined)
         }
     }
 

@@ -13,7 +13,7 @@
  * with the default again.
  *
  * While the viewer plays the game it halts at an open bubble, which then shows
- * a "continue" button (setContinue).
+ * a "continue" button, in the start position a "Start" button starts playing (setAction).
  */
 const GAP = 4 // between the bubble and the square, in px
 const FILES = "abcdefgh"
@@ -76,38 +76,46 @@ export class CommentBubble {
     /**
      * The comment of the game (before the first move) in the start position:
      * in the middle of the board, without a tail, small in the upper right corner.
+     * @param action [label, onClick] for a button below the text, like "Start →";
+     *        with it the bubble shows also without a comment, then always big
      */
-    showIntro(content) {
-        if (!content) {
+    showIntro(content, action = undefined) {
+        if (!content && !action) {
             this.hide()
             return
         }
         this.intro = true
         this.square = undefined
         this.fromSquare = undefined
-        this.fill(content)
+        this.fill(content || "")
+        if (action) {
+            if (!content) {
+                this.setCollapsed(false) // nothing to read, only the button
+            }
+            this.setAction(action[0], action[1])
+        }
     }
 
     /**
-     * A "continue →" button at the end of the text, `label` undefined removes it.
+     * A button like "continue →" at the end of the text, `label` undefined removes it.
      * Removed with the next content as well.
      */
-    setContinue(label, onClick = undefined) {
-        if (this.continueButton) {
-            this.continueButton.remove()
-            this.continueButton = undefined
+    setAction(label, onClick = undefined) {
+        if (this.actionButton) {
+            this.actionButton.remove()
+            this.actionButton = undefined
         }
         if (label) {
-            this.continueButton = document.createElement("button")
-            this.continueButton.type = "button"
-            this.continueButton.className = "pgn-viewer-bubble-continue"
-            this.continueButton.tabIndex = -1 // the bubble is aria-hidden, the keyboard has the controls
-            this.continueButton.textContent = label + " →"
-            this.continueButton.addEventListener("click", (event) => {
+            this.actionButton = document.createElement("button")
+            this.actionButton.type = "button"
+            this.actionButton.className = "pgn-viewer-bubble-action"
+            this.actionButton.tabIndex = -1 // the bubble is aria-hidden, the keyboard has the controls
+            this.actionButton.textContent = label + " →"
+            this.actionButton.addEventListener("click", (event) => {
                 event.stopPropagation() // no toggling of the bubble
                 onClick()
             })
-            this.text.appendChild(this.continueButton)
+            this.text.appendChild(this.actionButton)
             this.position()
         }
     }
@@ -118,7 +126,7 @@ export class CommentBubble {
     }
 
     fill(content) {
-        this.continueButton = undefined // replaced with the content
+        this.actionButton = undefined // replaced with the content
         this.element.classList.toggle("intro", this.intro)
         // a click opens or closes the bubble only for one move
         this.collapsed = this.collapsedByDefault
