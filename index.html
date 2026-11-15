@@ -41,6 +41,27 @@
             width: 18rem;
             max-width: 100%;
         }
+        .large-dialog {
+            width: min(70rem, calc(100vw - 2rem));
+            padding: 2.5rem 1.5rem 1rem;
+            border: 0;
+            border-radius: 0.5rem;
+            background: Canvas;
+            color: CanvasText;
+        }
+        .large-dialog::backdrop {
+            background: rgba(0, 0, 0, 0.5);
+        }
+        .large-dialog-close {
+            position: absolute;
+            top: 0.25rem;
+            right: 0.5rem;
+            border: 0;
+            background: none;
+            color: inherit;
+            font-size: 1.75rem;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -147,6 +168,10 @@
 
     <p><a href="https://github.com/shaack/cm-pgn-viewer">GitHub repository</a></p>
 </main>
+<dialog class="large-dialog">
+    <button type="button" class="large-dialog-close" aria-label="Close">&times;</button>
+    <div class="large-viewer"></div>
+</dialog>
 <script type="importmap">
     {
         "imports": {
@@ -161,6 +186,27 @@
 
     window.viewers = {}
 
+    // onExpand of the first viewer: the same game, larger, in a dialog
+    const dialog = document.querySelector(".large-dialog")
+    let largeViewer
+    function showLarger(viewer) {
+        if (largeViewer) {
+            largeViewer.destroy()
+        }
+        const ply = viewer.currentMove ? viewer.history.indexOf(viewer.currentMove) + 1 : 0
+        largeViewer = new PgnViewer(dialog.querySelector(".large-viewer"), {
+            pgn: viewer.loaded.text,
+            initialPly: ply > 0 ? ply : undefined
+        })
+        dialog.showModal()
+    }
+    dialog.querySelector(".large-dialog-close").addEventListener("click", () => dialog.close())
+    dialog.addEventListener("click", (event) => {
+        if (event.target === dialog) {
+            dialog.close()
+        }
+    })
+
     window.viewers.resizable = new PgnViewer(document.getElementById("resizable"), {
         pgn: `[Event "Sample game"]
 [Site "Berlin"]
@@ -173,7 +219,8 @@
 4. Ba4 (4. Bxc6 dxc6 5. Nxe5? (5. O-O {is the main line} f6) Qd4 $17 {wins the knight back}) Nf6 5. O-O Be7
 6. Re1 b5 7. Bb3 d6 8. c3 O-O $1 *`,
         onMoveSelect: (move) => console.log("onMoveSelect", move ? move.san : "(start)"),
-        onExpand: (viewer) => console.log("onExpand", viewer.currentMove ? viewer.currentMove.san : "(start)")
+        // the expand button: here the game opens larger in a dialog, at the move shown
+        onExpand: (viewer) => showLarger(viewer)
     })
 
     window.viewers.inline = PgnViewer.initFrom("pgn", {lazy: true})
