@@ -35,7 +35,9 @@
     /* the comment bubble on the board, dark in both modes, the text a light comment blue */
     --pgn-viewer-bubble-bg: rgba(24, 26, 30, 0.8);
     --pgn-viewer-bubble-color: #b9d6ee;
-    --pgn-viewer-bubble-font-size: 1.15rem;
+    /* notation and bubble in the font size of the page */
+    --pgn-viewer-notation-font-size: 1em;
+    --pgn-viewer-bubble-font-size: 1em;
     /* the PGN dialog and its syntax highlighting */
     --pgn-viewer-dialog-bg: #fff;
     --pgn-viewer-backdrop: rgba(0, 0, 0, 0.45);
@@ -313,7 +315,7 @@
     border-radius: var(--pgn-viewer-radius);
     background: var(--pgn-viewer-notation-bg);
     line-height: 1.6;
-    font-size: clamp(0.875rem, 0.8rem + 0.6cqi, 1rem);
+    font-size: var(--pgn-viewer-notation-font-size);
 }
 
 .cm-pgn-viewer .pgn-viewer-notation:focus-visible {
