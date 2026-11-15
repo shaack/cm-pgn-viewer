@@ -78,6 +78,7 @@ export class PgnViewer {
         this.icons = {...ICONS, ...this.props.icons}
         this.autoplayTimer = undefined
         this.playing = false
+        this.halted = false // paused at a comment bubble, play goes on with the next move
         this.bubbleExpanded = this.props.bubbleExpanded
         this.context.classList.add("cm-pgn-viewer")
         if (this.props.colorScheme === "light" || this.props.colorScheme === "dark") {
@@ -261,6 +262,14 @@ export class PgnViewer {
             this.stop()
             return
         }
+        if (this.halted) {
+            // like "continue" in the bubble: the next move right away
+            this.halted = false
+            this.playing = true
+            this._updateControls()
+            this._autoplayStep()
+            return
+        }
         if (!this._nextMove()) {
             this.goToMove(undefined) // at the end, play from the start
         }
@@ -273,10 +282,11 @@ export class PgnViewer {
     }
 
     stop() {
-        if (this.playing) {
+        if (this.playing || this.halted) {
             clearTimeout(this.autoplayTimer)
             this.autoplayTimer = undefined
             this.playing = false
+            this.halted = false
             if (this.bubble) {
                 this.bubble.setAction(undefined)
             }
@@ -292,7 +302,10 @@ export class PgnViewer {
         this.autoplayTimer = setTimeout(() => this._autoplayStep(), this.props.autoplayInterval)
     }
 
-    /** The next move while playing; at an open comment bubble it halts until "continue" in the bubble. */
+    /**
+     * The next move while playing. At an open comment bubble it pauses, "continue" in
+     * the bubble or the play button go on.
+     */
     _autoplayStep() {
         this.autoplayTimer = undefined
         if (this._nextMove()) {
@@ -301,7 +314,10 @@ export class PgnViewer {
         if (!this._nextMove()) {
             this.stop()
         } else if (this.bubble && this.bubble.isOpen()) {
-            this.bubble.setAction(this.t.continue, () => this._autoplayStep())
+            this.playing = false
+            this.halted = true
+            this.bubble.setAction(this.t.continue, () => this.play())
+            this._updateControls()
         } else {
             this._scheduleAutoplay()
         }

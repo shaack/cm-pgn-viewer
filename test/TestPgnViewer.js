@@ -297,16 +297,28 @@ describe("PgnViewer", () => {
         clearTimeout(viewer.autoplayTimer) // the steps by hand, not by the timer
         viewer._autoplayStep()
         assert.equal(viewer.currentMove.san, "e4")
-        assert.true(viewer.playing)
-        assert.equal(viewer.autoplayTimer, undefined) // halted at the comment
+        assert.false(viewer.playing) // paused at the comment, the play button shows play
+        assert.equal(viewer.autoplayTimer, undefined)
+        const play = viewer.elements.controls.querySelector(`[data-action="play"]`)
+        assert.equal(play.title, "Play")
         const button = viewer.bubble.element.querySelector(".pgn-viewer-bubble-action")
         assert.equal(button.textContent, "continue →")
         button.click()
         assert.equal(viewer.currentMove.san, "e5")
+        assert.true(viewer.playing)
         assert.false(viewer.bubble.collapsed) // the click did not toggle the bubble
         assert.true(viewer.autoplayTimer !== undefined) // no comment, playing on
         viewer.stop()
         assert.false(viewer.playing)
+        // the play button goes on like "continue"
+        const second = createViewer(`1. e4 {Best by test} e5 2. Nf3 *`, {autoplayInterval: 100000})
+        second.play()
+        clearTimeout(second.autoplayTimer)
+        second._autoplayStep()
+        second.elements.controls.querySelector(`[data-action="play"]`).click()
+        assert.equal(second.currentMove.san, "e5")
+        assert.true(second.playing)
+        second.destroy()
     })
 
     it("should switch between big and small bubbles with the button next to Show PGN", () => {
