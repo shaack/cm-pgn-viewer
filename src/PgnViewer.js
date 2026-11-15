@@ -517,29 +517,34 @@ export class PgnViewer {
     }
 
     /**
-     * The comment after the move. With a comment before the move, like
-     * {Black could simply play} 11... Nbd7 {to finish the development}, the
-     * sentence needs the move: before, the move as in the notation, after.
+     * The move as in the notation, with its assessment, and its comments: the
+     * one before the move, like {Black could simply play} 11... Nbd7, and the
+     * one after. A comment starting with punctuation, like {, to prevent ...},
+     * follows the move without a space.
      */
     _bubbleContent(move) {
         const before = moveStartingCommentText(move)
         const after = moveCommentText(move)
-        if (!before) {
-            return after
+        if (!before && !after) {
+            return ""
         }
         const content = document.createDocumentFragment()
-        content.append(before + " ")
+        if (before) {
+            content.append(before + " ")
+        }
         const notationMove = this.notationRenderer.moveToElement.get(move)
         const moveElement = document.createElement("span")
         moveElement.className = "move " + (move.color === "w" ? "white" : "black")
         if (notationMove) {
-            moveElement.appendChild(notationMove.querySelector(".move-body").cloneNode(true))
+            for (const part of notationMove.querySelectorAll(":scope > .move-body, :scope > .nag")) {
+                moveElement.appendChild(part.cloneNode(true))
+            }
         } else {
             moveElement.textContent = move.san
         }
         content.append(moveElement)
         if (after) {
-            content.append(" " + after)
+            content.append((/^[,.;:!?)]/.test(after) ? "" : " ") + after)
         }
         return content
     }
