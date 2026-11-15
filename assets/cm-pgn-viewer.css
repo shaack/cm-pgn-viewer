@@ -100,6 +100,7 @@
         --pgn-viewer-nag-dubious: #e9c341;
         --pgn-viewer-nag-mistake: #f39a52;
         --pgn-viewer-nag-blunder: #f26a6a;
+        --pgn-viewer-marker-blunder: #b3261e;
         --pgn-viewer-white-icon-solid: inline;
         --pgn-viewer-white-icon-regular: none;
         --pgn-viewer-black-icon-solid: none;
@@ -135,6 +136,7 @@
     --pgn-viewer-nag-dubious: #e9c341;
     --pgn-viewer-nag-mistake: #f39a52;
     --pgn-viewer-nag-blunder: #f26a6a;
+    --pgn-viewer-marker-blunder: #b3261e;
     --pgn-viewer-white-icon-solid: inline;
     --pgn-viewer-white-icon-regular: none;
     --pgn-viewer-black-icon-solid: none;
