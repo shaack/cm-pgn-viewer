@@ -341,7 +341,7 @@
     padding: 0 0.1em;
 }
 
-.cm-pgn-viewer .move:hover .move-body {
+.cm-pgn-viewer :is(.move:hover, .move.hover) .move-body {
     background: var(--pgn-viewer-move-hover-bg);
 }
 

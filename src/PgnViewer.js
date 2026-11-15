@@ -509,6 +509,19 @@ export class PgnViewer {
                 }
             }
         })
+        // over a comment its move looks hovered, as the comment leads to it
+        const hoverCommentMove = (event, on) => {
+            if (!this.elements || !this.elements.notation || !this.elements.notation.contains(event.target)) {
+                return
+            }
+            const move = this.notationRenderer.commentMoveFromElement(event.target)
+            const element = move && this.notationRenderer.moveToElement.get(move)
+            if (element) {
+                element.classList.toggle("hover", on)
+            }
+        }
+        this.context.addEventListener("mouseover", (event) => hoverCommentMove(event, true))
+        this.context.addEventListener("mouseout", (event) => hoverCommentMove(event, false))
         this.context.addEventListener("keydown", (event) => {
             if (event.target.closest("pre, dialog") || event.altKey || event.ctrlKey || event.metaKey) {
                 return
