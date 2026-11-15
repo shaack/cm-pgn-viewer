@@ -64,8 +64,29 @@ export class CommentBubble {
             this.hide()
             return
         }
+        this.intro = false
         this.square = square
         this.fromSquare = fromSquare
+        this.fill(content)
+    }
+
+    /**
+     * The comment of the game (before the first move) in the start position:
+     * in the middle of the board, without a tail, small in the upper right corner.
+     */
+    showIntro(content) {
+        if (!content) {
+            this.hide()
+            return
+        }
+        this.intro = true
+        this.square = undefined
+        this.fromSquare = undefined
+        this.fill(content)
+    }
+
+    fill(content) {
+        this.element.classList.toggle("intro", this.intro)
         // a click opens or closes the bubble only for one move
         this.collapsed = this.collapsedByDefault
         this.element.classList.toggle("collapsed", this.collapsed)
@@ -111,12 +132,17 @@ export class CommentBubble {
 
     hide() {
         this.square = undefined
+        this.intro = false
         this.element.hidden = true
         this.boardElement.style.cursor = ""
     }
 
     position() {
-        if (this.element.hidden || !this.square) {
+        if (this.element.hidden || (!this.square && !this.intro)) {
+            return
+        }
+        if (this.intro) {
+            this.positionIntro()
             return
         }
         const view = this.chessboard.view
@@ -149,6 +175,27 @@ export class CommentBubble {
         // the tail points to the middle of the square, as far as the corners allow
         const centerX = point.x + view.squareWidth / 2
         style.setProperty("--tail-x", Math.round(Math.min(Math.max(centerX - placement.left, 14), width - 14)) + "px")
+    }
+
+    positionIntro() {
+        const view = this.chessboard.view
+        const style = this.element.style
+        style.bottom = ""
+        if (this.collapsed) {
+            const size = this.element.offsetWidth
+            style.maxWidth = ""
+            style.left = Math.round(view.width - size - GAP) + "px"
+            style.top = GAP + "px"
+            return
+        }
+        style.maxWidth = Math.round(view.width * 0.8) + "px"
+        this.text.style.maxHeight = Math.round(view.height * 0.7) + "px"
+        style.left = "0px"
+        style.top = "0px"
+        const width = this.element.offsetWidth
+        const height = this.element.offsetHeight
+        style.left = Math.round((view.width - width) / 2) + "px"
+        style.top = Math.round(Math.max((view.height - height) / 2, GAP)) + "px"
     }
 
     /**
@@ -240,7 +287,8 @@ export function moveStartingCommentText(move) {
     return commentText(move && move.startingComments)
 }
 
-function commentText(comments) {
+/** Comments (a string or an array) as one text, without embedded commands like [%clk]. */
+export function commentText(comments) {
     return [].concat(comments || [])
         .map(comment => String(comment).replace(/\[%[^\]]*\]/g, "").trim())
         .filter(text => text)

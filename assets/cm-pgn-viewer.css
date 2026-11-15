@@ -706,7 +706,8 @@
 }
 
 .cm-pgn-viewer .pgn-viewer-bubble.collapsed .pgn-viewer-bubble-text,
-.cm-pgn-viewer .pgn-viewer-bubble.collapsed::after {
+.cm-pgn-viewer .pgn-viewer-bubble.collapsed::after,
+.cm-pgn-viewer .pgn-viewer-bubble.intro::after {
     display: none;
 }
 

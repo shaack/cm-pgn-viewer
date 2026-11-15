@@ -241,6 +241,24 @@ describe("PgnViewer", () => {
         comma.destroy()
     })
 
+    it("should show the comment of the game in the start position", () => {
+        const viewer = createViewer(`{A famous game.} 1. e4 {Best} e5 *`)
+        assert.false(viewer.bubble.element.hidden)
+        assert.true(viewer.bubble.element.classList.contains("intro"))
+        assert.equal(viewer.bubble.text.textContent, "A famous game.")
+        viewer.next()
+        assert.false(viewer.bubble.element.classList.contains("intro"))
+        assert.equal(viewer.bubble.text.textContent, "e4 Best")
+        viewer.next()
+        assert.true(viewer.bubble.element.hidden)
+        viewer.first()
+        assert.equal(viewer.bubble.text.textContent, "A famous game.")
+        viewer.destroy()
+        const none = createViewer(`1. e4 {Best} *`)
+        assert.equal(none.bubble, undefined) // no game comment, no bubble in the start position
+        none.destroy()
+    })
+
     it("should open or close the bubble on a click only for the current move", () => {
         const viewer = createViewer(`1. e4 {Best} e5 {Also good} 2. Nf3 {Develops} *`, {initialPly: 1})
         const bubble = viewer.bubble

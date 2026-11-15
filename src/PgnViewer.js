@@ -12,7 +12,7 @@ import {createI18n, describeMove} from "./I18n.js"
 import {highlightPgn} from "./PgnHighlighter.js"
 import {materialBalance} from "./Material.js"
 import {pieceIcon} from "./PieceIcons.js"
-import {CommentBubble, moveCommentText, moveStartingCommentText} from "./CommentBubble.js"
+import {CommentBubble, commentText, moveCommentText, moveStartingCommentText} from "./CommentBubble.js"
 
 import {MOVE_MARKER_TYPE, MOVE_CAPTURE_MARKER_TYPE, moveQuality} from "./MoveQuality.js"
 
@@ -513,7 +513,8 @@ export class PgnViewer {
     }
 
     _updateBubble() {
-        if (!this.commentBubbles || !this.currentMove) {
+        const gameComment = commentText(this.pgn && this.pgn.history.gameComment)
+        if (!this.commentBubbles || (!this.currentMove && !gameComment)) {
             if (this.bubble) {
                 this.bubble.hide()
             }
@@ -523,7 +524,12 @@ export class PgnViewer {
             this.bubble = new CommentBubble(this.elements.board, this.board)
             this.bubble.setCollapsedByDefault(!this.bubbleExpanded)
         }
-        this.bubble.show(this._bubbleContent(this.currentMove), this.currentMove.to, this.currentMove.from)
+        if (this.currentMove) {
+            this.bubble.show(this._bubbleContent(this.currentMove), this.currentMove.to, this.currentMove.from)
+        } else {
+            // start position: the comment of the game, the text before the first move
+            this.bubble.showIntro(gameComment)
+        }
     }
 
     /**
