@@ -498,6 +498,14 @@ export class PgnViewer {
                 if (move) {
                     this.stop()
                     this.goToMove(move)
+                    return
+                }
+                const commentMove = this.notationRenderer.commentMoveFromElement(event.target)
+                // not after selecting text in the comment, e.g. to copy it
+                const selection = window.getSelection()
+                if (commentMove !== undefined && (!selection || selection.isCollapsed)) {
+                    this.stop()
+                    this.goToMove(commentMove || undefined)
                 }
             }
         })

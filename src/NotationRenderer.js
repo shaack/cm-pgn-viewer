@@ -39,16 +39,18 @@ export class NotationRenderer {
         }
         this.moves = [] // index (data-move-index) -> move
         this.moveToElement = new Map()
+        this.commentToMove = new Map() // comment element -> its move, null for the game comment
         this.activeElement = undefined
     }
 
     render(container, history, gameComment = undefined) {
         this.moves = []
         this.moveToElement = new Map()
+        this.commentToMove = new Map()
         this.activeElement = undefined
         container.innerHTML = ""
         if (gameComment) {
-            this._appendComments(container, gameComment)
+            this._appendComments(container, gameComment, null)
         }
         this._renderLine(container, history)
     }
@@ -70,6 +72,16 @@ export class NotationRenderer {
     moveFromElement(element) {
         const moveElement = element.closest("[data-move-index]")
         return moveElement ? this.moves[parseInt(moveElement.dataset.moveIndex, 10)] : undefined
+    }
+
+    /**
+     * A comment leads to its move: the comment after a move to that move, the one before a move
+     * to the move it introduces, the comment of the game to the start position.
+     * @returns the move, null for the start position, undefined outside a comment
+     */
+    commentMoveFromElement(element) {
+        const comment = element.closest(".comment")
+        return comment && this.commentToMove.has(comment) ? this.commentToMove.get(comment) : undefined
     }
 
     /** The SAN as text, for "icons" with the letters of `pieceLetters`. */
@@ -95,12 +107,12 @@ export class NotationRenderer {
     _renderLine(parent, moves) {
         let needsNumber = true // at the start of a line and after comments or variations
         for (const move of moves) {
-            if (move.startingComments && this._appendComments(parent, move.startingComments)) {
+            if (move.startingComments && this._appendComments(parent, move.startingComments, move)) {
                 needsNumber = true
             }
             parent.appendChild(this._moveElement(move, needsNumber))
             needsNumber = false
-            if (move.comments && this._appendComments(parent, move.comments)) {
+            if (move.comments && this._appendComments(parent, move.comments, move)) {
                 needsNumber = true
             }
             for (const variation of move.variations || []) {
@@ -166,7 +178,7 @@ export class NotationRenderer {
     }
 
     /** @returns {boolean} true, if a comment was rendered */
-    _appendComments(parent, comments) {
+    _appendComments(parent, comments, move) {
         let rendered = false
         for (const raw of [].concat(comments)) {
             // drop embedded commands like [%clk 0:05:00] or [%cal Ge2e4]
@@ -177,6 +189,7 @@ export class NotationRenderer {
             const comment = document.createElement("span")
             comment.className = "comment"
             comment.textContent = text
+            this.commentToMove.set(comment, move)
             parent.appendChild(comment)
             parent.appendChild(document.createTextNode(" "))
             rendered = true

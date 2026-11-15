@@ -50,6 +50,18 @@ describe("NotationRenderer", () => {
         assertTexts(container.querySelectorAll(".nag"), ["!", "?!"])
     })
 
+    it("should lead from a comment to its move, from the game comment to the start position", () => {
+        const loaded = loadPgn(`{Game} 1. e4 {After e4} e5 (1... {Before c5} c5) *`)
+        const container = document.createElement("div")
+        const renderer = new NotationRenderer()
+        renderer.render(container, loaded.pgn.history.moves, loaded.pgn.history.gameComment)
+        const comments = container.querySelectorAll(".comment")
+        assert.equal(renderer.commentMoveFromElement(comments[0]), null)
+        assert.equal(renderer.commentMoveFromElement(comments[1]).san, "e4")
+        assert.equal(renderer.commentMoveFromElement(comments[2]).san, "c5")
+        assert.equal(renderer.commentMoveFromElement(container.querySelector(".move")), undefined)
+    })
+
     it("should format pieces as SVG icons, unicode or configurable letters", () => {
         const withIcons = render(`1. Nf3 d5 2. g3 c5 3. Bg2 Nc6 4. O-O e5 *`, {pieceNames: {n: "knight", b: "bishop"}})
         // "auto" renders both styles, the stylesheet picks one by side and colour scheme
