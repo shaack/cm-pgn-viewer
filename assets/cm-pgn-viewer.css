@@ -28,8 +28,9 @@
     --pgn-viewer-black-icon-regular: none;
     --pgn-viewer-button-bg: rgba(0, 0, 0, 0.06);
     --pgn-viewer-button-hover-bg: rgba(0, 0, 0, 0.12);
-    /* the symbol of the play button in green */
+    /* the symbol of the play button in green, the pause symbol while playing in orange */
     --pgn-viewer-play-color: #2f8a3f;
+    --pgn-viewer-pause-color: #d9730d;
     --pgn-viewer-badge-bg: rgba(0, 0, 0, 0.08);
     --pgn-viewer-error-color: #b02a37;
     --pgn-viewer-radius: 0.375rem;
@@ -111,6 +112,7 @@
         --pgn-viewer-black-icon-regular: inline;
         --pgn-viewer-button-bg: rgba(255, 255, 255, 0.08);
         --pgn-viewer-play-color: #5cc46d;
+        --pgn-viewer-pause-color: #f0953a;
         --pgn-viewer-button-hover-bg: rgba(255, 255, 255, 0.16);
         --pgn-viewer-badge-bg: rgba(255, 255, 255, 0.12);
         --pgn-viewer-error-color: #ea868f;
@@ -148,6 +150,7 @@
     --pgn-viewer-black-icon-regular: inline;
     --pgn-viewer-button-bg: rgba(255, 255, 255, 0.08);
     --pgn-viewer-play-color: #5cc46d;
+    --pgn-viewer-pause-color: #f0953a;
     --pgn-viewer-button-hover-bg: rgba(255, 255, 255, 0.16);
     --pgn-viewer-badge-bg: rgba(255, 255, 255, 0.12);
     --pgn-viewer-error-color: #ea868f;
@@ -553,6 +556,10 @@
 
 .cm-pgn-viewer .pgn-viewer-button[data-action="play"] {
     color: var(--pgn-viewer-play-color);
+}
+
+.cm-pgn-viewer .pgn-viewer-button[data-action="play"].playing {
+    color: var(--pgn-viewer-pause-color);
 }
 
 .cm-pgn-viewer .pgn-viewer-button:disabled {
