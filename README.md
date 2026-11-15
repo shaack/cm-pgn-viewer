@@ -21,7 +21,7 @@ It is built on [cm-chessboard](https://github.com/shaack/cm-chessboard) for the 
 - Piece icons (Font Awesome Free, solid or regular), unicode figurines or configurable piece letters (`K D T L S` for German, for example)
 - The layout follows the width of the **container**, not of the window: side by side when there is room, stacked when the container is narrow
 - A broken PGN shows an error message with the PGN instead of breaking the page
-- "Show PGN" opens the PGN in a modal dialog with syntax highlighting and a copy button
+- "PGN source" opens the PGN in a modal dialog with syntax highlighting and a copy button, with `pgnEditable` as editor
 - Lazy initialization for pages with many games
 - Screen reader support: moves are announced in a live region, the board uses the cm-chessboard Accessibility extension
 
@@ -95,7 +95,9 @@ PgnViewer.initFrom("pgn", {lazy: true, assetsUrl: "/node_modules/cm-chessboard/a
 | `pieceLetters`     | `{K: "K", Q: "Q", R: "R", B: "B", N: "N"}` | The letters for `notation: "letters"`                                     |
 | `showHeaders`      | `true`                                   | Players, event, site, round, date, ECO, result                              |
 | `showControls`     | `true`                                   | The button row                                                              |
-| `showPgnToggle`    | `true`                                   | "Show PGN", opens the PGN highlighted in a modal dialog                     |
+| `showPgnToggle`    | `true`                                   | "PGN source", opens the PGN highlighted in a modal dialog                   |
+| `pgnEditable`      | `false`                                  | The PGN dialog is an editor, "Apply" loads the edited game                  |
+| `onPgnChange`      | `undefined`                              | `(pgn) => {}`, after an edited PGN was applied, e.g. to store it            |
 | `commentBubbles`   | `true`                                   | Show the comment of a move as speech bubble on the board                    |
 | `bubbleExpanded`   | `true`                                   | Comments start in big bubbles, `false`: small ones. The switch next to "Show PGN" changes it |
 | `lastMoveMarker`   | `MARKER_TYPE.frame`                      | Marker on both squares of the move shown, any cm-chessboard `MARKER_TYPE` (re-exported by `PgnViewer.js`), `null` for none |
@@ -138,7 +140,7 @@ pre.innerHTML = highlightPgn(pgn)
 
 ## Methods
 
-`goToMove(move)`, `first()`, `previous()`, `next()`, `last()`, `flip()`, `play()`, `stop()`, `showPgn()`, `setCommentBubbles(on)`, `setBubblesExpanded(expanded)`, `destroy()`. `next()` and `last()` follow the line of the move shown, so inside a variation they stay in the variation.
+`goToMove(move)`, `first()`, `previous()`, `next()`, `last()`, `flip()`, `play()`, `stop()`, `showPgn()`, `setPgn(pgn, initialPly)`, `setCommentBubbles(on)`, `setBubblesExpanded(expanded)`, `destroy()`. `next()` and `last()` follow the line of the move shown, so inside a variation they stay in the variation.
 
 ## Layout and theming
 

@@ -35,6 +35,7 @@
     /* the comment bubble on the board, dark in both modes, the text a light comment blue */
     --pgn-viewer-bubble-bg: rgba(24, 26, 30, 0.8);
     --pgn-viewer-bubble-color: #b9d6ee;
+    --pgn-viewer-bubble-font-size: 1.15rem;
     /* the PGN dialog and its syntax highlighting */
     --pgn-viewer-dialog-bg: #fff;
     --pgn-viewer-backdrop: rgba(0, 0, 0, 0.45);
@@ -606,6 +607,34 @@
     fill: currentColor;
 }
 
+/* pgnEditable: the PGN as editor, "Apply" below it */
+.cm-pgn-viewer .pgn-viewer-pgn-editor {
+    display: block;
+    width: 100%;
+    min-height: min(60vh, 32rem);
+    box-sizing: border-box;
+    margin: 0;
+    padding: 1rem;
+    border: 0;
+    resize: vertical;
+    background: none;
+    color: inherit;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.cm-pgn-viewer .pgn-viewer-pgn-editor:focus {
+    outline: none;
+}
+
+.cm-pgn-viewer .pgn-viewer-dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.5rem;
+    border-top: 1px solid var(--pgn-viewer-button-bg);
+}
+
 .cm-pgn-viewer pre.pgn-viewer-pgn {
     margin: 0;
     padding: 1rem;
@@ -687,7 +716,7 @@
     -webkit-backdrop-filter: blur(1px);
     backdrop-filter: blur(1px);
     box-shadow: 0 0.15rem 0.6rem rgba(0, 0, 0, 0.3);
-    font-size: 1rem;
+    font-size: var(--pgn-viewer-bubble-font-size);
     line-height: 1.4;
     pointer-events: auto;
 }

@@ -70,17 +70,44 @@ export class PgnViewer {
             icons: {},
             onMoveSelect: undefined,        // callback(move), move is undefined for the start position
             onExpand: undefined,            // callback(viewer), shows a button "show larger" in the upper right corner
+            pgnEditable: false,             // the PGN dialog edits the PGN, "Apply" loads it
+            onPgnChange: undefined,         // callback(pgn), after an edited PGN was applied
             ...props
         }
         this.t = createI18n(this.props.language, this.props.i18n)
         this.icons = {...ICONS, ...this.props.icons}
-        this.loaded = loadPgn(this.props.pgn, {lenient: this.props.lenient, chess960: this.props.chess960})
-        this.currentMove = undefined
         this.autoplayTimer = undefined
+        this.bubbleExpanded = this.props.bubbleExpanded
         this.context.classList.add("cm-pgn-viewer")
         if (this.props.colorScheme === "light" || this.props.colorScheme === "dark") {
             this.context.classList.add("pgn-viewer-" + this.props.colorScheme)
         }
+        this._bindContextEvents()
+        this._load(this.props.pgn, this.props.initialPly)
+    }
+
+    /** Show another game in this viewer, optionally at a ply of the mainline. */
+    setPgn(pgn, initialPly = undefined) {
+        this.stop()
+        if (this.bubble) {
+            this.bubble.destroy()
+            this.bubble = undefined
+        }
+        if (this.board) {
+            this.board.destroy()
+            this.board = undefined
+        }
+        this.moveMarkers = []
+        this.context.innerHTML = ""
+        this.props.pgn = pgn
+        this._load(pgn, initialPly)
+    }
+
+    _load(pgn, initialPly) {
+        this.loaded = loadPgn(pgn, {lenient: this.props.lenient, chess960: this.props.chess960})
+        this.currentMove = undefined
+        this.pgn = undefined
+        this.history = undefined
         if (this.loaded.error) {
             this._renderError()
             return
@@ -99,10 +126,9 @@ export class PgnViewer {
             this.notationRenderer.render(this.elements.notation, this.history, this.pgn.history.gameComment)
         }
         this._initBoard()
-        this._bindEvents()
-        this.bubbleExpanded = this.props.bubbleExpanded
+        this._bindDialog()
         this.setCommentBubbles(this.props.commentBubbles)
-        const initial = this.props.initialPly ? this.history[this.props.initialPly - 1] : undefined
+        const initial = initialPly ? this.history[initialPly - 1] : undefined
         this.goToMove(initial, false, false)
     }
 
@@ -200,9 +226,14 @@ export class PgnViewer {
         if (!dialog) {
             return
         }
-        const pre = dialog.querySelector(".pgn-viewer-pgn")
-        if (!pre.innerHTML) {
-            pre.innerHTML = highlightPgn(this.loaded.text)
+        const editor = dialog.querySelector(".pgn-viewer-pgn-editor")
+        if (editor) {
+            editor.value = this.loaded.text
+        } else {
+            const pre = dialog.querySelector(".pgn-viewer-pgn")
+            if (!pre.innerHTML) {
+                pre.innerHTML = highlightPgn(this.loaded.text)
+            }
         }
         this.stop()
         dialog.showModal()
@@ -316,11 +347,17 @@ export class PgnViewer {
         }
     }
 
-    _pgnSourceHtml() {
+    /**
+     * The buttons below the notation and the PGN dialog: highlighted PGN, or with
+     * pgnEditable an editor and "Apply".
+     * @param withToggle the switch for the comment bubbles, not in the error view
+     */
+    _pgnSourceHtml(withToggle = true) {
+        const editable = this.props.pgnEditable
         return `<div class="pgn-viewer-source">` +
-            (this.props.commentBubbles
+            (withToggle && this.props.commentBubbles
                 ? `<button type="button" class="pgn-viewer-button pgn-viewer-toggle" data-action="toggleBubbles" ` +
-                `aria-pressed="${this.props.bubbleExpanded}" title="${escapeHtml(this.t.bubblesExpanded)}" ` +
+                `aria-pressed="${!!this.bubbleExpanded}" title="${escapeHtml(this.t.bubblesExpanded)}" ` +
                 `aria-label="${escapeHtml(this.t.bubblesExpanded)}">${this.icons.bubble}</button>`
                 : "") +
             `<button type="button" class="pgn-viewer-button pgn-viewer-text-button" data-action="showPgn" aria-haspopup="dialog">` +
@@ -330,10 +367,15 @@ export class PgnViewer {
             `<div class="pgn-viewer-dialog-header">` +
             `<span class="pgn-viewer-dialog-title">PGN</span>` +
             `<button type="button" class="pgn-viewer-link" data-action="copyPgn">${escapeHtml(this.t.copy)}</button>` +
-            `<button type="button" class="pgn-viewer-close" data-action="closePgn" autofocus ` +
+            `<button type="button" class="pgn-viewer-close" data-action="closePgn"${editable ? "" : " autofocus"} ` +
             `title="${escapeHtml(this.t.close)}" aria-label="${escapeHtml(this.t.close)}">${this.icons.close}</button>` +
             `</div>` +
-            `<pre class="pgn-viewer-pgn"></pre>` +
+            (editable
+                ? `<textarea class="pgn-viewer-pgn-editor" spellcheck="false" autofocus aria-label="PGN"></textarea>` +
+                `<div class="pgn-viewer-dialog-footer">` +
+                `<button type="button" class="pgn-viewer-button pgn-viewer-text-button" data-action="applyPgn">` +
+                `${escapeHtml(this.t.applyPgn)}</button></div>`
+                : `<pre class="pgn-viewer-pgn"></pre>`) +
             `</dialog>`
     }
 
@@ -369,7 +411,14 @@ export class PgnViewer {
         this.context.innerHTML = `<div class="pgn-viewer-error" role="alert">` +
             `<div class="message">${escapeHtml(message)}</div>` +
             (error.type === "syntax" ? `<div class="details">${escapeHtml(error.message)}</div>` : "") +
-            `<pre>${escapeHtml(this.loaded.text)}</pre></div>`
+            `<pre>${escapeHtml(this.loaded.text)}</pre></div>` +
+            // an editable viewer can fix the PGN
+            (this.props.pgnEditable ? this._pgnSourceHtml(false) : "")
+        this.elements = {
+            source: this.context.querySelector(".pgn-viewer-source") || undefined,
+            dialog: this.context.querySelector(".pgn-viewer-dialog") || undefined
+        }
+        this._bindDialog()
     }
 
     _initBoard() {
@@ -395,14 +444,15 @@ export class PgnViewer {
         })
     }
 
-    _bindEvents() {
+    /** Once per viewer: the listeners on the context survive setPgn(). */
+    _bindContextEvents() {
         this.context.addEventListener("click", (event) => {
             const button = event.target.closest("[data-action]")
             if (button && this.context.contains(button)) {
                 this._action(button.dataset.action)
                 return
             }
-            if (this.elements.notation && this.elements.notation.contains(event.target)) {
+            if (this.elements && this.elements.notation && this.elements.notation.contains(event.target)) {
                 const move = this.notationRenderer.moveFromElement(event.target)
                 if (move) {
                     this.stop()
@@ -410,16 +460,11 @@ export class PgnViewer {
                 }
             }
         })
-        if (this.elements.dialog) {
-            // a click on the backdrop lands on the dialog itself
-            this.elements.dialog.addEventListener("click", (event) => {
-                if (event.target === this.elements.dialog) {
-                    this.elements.dialog.close()
-                }
-            })
-        }
         this.context.addEventListener("keydown", (event) => {
             if (event.target.closest("pre, dialog") || event.altKey || event.ctrlKey || event.metaKey) {
+                return
+            }
+            if (!this.board) {
                 return
             }
             const actions = {ArrowRight: "next", ArrowLeft: "previous", Home: "first", End: "last"}
@@ -440,6 +485,8 @@ export class PgnViewer {
             this.showPgn()
         } else if (action === "closePgn") {
             this.elements.dialog.close()
+        } else if (action === "applyPgn") {
+            this._applyPgn()
         } else if (action === "copyPgn") {
             this._copyPgn()
         } else if (action === "play") {
@@ -452,10 +499,32 @@ export class PgnViewer {
         }
     }
 
+    _bindDialog() {
+        const dialog = this.elements.dialog
+        if (dialog) {
+            // a click on the backdrop lands on the dialog itself
+            dialog.addEventListener("click", (event) => {
+                if (event.target === dialog) {
+                    dialog.close()
+                }
+            })
+        }
+    }
+
+    _applyPgn() {
+        const pgn = this.elements.dialog.querySelector(".pgn-viewer-pgn-editor").value
+        this.elements.dialog.close()
+        this.setPgn(pgn)
+        if (typeof this.props.onPgnChange === "function") {
+            this.props.onPgnChange(pgn)
+        }
+    }
+
     _copyPgn() {
         const button = this.elements.dialog.querySelector("[data-action=copyPgn]")
+        const editor = this.elements.dialog.querySelector(".pgn-viewer-pgn-editor")
         if (navigator.clipboard) {
-            navigator.clipboard.writeText(this.loaded.text).then(() => {
+            navigator.clipboard.writeText(editor ? editor.value : this.loaded.text).then(() => {
                 button.textContent = this.t.copied
                 setTimeout(() => button.textContent = this.t.copy, 2000)
             })

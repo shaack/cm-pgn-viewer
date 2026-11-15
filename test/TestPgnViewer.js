@@ -334,6 +334,43 @@ describe("PgnViewer", () => {
         viewer.destroy()
     })
 
+    it("should load another game with setPgn, without doubled listeners", () => {
+        const viewer = createViewer(PGN)
+        viewer.setPgn(`1. d4 d5 2. c4 *`, 1)
+        assert.equal(viewer.currentMove.san, "d4")
+        viewer.elements.controls.querySelector("[data-action=next]").click()
+        assert.equal(viewer.currentMove.san, "d5") // one step, not two
+        viewer.setPgn(`1. e4 e5 2. Nf6 *`) // broken
+        assert.true(!!viewer.context.querySelector(".pgn-viewer-error"))
+        viewer.next() // no board, no exception
+        viewer.setPgn(`1. e4 *`)
+        assert.equal(viewer.history.length, 1)
+        viewer.destroy()
+    })
+
+    it("should edit the PGN in the dialog with pgnEditable", () => {
+        let changed
+        const viewer = createViewer(`1. e4 *`, {pgnEditable: true, onPgnChange: (pgn) => changed = pgn})
+        viewer.showPgn()
+        const editor = viewer.elements.dialog.querySelector(".pgn-viewer-pgn-editor")
+        assert.equal(editor.value, "1. e4 *")
+        editor.value = "1. d4 d5 *"
+        viewer.elements.dialog.querySelector("[data-action=applyPgn]").click()
+        assert.equal(changed, "1. d4 d5 *")
+        assert.equal(viewer.history.length, 2)
+        assert.false(viewer.elements.dialog.open)
+        // a broken PGN can be fixed from the error view
+        viewer.setPgn(`1. e4 e5 2. Nf6 *`)
+        viewer.context.querySelector("[data-action=showPgn]").click()
+        viewer.elements.dialog.querySelector(".pgn-viewer-pgn-editor").value = "1. e4 e5 2. Nf3 *"
+        viewer.elements.dialog.querySelector("[data-action=applyPgn]").click()
+        assert.equal(viewer.history.length, 3)
+        viewer.destroy()
+        const readOnly = createViewer(`1. e4 *`)
+        assert.equal(readOnly.context.querySelector(".pgn-viewer-pgn-editor"), null)
+        readOnly.destroy()
+    })
+
     it("should replace elements with viewers in initFrom", () => {
         const holder = document.createElement("div")
         holder.innerHTML = `<pgn>[White "A"]<br />[Black "B"]<br /><br />1. e4 e5 *</pgn><pgn>1. d4 *</pgn>`
