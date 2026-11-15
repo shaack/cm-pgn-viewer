@@ -253,6 +253,9 @@ describe("PgnViewer", () => {
         assert.true(viewer.bubble.element.hidden)
         viewer.first()
         assert.equal(viewer.bubble.text.textContent, "A famous game.Start →")
+        viewer.play()
+        assert.equal(viewer.bubble.text.textContent, "A famous game.") // the comment stays, the button goes
+        viewer.stop()
         viewer.destroy()
     })
 
@@ -262,6 +265,7 @@ describe("PgnViewer", () => {
         assert.false(viewer.bubble.collapsed) // only the button, always big
         viewer.bubble.element.querySelector(".pgn-viewer-bubble-action").click()
         assert.true(viewer.playing)
+        assert.true(viewer.bubble.element.hidden) // no empty box left without a comment
         assert.equal(viewer.bubble.element.querySelector(".pgn-viewer-bubble-action"), null)
         viewer.stop()
         assert.equal(viewer.bubble.text.textContent, "Start →") // back again

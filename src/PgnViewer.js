@@ -265,8 +265,8 @@ export class PgnViewer {
             this.goToMove(undefined) // at the end, play from the start
         }
         this.playing = true
-        if (this.bubble) {
-            this.bubble.setAction(undefined) // "Start" in the start position
+        if (!this.currentMove) {
+            this._updateBubble() // without "Start", the bubble goes when there is no comment of the game
         }
         this._scheduleAutoplay()
         this._updateControls()

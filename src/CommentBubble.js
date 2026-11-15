@@ -172,6 +172,7 @@ export class CommentBubble {
     }
 
     hide() {
+        this.setAction(undefined)
         this.square = undefined
         this.intro = false
         this.element.hidden = true
