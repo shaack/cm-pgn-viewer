@@ -396,13 +396,6 @@
     font-weight: 400;
     color: var(--pgn-viewer-comment-color);
     cursor: pointer; /* leads to its move */
-    border-radius: 0.2em;
-    -webkit-box-decoration-break: clone;
-    box-decoration-break: clone;
-}
-
-.cm-pgn-viewer .comment:hover {
-    background: var(--pgn-viewer-move-hover-bg);
 }
 
 .cm-pgn-viewer :is(.move, .material-pieces).white svg.piece-icon.auto.solid {
