@@ -810,6 +810,11 @@
     cursor: pointer;
 }
 
+/* alone in the bubble, "Start →" without a comment of the game */
+.cm-pgn-viewer .pgn-viewer-bubble-action:first-child {
+    margin-top: 0;
+}
+
 .cm-pgn-viewer .pgn-viewer-bubble-action:hover {
     text-decoration: underline;
 }
