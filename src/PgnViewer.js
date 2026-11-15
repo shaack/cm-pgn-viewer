@@ -61,7 +61,7 @@ export class PgnViewer {
             showMaterial: true,             // the captured pieces and the material advantage, below the board
             qualityMarkers: true,           // assessed moves (!!, !, !?, ?!, ?, ??) get the markers in their colour
             checkMarker: MARKER_TYPE.circleDanger, // on the king in check, null for none
-            autoplayInterval: 2000,         // milliseconds per move, playing halts at open comment bubbles
+            autoplayInterval: 1500,         // milliseconds per move, playing halts at open comment bubbles
             initialPly: undefined,          // jump to this mainline ply on load
             accessibility: true,            // cm-chessboard Accessibility extension and spoken moves
             colorScheme: "auto",            // "auto" (system, data-bs-theme), "light" or "dark"
