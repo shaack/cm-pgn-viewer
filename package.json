@@ -35,7 +35,7 @@
   },
   "homepage": "https://github.com/shaack/cm-pgn-viewer#readme",
   "dependencies": {
-    "cm-chessboard": "^8.15.4",
+    "cm-chessboard": "^8.15.8",
     "cm-pgn": "^5.0.1"
   },
   "devDependencies": {
