@@ -2,6 +2,7 @@
 
 A PGN viewer for the web. It shows a chess game with **variations, NAGs and comments** next to an SVG chessboard, and it plays **Chess960** and games **from any start position**. Vanilla ES6 modules, no framework, no build step, no icon font.
 
+- **[Online demo](https://shaack.com/projekte/cm-pgn-viewer/)**
 - **[Repository](https://github.com/shaack/cm-pgn-viewer)**
 - **[npm package](https://www.npmjs.com/package/cm-pgn-viewer)**
 
